@@ -1,5 +1,5 @@
-import { gql } from 'apollo-server';
-import { IResolvers } from './generated/graphql';
+import { gql } from "apollo-server";
+import { IResolvers } from "./generated/graphql";
 
 // Type definitions define the "shape" of your data and specify
 // which ways the data can be fetched from the GraphQL server.

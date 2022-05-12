@@ -1,5 +1,5 @@
-import { DataSource } from 'apollo-datasource';
-import { QueryBookArgs } from './generated/graphql';
+import { DataSource } from "apollo-datasource";
+import { QueryBookArgs } from "./generated/graphql";
 
 // This is a (sample) collection of books we'll be able to query
 // the GraphQL server for.  A more complete example might fetch
@@ -7,13 +7,13 @@ import { QueryBookArgs } from './generated/graphql';
 const books = [
   {
     id: 0,
-    title: 'Harry Potter and the Chamber of Secrets',
-    author: 'J.K. Rowling'
+    title: "Harry Potter and the Chamber of Secrets",
+    author: "J.K. Rowling"
   },
   {
     id: 1,
-    title: 'Jurassic Park',
-    author: 'Michael Crichton'
+    title: "Jurassic Park",
+    author: "Michael Crichton"
   }
 ];
 
