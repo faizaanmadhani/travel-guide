@@ -14,7 +14,7 @@
     "fix:prettier": "prettier \"src/**/*.ts\" --write --loglevel warn",
     "fix:tslint": "tslint --fix --project .",
     "generate:types": "graphql-codegen --config codegen.yml",
-    "start": "ts-node src/index.ts",
+    "start": "nodemon src/index.ts",
     "test": "run-s test:*",
     "test:lint": "tslint --project . && prettier \"src/**/*.ts\" --list-different",
     "test:types": "tsc -p . --noEmit"
