@@ -9,6 +9,13 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var graphql_1 = require("graphql");
 var makeExecutableSchema_1 = require("../makeExecutableSchema");
@@ -202,14 +209,14 @@ function mergeSchemasImplementation(_a) {
         if (field.resolve) {
             var fieldResolver_1 = field.resolve;
             field.resolve = function (parent, args, context, info) {
-                var newInfo = __assign({}, info, { mergeInfo: mergeInfo });
+                var newInfo = __assign(__assign({}, info), { mergeInfo: mergeInfo });
                 return fieldResolver_1(parent, args, context, newInfo);
             };
         }
         if (field.subscribe) {
             var fieldResolver_2 = field.subscribe;
             field.subscribe = function (parent, args, context, info) {
-                var newInfo = __assign({}, info, { mergeInfo: mergeInfo });
+                var newInfo = __assign(__assign({}, info), { mergeInfo: mergeInfo });
                 return fieldResolver_2(parent, args, context, newInfo);
             };
         }
@@ -234,14 +241,14 @@ function createMergeInfo(allSchemas, fragments) {
                 args: args,
                 context: context,
                 info: info,
-                transforms: (transforms || []).concat([
+                transforms: __spreadArrays((transforms || []), [
                     expandTransforms,
                     fragmentTransform,
                 ]),
             });
         },
         delegateToSchema: function (options) {
-            return delegateToSchema_1.default(__assign({}, options, { transforms: options.transforms }));
+            return delegateToSchema_1.default(__assign(__assign({}, options), { transforms: options.transforms }));
         },
         fragments: fragments
     };
@@ -326,7 +333,7 @@ function defaultVisitType(name, candidates, candidateSelector) {
         candidates.forEach(function (_a) {
             var candidateType = _a.type, schema = _a.schema;
             var candidateFields = candidateType.getFields();
-            fields_2 = __assign({}, fields_2, candidateFields);
+            fields_2 = __assign(__assign({}, fields_2), candidateFields);
             Object.keys(candidateFields).forEach(function (fieldName) {
                 var _a;
                 resolvers_1[fieldName] = (_a = {},

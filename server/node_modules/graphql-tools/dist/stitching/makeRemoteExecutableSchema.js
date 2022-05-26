@@ -1,8 +1,9 @@
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -33,6 +34,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var graphql_1 = require("graphql");
 var linkToFetcher_1 = require("./linkToFetcher");
@@ -44,8 +52,8 @@ var defaultMergedResolver_1 = require("./defaultMergedResolver");
 var errors_1 = require("./errors");
 var observableToAsyncIterable_1 = require("./observableToAsyncIterable");
 function makeRemoteExecutableSchema(_a) {
-    var schema = _a.schema, link = _a.link, fetcher = _a.fetcher, _b = _a.createResolver, customCreateResolver = _b === void 0 ? createResolver : _b, buildSchemaOptions = _a.buildSchemaOptions, _c = _a.printSchemaOptions, printSchemaOptions = _c === void 0 ? { commentDescriptions: true } : _c;
-    var _d;
+    var _b;
+    var schema = _a.schema, link = _a.link, fetcher = _a.fetcher, _c = _a.createResolver, customCreateResolver = _c === void 0 ? createResolver : _c, buildSchemaOptions = _a.buildSchemaOptions, _d = _a.printSchemaOptions, printSchemaOptions = _d === void 0 ? { commentDescriptions: true } : _d;
     if (!fetcher && link) {
         fetcher = linkToFetcher_1.default(link);
     }
@@ -85,7 +93,7 @@ function makeRemoteExecutableSchema(_a) {
         });
     }
     // merge resolvers into resolver map
-    var resolvers = (_d = {}, _d[queryType.name] = queryResolvers, _d);
+    var resolvers = (_b = {}, _b[queryType.name] = queryResolvers, _b);
     if (!isEmptyObject_1.default(mutationResolvers)) {
         resolvers[mutationType.name] = mutationResolvers;
     }
@@ -144,7 +152,7 @@ function createResolver(fetcher) {
                     fragments = Object.keys(info.fragments).map(function (fragment) { return info.fragments[fragment]; });
                     document = {
                         kind: graphql_1.Kind.DOCUMENT,
-                        definitions: [info.operation].concat(fragments)
+                        definitions: __spreadArrays([info.operation], fragments)
                     };
                     return [4 /*yield*/, fetcher({
                             query: document,
@@ -164,7 +172,7 @@ function createSubscriptionResolver(name, link) {
         var fragments = Object.keys(info.fragments).map(function (fragment) { return info.fragments[fragment]; });
         var document = {
             kind: graphql_1.Kind.DOCUMENT,
-            definitions: [info.operation].concat(fragments)
+            definitions: __spreadArrays([info.operation], fragments)
         };
         var operation = {
             query: document,

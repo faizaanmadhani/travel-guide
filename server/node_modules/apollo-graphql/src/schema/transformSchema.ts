@@ -19,9 +19,10 @@ import {
   GraphQLUnionType,
   isInputObjectType,
   GraphQLInputObjectType,
-  GraphQLInputFieldConfigMap
+  GraphQLInputFieldConfigMap,
+  GraphQLDirective,
 } from "graphql";
-import { mapValues } from "apollo-env";
+import { mapValues } from "../utilities/mapValues";
 
 type TypeTransformer = (
   type: GraphQLNamedType
@@ -53,7 +54,8 @@ export function transformSchema(
     types: Object.values(typeMap),
     query: replaceMaybeType(schemaConfig.query),
     mutation: replaceMaybeType(schemaConfig.mutation),
-    subscription: replaceMaybeType(schemaConfig.subscription)
+    subscription: replaceMaybeType(schemaConfig.subscription),
+    directives: replaceDirectives(schemaConfig.directives),
   });
 
   function recreateNamedType(type: GraphQLNamedType): GraphQLNamedType {
@@ -63,28 +65,29 @@ export function transformSchema(
       return new GraphQLObjectType({
         ...config,
         interfaces: () => config.interfaces.map(replaceNamedType),
-        fields: () => replaceFields(config.fields)
+        fields: () => replaceFields(config.fields),
       });
     } else if (isInterfaceType(type)) {
       const config = type.toConfig();
 
       return new GraphQLInterfaceType({
         ...config,
-        fields: () => replaceFields(config.fields)
+        interfaces: () => config.interfaces.map(replaceNamedType),
+        fields: () => replaceFields(config.fields),
       });
     } else if (isUnionType(type)) {
       const config = type.toConfig();
 
       return new GraphQLUnionType({
         ...config,
-        types: () => config.types.map(replaceNamedType)
+        types: () => config.types.map(replaceNamedType),
       });
     } else if (isInputObjectType(type)) {
       const config = type.toConfig();
 
       return new GraphQLInputObjectType({
         ...config,
-        fields: () => replaceInputFields(config.fields)
+        fields: () => replaceInputFields(config.fields),
       });
     }
 
@@ -123,26 +126,36 @@ export function transformSchema(
   function replaceFields<TSource, TContext>(
     fieldsMap: GraphQLFieldConfigMap<TSource, TContext>
   ): GraphQLFieldConfigMap<TSource, TContext> {
-    return mapValues(fieldsMap, field => ({
+    return mapValues(fieldsMap, (field) => ({
       ...field,
       type: replaceType(field.type),
-      args: field.args ? replaceArgs(field.args) : undefined
+      args: field.args ? replaceArgs(field.args) : undefined,
     }));
   }
 
   function replaceInputFields(
     fieldsMap: GraphQLInputFieldConfigMap
   ): GraphQLInputFieldConfigMap {
-    return mapValues(fieldsMap, field => ({
+    return mapValues(fieldsMap, (field) => ({
       ...field,
-      type: replaceType(field.type)
+      type: replaceType(field.type),
     }));
   }
 
   function replaceArgs(args: GraphQLFieldConfigArgumentMap) {
-    return mapValues(args, arg => ({
+    return mapValues(args, (arg) => ({
       ...arg,
-      type: replaceType(arg.type)
+      type: replaceType(arg.type),
     }));
+  }
+
+  function replaceDirectives(directives: GraphQLDirective[]) {
+    return directives.map((directive) => {
+      const config = directive.toConfig();
+      return new GraphQLDirective({
+        ...config,
+        args: replaceArgs(config.args),
+      });
+    });
   }
 }

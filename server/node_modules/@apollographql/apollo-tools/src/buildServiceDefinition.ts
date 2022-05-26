@@ -13,7 +13,7 @@ import {
   isObjectType,
   SchemaDefinitionNode,
   OperationTypeNode,
-  SchemaExtensionNode
+  SchemaExtensionNode,
 } from "graphql";
 import { isNode, isDocumentNode } from "./utilities/graphql";
 import { GraphQLResolverMap } from "./schema/resolverMap";
@@ -29,8 +29,12 @@ interface GraphQLServiceDefinition {
   errors?: GraphQLError[];
 }
 
+function flattened<T>(arr: ReadonlyArray<ReadonlyArray<T>>): ReadonlyArray<T> {
+  return new Array<T>().concat(...arr);
+}
+
 export function buildServiceDefinition(
-  modules: GraphQLSchemaModule[]
+  modules: (GraphQLSchemaModule | DocumentNode)[]
 ): GraphQLServiceDefinition {
   const errors: GraphQLError[] = [];
 
@@ -119,10 +123,11 @@ export function buildServiceDefinition(
     // but this matches the current 'last definition wins' behavior of `buildASTSchema`.
     const schemaDefinition = schemaDefinitions[schemaDefinitions.length - 1];
 
-    const operationTypes = [schemaDefinition, ...schemaExtensions]
-      .map(node => node.operationTypes)
-      .filter(isNotNullOrUndefined)
-      .flat();
+    const operationTypes = flattened(
+      [schemaDefinition, ...schemaExtensions]
+        .map((node) => node.operationTypes)
+        .filter(isNotNullOrUndefined)
+    );
 
     for (const operationType of operationTypes) {
       const typeName = operationType.type.name.value;
@@ -146,7 +151,7 @@ export function buildServiceDefinition(
     operationTypeMap = {
       query: "Query",
       mutation: "Mutation",
-      subscription: "Subscription"
+      subscription: "Subscription",
     };
   }
 
@@ -158,9 +163,9 @@ export function buildServiceDefinition(
             kind: Kind.OBJECT_TYPE_DEFINITION,
             name: {
               kind: Kind.NAME,
-              value: typeName
-            }
-          }
+              value: typeName,
+            },
+          },
         ];
       } else {
         errors.push(
@@ -178,25 +183,25 @@ export function buildServiceDefinition(
   }
 
   try {
-    const typeDefinitions = Object.values(typeDefinitionsMap).flat();
-    const directives = Object.values(directivesMap).flat();
+    const typeDefinitions = flattened(Object.values(typeDefinitionsMap));
+    const directives = flattened(Object.values(directivesMap));
 
     let schema = buildASTSchema({
       kind: Kind.DOCUMENT,
-      definitions: [...typeDefinitions, ...directives]
+      definitions: [...typeDefinitions, ...directives],
     });
 
-    const typeExtensions = Object.values(typeExtensionsMap).flat();
+    const typeExtensions = flattened(Object.values(typeExtensionsMap));
 
     if (typeExtensions.length > 0) {
       schema = extendSchema(schema, {
         kind: Kind.DOCUMENT,
-        definitions: typeExtensions
+        definitions: typeExtensions,
       });
     }
 
     for (const module of modules) {
-      if (!module.resolvers) continue;
+      if ("kind" in module || !module.resolvers) continue;
 
       addResolversToSchema(schema, module.resolvers);
     }
