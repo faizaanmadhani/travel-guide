@@ -1,5 +1,5 @@
 import { gql } from "apollo-server";
-import { IResolvers } from "./generated/graphql";
+import { Resolvers } from "./generated/graphql";
 
 // Type definitions define the "shape" of your data and specify
 // which ways the data can be fetched from the GraphQL server.
@@ -20,12 +20,12 @@ export const typeDefs = gql`
     prefs: [Preference!]!
     savedPlans: [Plan!]!
   }
-  
+
   type Preference {
     prefTag: String! # We'd need to enforce this somehow, but we can do this in the app
     userRating: Float # Decimal value between 0 and 1 which we modify based on user interests
   }
-  
+
   type Plan {
     id: ID!
     name: String!
@@ -36,7 +36,7 @@ export const typeDefs = gql`
     description: String!
     blocks: [PlanBlock!]!
   }
-  
+
   type PlanBlock {
     id: ID!
     title: String!
@@ -46,12 +46,11 @@ export const typeDefs = gql`
     images: [String!] # Link to image urls. string at images[0] is first one displayed
     mapId: String! #Something to help render gmaps url. Maybe a google maps link
     locationUrl: String # External link to the location
-  
     # Store some links additional assets
     audio: String!
     video: String!
   }
-  
+
   enum BlockType {
     EAT #food places, something to eat
     ACTIVITY # things to do
@@ -65,15 +64,15 @@ export const typeDefs = gql`
     book(id: Int!): Book
     books: [Book]
     user(id: String!): User!
-	  users: [User!]!
+    users: [User!]!
   }
 `;
 
 // Resolvers define the technique for fetching the types in the
 // schema.  We'll retrieve books from the "books" array above.
-export const resolvers: IResolvers = {
+export const resolvers: Resolvers = {
   Query: {
     book: (_, args, ctx) => ctx.dataSources.booksProvider.getBook(args),
-    books: (_, __, ctx) => ctx.dataSources.booksProvider.getBooks()
-  }
+    books: (_, __, ctx) => ctx.dataSources.booksProvider.getBooks(),
+  },
 };
