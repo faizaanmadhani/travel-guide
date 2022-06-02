@@ -26,11 +26,16 @@ export default function PlanView() {
                                 <Box bg="secondary.200">
                                     Tag 3
                                 </Box>
-                                <Entypo name="dots-three-horizontal" size={24} color="black" />
                             </VStack>
                         </HStack>
-                       
-                            Name of Travel Plan
+                        <HStack>
+                            <Text paddingRight={'2'}>
+                                Name of Travel Plan
+                            </Text>
+                            <Center>
+                                <Entypo name="dots-three-horizontal" size={24} color="black" />
+                            </Center>
+                        </HStack>
                     </Center>
                 </Box>     
             </Center>
