@@ -6,19 +6,13 @@ import { Resolvers } from "./generated/graphql";
 export const typeDefs = gql`
   # Comments in GraphQL are defined with the hash (#) symbol.
 
-  # This "Book" type can be used in other type declarations.
-  type Book {
-    title: String
-    author: String
-  }
-
   type User {
     id: ID!
     name: String!
     email: String!
     profile_pic: String!
-    prefs: [Preference!]!
-    savedPlans: [Plan!]!
+    prefs: [Preference]
+    savedPlans: [Plan]
   }
 
   type Preference {
@@ -34,7 +28,7 @@ export const typeDefs = gql`
     rating: Int! # value between 1 and 5
     tags: [String!]!
     description: String!
-    blocks: [PlanBlock!]!
+    blocks: [PlanBlock]!
   }
 
   type PlanBlock {
@@ -61,10 +55,12 @@ export const typeDefs = gql`
   # The "Query" type is the root of all GraphQL queries.
   # (A "Mutation" type will be covered later on.)
   type Query {
-    book(id: Int!): Book
-    books: [Book]
     user(id: String!): User!
     users: [User!]!
+    plan(id: String!): Plan!
+    planBlock(id: String!): PlanBlock!
+    plans: [Plan!]!
+    planblocks: [PlanBlock!]!
   }
 `;
 
@@ -72,7 +68,13 @@ export const typeDefs = gql`
 // schema.  We'll retrieve books from the "books" array above.
 export const resolvers: Resolvers = {
   Query: {
-    book: (_, args, ctx) => ctx.dataSources.booksProvider.getBook(args),
-    books: (_, __, ctx) => ctx.dataSources.booksProvider.getBooks(),
+    user: (_, args, context) => context.dataSources.userProvider.getUser(args),
+    users: (_, __, context) => context.dataSources.userProvider.getUsers(),
+  },
+  User: {
+    prefs: (parent, __, context) =>
+      context.dataSources.userProvider.getPrefs(parent.id),
+    // savedPlans: (parent, __, context) =>
+    //   context.dataSources.userProvider.getPlans(parent.id),
   },
 };

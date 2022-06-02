@@ -22,12 +22,6 @@ export enum BlockType {
   Sight = 'SIGHT'
 }
 
-export type Book = {
-  __typename?: 'Book';
-  title?: Maybe<Scalars['String']>;
-  author?: Maybe<Scalars['String']>;
-};
-
 export type Plan = {
   __typename?: 'Plan';
   id: Scalars['ID'];
@@ -37,7 +31,7 @@ export type Plan = {
   rating: Scalars['Int'];
   tags: Array<Scalars['String']>;
   description: Scalars['String'];
-  blocks: Array<PlanBlock>;
+  blocks: Array<Maybe<PlanBlock>>;
 };
 
 export type PlanBlock = {
@@ -61,19 +55,26 @@ export type Preference = {
 
 export type Query = {
   __typename?: 'Query';
-  book?: Maybe<Book>;
-  books?: Maybe<Array<Maybe<Book>>>;
   user: User;
   users: Array<User>;
-};
-
-
-export type QueryBookArgs = {
-  id: Scalars['Int'];
+  plan: Plan;
+  planBlock: PlanBlock;
+  plans: Array<Plan>;
+  planblocks: Array<PlanBlock>;
 };
 
 
 export type QueryUserArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryPlanArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryPlanBlockArgs = {
   id: Scalars['String'];
 };
 
@@ -83,8 +84,8 @@ export type User = {
   name: Scalars['String'];
   email: Scalars['String'];
   profile_pic: Scalars['String'];
-  prefs: Array<Preference>;
-  savedPlans: Array<Plan>;
+  prefs?: Maybe<Array<Maybe<Preference>>>;
+  savedPlans?: Maybe<Array<Maybe<Plan>>>;
 };
 
 
@@ -171,14 +172,13 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
-  Book: ResolverTypeWrapper<Book>;
   String: ResolverTypeWrapper<Scalars['String']>;
   User: ResolverTypeWrapper<User>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   Preference: ResolverTypeWrapper<Preference>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Plan: ResolverTypeWrapper<Plan>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   PlanBlock: ResolverTypeWrapper<PlanBlock>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BlockType: BlockType;
@@ -187,22 +187,15 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Query: {};
-  Int: Scalars['Int'];
-  Book: Book;
   String: Scalars['String'];
   User: User;
   ID: Scalars['ID'];
   Preference: Preference;
   Float: Scalars['Float'];
   Plan: Plan;
+  Int: Scalars['Int'];
   PlanBlock: PlanBlock;
   Boolean: Scalars['Boolean'];
-};
-
-export type BookResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = {
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  author?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type PlanResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Plan'] = ResolversParentTypes['Plan']> = {
@@ -213,7 +206,7 @@ export type PlanResolvers<ContextType = Context, ParentType extends ResolversPar
   rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  blocks?: Resolver<Array<ResolversTypes['PlanBlock']>, ParentType, ContextType>;
+  blocks?: Resolver<Array<Maybe<ResolversTypes['PlanBlock']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -237,10 +230,12 @@ export type PreferenceResolvers<ContextType = Context, ParentType extends Resolv
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  book?: Resolver<Maybe<ResolversTypes['Book']>, ParentType, ContextType, RequireFields<QueryBookArgs, 'id'>>;
-  books?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>;
   user?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
+  plan?: Resolver<ResolversTypes['Plan'], ParentType, ContextType, RequireFields<QueryPlanArgs, 'id'>>;
+  planBlock?: Resolver<ResolversTypes['PlanBlock'], ParentType, ContextType, RequireFields<QueryPlanBlockArgs, 'id'>>;
+  plans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType>;
+  planblocks?: Resolver<Array<ResolversTypes['PlanBlock']>, ParentType, ContextType>;
 };
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -248,13 +243,12 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   profile_pic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  prefs?: Resolver<Array<ResolversTypes['Preference']>, ParentType, ContextType>;
-  savedPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType>;
+  prefs?: Resolver<Maybe<Array<Maybe<ResolversTypes['Preference']>>>, ParentType, ContextType>;
+  savedPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = Context> = {
-  Book?: BookResolvers<ContextType>;
   Plan?: PlanResolvers<ContextType>;
   PlanBlock?: PlanBlockResolvers<ContextType>;
   Preference?: PreferenceResolvers<ContextType>;

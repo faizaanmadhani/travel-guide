@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, Types } from "mongoose";
 import { IUser, IPlan, IPlanBlock } from "./interface";
 
 export const userSchema = new Schema<IUser>({
