@@ -26,6 +26,18 @@ export const planSchema = new Schema<IPlan>({
   blocks: { type: [Types.ObjectId], required: true, ref: "PlanBlock" },
 });
 
+export const planBlockSchema = new Schema<IPlanBlock>({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  tags: { type: [String], required: true },
+  type: { type: String, required: true },
+  images: { type: String, required: false },
+  map_id: { type: String, required: false },
+  location_url: { type: String, required: false },
+  audio: { type: String, required: false },
+  video: { type: String, required: false },
+});
+
 // const run = async () => {
 //   const url = "mongodb://localhost:27017/my_db";
 //   await connect(url);

@@ -29,7 +29,7 @@ export interface IPlanBlock {
   description: string;
   tags: Types.Array<string>;
   type: string;
-  images: Types.Array<string>;
+  images?: Types.Array<string>;
   map_id?: string;
   location_url?: string;
   audio?: string;
