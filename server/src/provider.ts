@@ -1,28 +1,42 @@
 import { DataSource } from "apollo-datasource";
-import { UserModel } from "./data/model";
-import { QueryUserArgs, User, Preference } from "./generated/graphql";
+import { PlanModel, UserModel } from "./data/model";
+import { User, Preference, Plan } from "./generated/graphql";
+
+const castIUserToUser = (user: any) => {
+  const gqlUser: User = {
+    id: !user?.id ? "" : user?.id,
+    name: !user?.name ? "" : user?.name,
+    email: !user?.email ? "" : user?.email,
+    profile_pic: !user?.profile_pic ? "" : user?.profile_pic,
+  }
+  return gqlUser
+}
+
+const castIPlantoPlan = (plan: any) => {
+  const gqlPlan: Plan = {
+    id: !plan?.id ? "" : plan?.id,
+    name: !plan?.name ? "" : plan?.name,
+    creator: null,
+    creatorId: !plan?.creator ? "" : plan?.creator,
+    budget: !plan?.budget ? "" : plan?.budget,
+    rating: !plan?.rating ? "" : plan?.rating,
+    tags: !plan?.tags ? "" : plan?.tags,
+    description: !plan?.description? "" : plan?.description
+  }
+  return gqlPlan;
+}
 
 export class UserProvider extends DataSource {
 
-  private castIUserToUser(user: any) {
-    const gqlUser: User = {
-      id: !user?.id ? "" : user?.id,
-      name: !user?.name ? "" : user?.name,
-      email: !user?.email ? "" : user?.email,
-      profile_pic: !user?.profile_pic ? "" : user?.profile_pic,
-    }
-    return gqlUser
-  }
+  public async getUser(id: String) {
+    const user = await UserModel.findById(id).exec();
 
-  public async getUser(args: QueryUserArgs) {
-    const user = await UserModel.findById(args.id).exec();
-
-    return this.castIUserToUser(user);
+    return castIUserToUser(user);
   }
 
   public async getUsers() {
     const users = (await UserModel.find({}).exec());
-    const formattedUsers = users.map((obj, _) => this.castIUserToUser(obj));
+    const formattedUsers = users.map((obj, _) => castIUserToUser(obj));
 
     return formattedUsers;
   }
@@ -48,7 +62,29 @@ export class UserProvider extends DataSource {
 
   }
 
-  // public async getUsers() {
-  //   return User.find({});
-  // }
+  public async getPlansFromUser(user_id: string) {
+    const plansArray = (await UserModel.findById(user_id).select("saved_plans").populate("saved_plans").exec())?.saved_plans;
+    console.log(plansArray);
+    if (plansArray) {
+      const savedPlans: Plan[] = plansArray?.map((plan, _) => {
+        return castIPlantoPlan(plan);
+      })
+      return savedPlans;
+    } else {
+      const plans: Plan[] = [];
+      return plans;
+    }
+  }
+}
+
+export class PlanProvider extends DataSource {
+  public async getPlan(id: string) {
+    const plan = (await PlanModel.findById(id).exec());
+    return castIPlantoPlan(plan);
+  }
+
+  public async getAllPlans() {
+    const plans = (await PlanModel.find({}).exec());
+    return plans.map((obj, _) => castIPlantoPlan(obj));
+  }
 }

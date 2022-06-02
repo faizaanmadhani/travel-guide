@@ -26,12 +26,13 @@ export type Plan = {
   __typename?: 'Plan';
   id: Scalars['ID'];
   name: Scalars['String'];
-  creator: User;
+  creator?: Maybe<User>;
+  creatorId: Scalars['String'];
   budget: Scalars['Int'];
   rating: Scalars['Int'];
   tags: Array<Scalars['String']>;
   description: Scalars['String'];
-  blocks: Array<Maybe<PlanBlock>>;
+  blocks?: Maybe<Array<PlanBlock>>;
 };
 
 export type PlanBlock = {
@@ -201,12 +202,13 @@ export type ResolversParentTypes = {
 export type PlanResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Plan'] = ResolversParentTypes['Plan']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  creator?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  creator?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  creatorId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   budget?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  blocks?: Resolver<Array<Maybe<ResolversTypes['PlanBlock']>>, ParentType, ContextType>;
+  blocks?: Resolver<Maybe<Array<ResolversTypes['PlanBlock']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

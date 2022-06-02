@@ -23,12 +23,13 @@ export const typeDefs = gql`
   type Plan {
     id: ID!
     name: String!
-    creator: User! # Link to using user_id
+    creator: User # Link to using user_id
+    creatorId: String!
     budget: Int! # Number between 1 and 4 representing num $ signs
     rating: Int! # value between 1 and 5
     tags: [String!]!
     description: String!
-    blocks: [PlanBlock]!
+    blocks: [PlanBlock!]
   }
 
   type PlanBlock {
@@ -68,13 +69,25 @@ export const typeDefs = gql`
 // schema.  We'll retrieve books from the "books" array above.
 export const resolvers: Resolvers = {
   Query: {
-    user: (_, args, context) => context.dataSources.userProvider.getUser(args),
+    user: (_, args, context) =>
+      context.dataSources.userProvider.getUser(args.id),
     users: (_, __, context) => context.dataSources.userProvider.getUsers(),
+    plan: (_, args, context) =>
+      context.dataSources.planProvider.getPlan(args.id),
+    plans: (_, __, context) => context.dataSources.planProvider.getAllPlans(),
   },
   User: {
     prefs: (parent, __, context) =>
       context.dataSources.userProvider.getPrefs(parent.id),
-    // savedPlans: (parent, __, context) =>
-    //   context.dataSources.userProvider.getPlans(parent.id),
+    savedPlans: (parent, __, context) =>
+      context.dataSources.userProvider.getPlansFromUser(parent.id),
   },
+  Plan: {
+    creator: (parent, __, context) =>
+      context.dataSources.userProvider.getUser(parent.creatorId),
+  },
+
+  // PlanBlock: {
+  //   plan: (parent, __, context) => context.dataSources.planBlockProvider
+  // }
 };

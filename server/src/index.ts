@@ -1,16 +1,17 @@
 import { ApolloServer } from "apollo-server";
 
-import { UserProvider } from "./provider";
+import { UserProvider, PlanProvider } from "./provider";
 import { resolvers, typeDefs } from "./resolver";
 import { connect } from "mongoose";
 import { DB_URL } from "./config";
-import { UserModel } from "./data/model";
+import { PlanModel, UserModel } from "./data/model";
 
 // This is where we define the context type which is used
 // to have correct typing when using context in the resolvers.
 export interface Context {
   dataSources: {
     userProvider: UserProvider;
+    planProvider: PlanProvider;
   };
 }
 
@@ -19,6 +20,7 @@ export interface Context {
 const dataSources = (): Context["dataSources"] => {
   return {
     userProvider: new UserProvider(),
+    planProvider: new PlanProvider(),
   };
 };
 
@@ -34,6 +36,16 @@ const server = new ApolloServer({
 
 const initDb = async () => {
   await connect(DB_URL);
+  const samplePlan = new PlanModel({
+    name: "Travel through France",
+    creator: "629866d100dc6494a0668401",
+    rating: 5,
+    budget: 2,
+    tags: ["outdoor", "museum", "easy"],
+    description: "Travel through france on this plan",
+    blocks: [],
+  });
+
   const user = new UserModel({
     name: "Faizaan",
     email: "fzmadhani@gmail.com",
@@ -47,6 +59,7 @@ const initDb = async () => {
   });
 
   await user.save();
+  await samplePlan.save();
 };
 
 // This `listen` method launches a web-server.  Existing apps
