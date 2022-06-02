@@ -13,6 +13,7 @@ const castIUserToUser = (user: any) => {
 }
 
 const castIPlantoPlan = (plan: any) => {
+  console.log("The plan", plan);
   const gqlPlan: Plan = {
     id: !plan?.id ? "" : plan?.id,
     name: !plan?.name ? "" : plan?.name,
@@ -23,6 +24,7 @@ const castIPlantoPlan = (plan: any) => {
     tags: !plan?.tags ? "" : plan?.tags,
     description: !plan?.description? "" : plan?.description
   }
+  console.log("the gql plan", gqlPlan);
   return gqlPlan;
 }
 
@@ -63,12 +65,16 @@ export class UserProvider extends DataSource {
   }
 
   public async getPlansFromUser(user_id: string) {
-    const plansArray = (await UserModel.findById(user_id).select("saved_plans").populate("saved_plans").exec())?.saved_plans;
-    console.log(plansArray);
+    const plansArray = (await UserModel.findById(user_id).select("saved_plans").populate({
+      path: "saved_plans",
+      model: "Plan"
+    }).exec())?.saved_plans;
+    console.log("The plans array", plansArray);
     if (plansArray) {
       const savedPlans: Plan[] = plansArray?.map((plan, _) => {
-        return castIPlantoPlan(plan);
+        return castIPlantoPlan(plan[0]); // populate for some reason stores each obj in nested array
       })
+      console.log(savedPlans);
       return savedPlans;
     } else {
       const plans: Plan[] = [];
