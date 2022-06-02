@@ -4,7 +4,6 @@ import { UserProvider, PlanProvider } from "./provider";
 import { resolvers, typeDefs } from "./resolver";
 import { connect } from "mongoose";
 import { DB_URL } from "./config";
-import { PlanModel, UserModel } from "./data/model";
 
 // This is where we define the context type which is used
 // to have correct typing when using context in the resolvers.
