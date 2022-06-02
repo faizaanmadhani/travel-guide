@@ -1,63 +1,96 @@
 import { DataSource } from "apollo-datasource";
-import { QueryBookArgs } from "./generated/graphql";
-import { Schema, model, connect } from "mongoose";
+import { PlanModel, UserModel } from "./data/model";
+import { User, Preference, Plan } from "./generated/graphql";
 
-interface IUser {
-  name: string;
-  email: string;
-  avatar?: string;
+const castIUserToUser = (user: any) => {
+  const gqlUser: User = {
+    id: !user?.id ? "" : user?.id,
+    name: !user?.name ? "" : user?.name,
+    email: !user?.email ? "" : user?.email,
+    profile_pic: !user?.profile_pic ? "" : user?.profile_pic,
+  }
+  return gqlUser
 }
 
-const userSchema = new Schema<IUser>({
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  avatar: String,
-});
+const castIPlantoPlan = (plan: any) => {
+  console.log("The plan", plan);
+  const gqlPlan: Plan = {
+    id: !plan?.id ? "" : plan?.id,
+    name: !plan?.name ? "" : plan?.name,
+    creator: null,
+    creatorId: !plan?.creator ? "" : plan?.creator,
+    budget: !plan?.budget ? "" : plan?.budget,
+    rating: !plan?.rating ? "" : plan?.rating,
+    tags: !plan?.tags ? "" : plan?.tags,
+    description: !plan?.description? "" : plan?.description
+  }
+  console.log("the gql plan", gqlPlan);
+  return gqlPlan;
+}
 
-const User = model<IUser>("User", userSchema);
+export class UserProvider extends DataSource {
 
-const run = async () => {
-  const url = "mongodb://localhost:27017/my_db";
-  await connect(url);
+  public async getUser(id: String) {
+    const user = await UserModel.findById(id).exec();
 
-  const user = new User({
-    name: "Bill",
-    email: "bill@initech.com",
-    avatar: "https://i.imgur.com/dM7Thhn.png",
-  });
-  await user.save();
-
-  console.log(user.email); // 'bill@initech.com'
-};
-
-run().catch((error) => console.log(error));
-
-// This is a (sample) collection of books we'll be able to query
-// the GraphQL server for.  A more complete example might fetch
-// from an existing data source like a REST API or database.
-const books = [
-  {
-    id: 0,
-    title: "Harry Potter and the Chamber of See",
-    author: "J.K. Rowling",
-  },
-  {
-    id: 1,
-    title: "Jurassic Park",
-    author: "Michael Crichton",
-  },
-];
-
-// This is a (simple) data source which can be used for retrieving
-// the sample collection of books. This dataSource is injected
-// into the context of the apollo server, which makes it usable
-// inside the resolvers.
-export class BooksProvider extends DataSource {
-  public async getBook(args: QueryBookArgs) {
-    return books[args.id];
+    return castIUserToUser(user);
   }
 
-  public async getBooks() {
-    return books;
+  public async getUsers() {
+    const users = (await UserModel.find({}).exec());
+    const formattedUsers = users.map((obj, _) => castIUserToUser(obj));
+
+    return formattedUsers;
+  }
+
+  public async getPrefs(id: string) {
+    const prefArray = (await UserModel.findById(id).select("prefs").exec())?.prefs;
+    if (prefArray) {
+    const prefs: Preference[] = prefArray?.map((obj, _) => {
+
+      const newObj: Preference = {
+        prefTag: obj.pref_tag,
+        userRating: Number(obj.user_rating.toString())
+      }
+
+      return newObj;
+    })
+
+    return prefs;
+  } else {
+    const prefs: Preference[] = [];
+    return prefs;
+  }
+
+  }
+
+  public async getPlansFromUser(user_id: string) {
+    const plansArray = (await UserModel.findById(user_id).select("saved_plans").populate({
+      path: "saved_plans",
+      model: "Plan"
+    }).exec())?.saved_plans;
+    console.log("The plans array", plansArray);
+    if (plansArray) {
+      const savedPlans: Plan[] = plansArray?.map((plan, _) => {
+        return castIPlantoPlan(plan[0]); // populate for some reason stores each obj in nested array
+      })
+      console.log(savedPlans);
+      return savedPlans;
+    } else {
+      const plans: Plan[] = [];
+      return plans;
+    }
+  }
+}
+
+export class PlanProvider extends DataSource {
+  public async getPlan(id: string) {
+    const plan = (await PlanModel.findById(id).exec());
+    return castIPlantoPlan(plan);
+  }
+
+  public async getAllPlans() {
+    const plans = (await PlanModel.find({}).exec());
+    return plans.map((obj, _) => castIPlantoPlan(obj));
   }
 }
