@@ -14,15 +14,10 @@ const client = new ApolloClient({
 
 export default function App() {
   return (
-    <NativeBaseProvider>
-      {explorePage()}
-    </NativeBaseProvider>
+    <ApolloProvider client={client}>
+      <NativeBaseProvider>
+        {explorePage()}
+      </NativeBaseProvider>
+    </ApolloProvider>
   );
 }
-
-render(
-  <ApolloProvider client={client}>
-    <App/>
-  </ApolloProvider>,
-  document.getElementById('root'),
-);
