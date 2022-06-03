@@ -26,11 +26,13 @@
     }
   },
   "dependencies": {
+    "@apollo/server": "^3.0.0-alpha.1",
+    "apollo": "^2.34.0",
     "apollo-datasource": "^0.6.4",
     "apollo-server": "^2.9.3",
     "graphql": "^14.5.4",
     "mongodb": "^4.6.0",
-    "mongoose": "^6.3.4",
+    "mongoose": "^6.3.5",
     "nodemon": "^2.0.16"
   },
   "devDependencies": {
