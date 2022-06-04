@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode, ReactPropTypes } from "react";
 import {
   NativeBaseProvider,
   Text,
@@ -9,9 +9,20 @@ import {
   Icon,
 } from "native-base";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 export default function Layout() {
   const [selected, setSelected] = React.useState(1);
+
+  type RootStackParamList = {
+    Explore: undefined;
+    Travel: undefined;
+    Wishlist: undefined;
+    Profile: undefined;
+  };
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
     <NativeBaseProvider>
@@ -25,11 +36,14 @@ export default function Layout() {
       >
         <Center flex={1}></Center>
         <HStack bg="indigo.600" alignItems="center" safeAreaBottom shadow={6}>
-          <Pressable
+          {/* <Pressable
             opacity={selected === 0 ? 1 : 0.5}
             py="3"
             flex={1}
-            onPress={() => setSelected(0)}
+            onPress={() => {
+              setSelected(0);
+              navigation.navigate("Explore");
+            }}
           >
             <Center>
               <Icon
@@ -46,12 +60,17 @@ export default function Layout() {
                 Explore
               </Text>
             </Center>
-          </Pressable>
+          </Pressable> */}
           <Pressable
             opacity={selected === 1 ? 1 : 0.5}
             py="2"
             flex={1}
-            onPress={() => setSelected(1)}
+            onPress={() => {
+              setSelected(1);
+              navigation.navigate("Travel");
+            }}
+
+            // onPress={() => navigation.navigate("Travel")}
           >
             <Center>
               <Icon
@@ -69,7 +88,10 @@ export default function Layout() {
             opacity={selected === 2 ? 1 : 0.6}
             py="2"
             flex={1}
-            onPress={() => setSelected(2)}
+            onPress={() => {
+              setSelected(2);
+              navigation.navigate("Wishlist");
+            }}
           >
             <Center>
               <Icon
@@ -91,7 +113,10 @@ export default function Layout() {
             opacity={selected === 3 ? 1 : 0.5}
             py="2"
             flex={1}
-            onPress={() => setSelected(3)}
+            onPress={() => {
+              setSelected(3);
+              navigation.navigate("Profile");
+            }}
           >
             <Center>
               <Icon
