@@ -7,7 +7,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from "@apo
 
 import explorePage from "./src/pages/explore";
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
     uri: 'mongodb://localhost:27017',
     cache: new InMemoryCache()
 });
