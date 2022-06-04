@@ -1,6 +1,6 @@
 import { DataSource } from "apollo-datasource";
-import { PlanModel, UserModel } from "./data/model";
-import { User, Preference, Plan } from "./generated/graphql";
+import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
+import { User, Preference, Plan, PlanBlock, CreateUserInput, CreatePlanInput } from "./generated/graphql";
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -18,17 +18,30 @@ const castIPlantoPlan = (plan: any) => {
     name: !plan?.name ? "" : plan?.name,
     creator: null,
     creatorId: !plan?.creator ? "" : plan?.creator,
-    budget: !plan?.budget ? "" : plan?.budget,
-    rating: !plan?.rating ? "" : plan?.rating,
+    budget: !plan?.budget ? 1 : plan?.budget,
+    rating: !plan?.rating ? 1 : plan?.rating,
     tags: !plan?.tags ? "" : plan?.tags,
     description: !plan?.description? "" : plan?.description
   }
   return gqlPlan;
 }
 
+const castIPlanBlocktoPlanBlock = (planBlock: any) => {
+  const gqlPlanBlock: PlanBlock = {
+    id: !planBlock?.id ? "" : planBlock?.id,
+    title: !planBlock?.title ? "" : planBlock?.title,
+    description: !planBlock?.description ? "" : planBlock?.description,
+    mapId: !planBlock?.description ? "" : planBlock?.description,
+    audio: !planBlock?.description ? "" : planBlock?.description,
+    video: !planBlock?.description ? "" : planBlock?.description,
+  }
+  return gqlPlanBlock;
+}
+
 export class UserProvider extends DataSource {
 
   public async getUser(id: String) {
+
     const user = await UserModel.findById(id).exec();
 
     return castIUserToUser(user);
@@ -77,6 +90,30 @@ export class UserProvider extends DataSource {
       return plans;
     }
   }
+
+  public async createUser(input: CreateUserInput) {
+
+    const newUser = new UserModel({
+      name: input.name,
+      email: input.email,
+      profile_pic: input.profile_pic,
+      prefs: input.prefs.map((obj, _) => {
+        const modelPref = {
+          pref_tag: obj?.prefTag,
+          user_rating: obj?.userRating
+        }
+        return modelPref
+      }),
+      saved_plans: []
+    });
+
+    await newUser.save();
+    const id = newUser._id.toString();
+
+    const gqlUser: User = await this.getUser(id);
+
+    return gqlUser;
+  }
 }
 
 export class PlanProvider extends DataSource {
@@ -88,5 +125,45 @@ export class PlanProvider extends DataSource {
   public async getAllPlans() {
     const plans = (await PlanModel.find({}).exec());
     return plans.map((obj, _) => castIPlantoPlan(obj));
+  }
+
+  public async createPlan(input: CreatePlanInput) {
+    const newPlan = new PlanModel({
+      name: input.name,
+      creator: input.creatorId,
+      rating: input.rating,
+      budget: input.budget,
+      tags: input.tags,
+      description: input.description,
+      blocks: []
+    });
+
+    await newPlan.save();
+    const id = newPlan._id.toString();
+    return this.getPlan(id);
+  }
+}
+
+export class PlanBlockProvider extends DataSource {
+  public async getPlanBlock(id: string) {
+    const planBlock = (await PlanBlockModel.findById(id).exec());
+    return castIPlanBlocktoPlanBlock(planBlock);
+  }
+
+  public async getPlanBlocksByPlan(planId: string) {
+    const planBlocksArray = (await PlanModel.findById(planId).select("blocks").populate({
+      path: "blocks",
+      model: "PlanBlock"
+    }).exec())?.blocks;
+
+    if (planBlocksArray) {
+      const blocks: PlanBlock[] = planBlocksArray?.map((block, _) => {
+        return castIPlanBlocktoPlanBlock(block[0]);
+      });
+      return blocks;
+    } else {
+      const blocks: PlanBlock[] = [];
+      return blocks;
+    }
   }
 }

@@ -63,6 +63,36 @@ export const typeDefs = gql`
     plans: [Plan!]!
     planblocks: [PlanBlock!]!
   }
+
+  type Mutation {
+    addUser(input: CreateUserInput!): User!
+    addPlan(input: CreatePlanInput!): Plan!
+    #addPlanBlock(input: PlanBlockInput!)
+    #modifyUser(input: UserInput!)
+    #modifyPlan(input: modifyPlan!)
+    #modifyPlanBlock(input: PlanBlockInput!)
+  }
+
+  input PrefInput {
+    prefTag: String!
+    userRating: Float
+  }
+
+  input CreateUserInput {
+    name: String!
+    email: String!
+    profile_pic: String!
+    prefs: [PrefInput]!
+  }
+
+  input CreatePlanInput {
+    name: String!
+    creatorId: String!
+    budget: Int! # Number between 1 and 4 representing num $ signs
+    rating: Int! # value between 1 and 5
+    tags: [String!]!
+    description: String!
+  }
 `;
 
 // Resolvers define the technique for fetching the types in the
@@ -76,6 +106,12 @@ export const resolvers: Resolvers = {
       context.dataSources.planProvider.getPlan(args.id),
     plans: (_, __, context) => context.dataSources.planProvider.getAllPlans(),
   },
+  Mutation: {
+    addUser: (_, args, context) =>
+      context.dataSources.userProvider.createUser(args.input),
+    addPlan: (_, args, context) =>
+      context.dataSources.planProvider.createPlan(args.input),
+  },
   User: {
     prefs: (parent, __, context) =>
       context.dataSources.userProvider.getPrefs(parent.id),
@@ -85,9 +121,7 @@ export const resolvers: Resolvers = {
   Plan: {
     creator: (parent, __, context) =>
       context.dataSources.userProvider.getUser(parent.creatorId),
+    blocks: (parent, __, context) =>
+      context.dataSources.planBlockProvider.getPlanBlocksByPlan(parent.id),
   },
-
-  // PlanBlock: {
-  //   plan: (parent, __, context) => context.dataSources.planBlockProvider
-  // }
 };

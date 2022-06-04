@@ -1,6 +1,6 @@
 import { ApolloServer } from "apollo-server";
 
-import { UserProvider, PlanProvider } from "./provider";
+import { UserProvider, PlanProvider, PlanBlockProvider } from "./provider";
 import { resolvers, typeDefs } from "./resolver";
 import { connect } from "mongoose";
 import { DB_URL } from "./config";
@@ -11,6 +11,7 @@ export interface Context {
   dataSources: {
     userProvider: UserProvider;
     planProvider: PlanProvider;
+    planBlockProvider: PlanBlockProvider;
   };
 }
 
@@ -20,6 +21,7 @@ const dataSources = (): Context["dataSources"] => {
   return {
     userProvider: new UserProvider(),
     planProvider: new PlanProvider(),
+    planBlockProvider: new PlanBlockProvider(),
   };
 };
 
