@@ -7,27 +7,32 @@ import { UserProvider } from "../../../server/src/provider"
 import { gql, useQuery, ApolloProvider } from "@apollo/client";
 import { client } from "../../App";
 
-// export function FetchPlan()
-// {
-//     const { loading, error, data } = useQuery(gql`query {
-//         plans {
-//           name
-//           description
-//           creator {
-//             name
-//             id
-//             email
-//             profile_pic
-//           }
-//         }
-//       }`)
-//     return (
-//         <Text>
+export function FetchPlan()
+{
+    const { loading, error, data } = useQuery(gql`query {
+        plan {
+            _id
+            name
+            creator {
+                name
+                id
+                email
+                profile_pic
+            }
+            rating
+            budget
+            tags
+            description
+            blocks
+        }
+      }`)
+    return (
+        <Text>
             
-//         {data.name}
-//         </Text>
-//     );
-// }
+        {data.name}
+        </Text>
+    );
+}
 
 
 // "condensed" view of travel plan, used on home page etc.

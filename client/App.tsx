@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { NativeBaseProvider, Text, Box, extendTheme } from "native-base";
 import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from "@apollo/client";
 
-import explorePage from "./src/pages/explore";
+import explorePage from "./src/pages/ExplorePage";
 
 export const client = new ApolloClient({
     uri: 'mongodb://localhost:27017',
