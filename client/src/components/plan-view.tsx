@@ -10,15 +10,20 @@ import { client } from "../../App";
 // export function FetchPlan()
 // {
 //     const { loading, error, data } = useQuery(gql`query {
-//         plans {
-//           name
-//           description
-//           creator {
+//         plan {
+//             _id
 //             name
-//             id
-//             email
-//             profile_pic
-//           }
+//             creator {
+//                 name
+//                 id
+//                 email
+//                 profile_pic
+//             }
+//             rating
+//             budget
+//             tags
+//             description
+//             blocks
 //         }
 //       }`)
 //     return (
