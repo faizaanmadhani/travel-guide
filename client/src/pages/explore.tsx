@@ -6,7 +6,7 @@ import {  SafeAreaView, SafeAreaProvider, SafeAreaInsetsContext, useSafeAreaInse
   
 import PlanView from "../components/plan-view";
 
-export default function explorePage() {
+export default function ExplorePage() {
     return (
         <NativeBaseProvider>
             <SafeAreaView style={{ flex : 1}}>
