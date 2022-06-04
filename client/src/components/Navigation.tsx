@@ -69,8 +69,6 @@ export default function Layout() {
               setSelected(1);
               navigation.navigate("Travel");
             }}
-
-            // onPress={() => navigation.navigate("Travel")}
           >
             <Center>
               <Icon
