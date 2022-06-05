@@ -1,7 +1,7 @@
 import React from "react";
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, useWindowDimensions } from 'react-native';
-import { NativeBaseProvider, Text, Box, extendTheme, Heading, HStack, Divider, Center, Icon, Input, VStack, ScrollView, Hidden } from "native-base";
+import { StyleSheet, View } from 'react-native';
+import { NativeBaseProvider, Text, Box, extendTheme, Heading, HStack, Divider, Center, Icon, Input, VStack, ScrollView} from "native-base";
 import {  SafeAreaView, SafeAreaProvider, SafeAreaInsetsContext, useSafeAreaInsets,initialWindowMetrics } from 'react-native-safe-area-context';
   
 import PlanView from "../components/plan-view";
@@ -20,21 +20,17 @@ export default function ExplorePage() {
                         borderWidth="0"
                     />
                 
-                    <Heading size={"xl"}>
+                    <Heading size={"xl"} paddingTop={"2"}>
                         Recommended for You
                     </Heading>
                     
-                   
-                     <ScrollView horizontal={true} minH={"180"} _contentContainerStyle={{ p : "2px"}}>
-                        <Box maxW={ useWindowDimensions().width }>
-                            {PlanView()}
-                        </Box>
-                        <Box maxW={ useWindowDimensions().width }>
-                            {PlanView()}
-                        </Box>
-                        <Box maxW={ useWindowDimensions().width }>
-                            {PlanView()}
-                        </Box>
+                    <ScrollView horizontal={true}
+                    _contentContainerStyle={{ flexGrow: 1 }}>
+                        {PlanView()}
+                        {PlanView()}
+                        {PlanView()}
+                        {PlanView()}
+
                     </ScrollView>
                 </VStack>
             </SafeAreaView>    
