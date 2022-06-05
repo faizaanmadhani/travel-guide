@@ -8,7 +8,6 @@ import PlanView from "../components/plan-view";
 
 export default function ExplorePage() {
     return (
-        <NativeBaseProvider>
             <SafeAreaView style={{ flex : 1}}>
                 <VStack width={"90%"} alignSelf={'center'}>
                     <Input
@@ -38,6 +37,5 @@ export default function ExplorePage() {
                     </ScrollView>
                 </VStack>
             </SafeAreaView>    
-        </NativeBaseProvider>
     );
 }
