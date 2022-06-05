@@ -1,72 +1,55 @@
 import React from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
-import { NativeBaseProvider, Text, Box, extendTheme, Center, Image, HStack, VStack, Container } from "native-base";
+import { NativeBaseProvider, Text, Box, extendTheme, Center, Image, HStack, VStack, Container, AspectRatio, Divider } from "native-base";
 import { Entypo } from '@expo/vector-icons';
 import { UserProvider } from "../../../server/src/provider"
 import { gql, useQuery, ApolloProvider } from "@apollo/client";
 import { client } from "../../App";
 
-// export function FetchPlan()
-// {
-//     const { loading, error, data } = useQuery(gql`query {
-//         plan {
-//             _id
-//             name
-//             creator {
-//                 name
-//                 id
-//                 email
-//                 profile_pic
-//             }
-//             rating
-//             budget
-//             tags
-//             description
-//             blocks
-//         }
-//       }`)
-//     return (
-//         <Text>
-            
-//         {data.name}
-//         </Text>
-//     );
-// }
-
-
 // "condensed" view of travel plan, used on home page etc.
 export default function PlanView() {
     return (
         <NativeBaseProvider>
-                <Container bg="tertiary.300" width={'90%'} flexGrow={'1'}>
-                    <Center>
-                        <HStack>
-                            <Image source={{
-                                uri: "https://prod-virtuoso.dotcmscloud.com/dA/188da7ea-f44f-4b9c-92f9-6a65064021c1/heroImage1/PowerfulReasons_hero.jpg"
-                                }} alt="Alternate Text" size="xl" />
-                            <VStack paddingLeft={'2'}>
-                                <Box bg="secondary.200">
+            <Box bg="tertiary.300" borderWidth="1" width={"80%"} >
+                <VStack width={'100%'}>
+                    <HStack alignItems={'center'} width={'100%'}>
+                        <Box width={'70%'}>
+                        <Image source={{
+                            uri: "https://prod-virtuoso.dotcmscloud.com/dA/188da7ea-f44f-4b9c-92f9-6a65064021c1/heroImage1/PowerfulReasons_hero.jpg"
+                            }} alt="Alternate Text" width={'100%'} height={'80%'} />
+                        
+                        </Box>
+                        
+                        <VStack space={1} alignItems={"center"} width={'30%'}>
+                            <Box bg="secondary.200">
+                                <Text>
                                     Tag 1
-                                </Box>
-                                <Box bg="secondary.200">
+                                </Text>
+                            </Box>
+                            <Box bg="secondary.200">
+                                <Text>
                                     Tag 2
-                                </Box>
-                                <Box bg="secondary.200">
+                                </Text>
+                            </Box>
+                            <Box bg="secondary.200">
+                                <Text>
                                     Tag 3
-                                </Box>
-                            </VStack>
-                        </HStack>
-                        <HStack>
-                            <Text paddingRight={'2'}>
-                                Name of Travel Plan
-                            </Text>
-                            <Center>
-                                <Entypo name="dots-three-horizontal" size={24} color="black" />
-                            </Center>
-                        </HStack>
-                    </Center>
-                </Container>    
+                                </Text>
+                            </Box>
+                        </VStack>
+                    </HStack>
+                    <HStack width={'80%'}>
+                        <Text width={'100%'} alignSelf={'center'}>
+                            Travel Plan Name
+                        </Text>
+                        <Box alignSelf={"center"}>
+                            <Entypo name="dots-three-horizontal" size={24} color="black" /> 
+                        </Box>
+                                                    
+                    </HStack>
+                </VStack>
+            </Box>    
         </NativeBaseProvider>
     );
 }
