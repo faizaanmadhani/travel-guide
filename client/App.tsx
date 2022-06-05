@@ -1,22 +1,28 @@
 import React from "react";
-import { render } from 'react-dom';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { render } from "react-dom";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, View } from "react-native";
 import { NativeBaseProvider, Text, Box, extendTheme } from "native-base";
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  useQuery,
+  gql,
+} from "@apollo/client";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import TravelPage from "./src/pages/TravelPage";
 import WishlistPage from "./src/pages/WishlistPage";
 import ProfilePage from "./src/pages/ProfilePage";
-import explorePage from "./src/pages/ExplorePage";
+import ExplorePage from "./src/pages/ExplorePage";
 
 export const client = new ApolloClient({
-    uri: 'mongodb://localhost:27017',
-    cache: new InMemoryCache()
+  uri: "mongodb://localhost:27017",
+  cache: new InMemoryCache(),
 });
-  
+
 const Tab = createBottomTabNavigator();
 
 export default function App() {
@@ -30,10 +36,9 @@ export default function App() {
                 let iconName;
                 const iconColour = focused ? "black" : "gray";
 
-                // if (route.name === "Explore") {
-                //   iconName = focused ? "search" : "search-outline";
-                // } else
-                if (route.name === "Travel") {
+                if (route.name === "Explore") {
+                  iconName = focused ? "search" : "search-outline";
+                } else if (route.name === "Travel") {
                   iconName = focused ? "airplane" : "airplane-outline";
                 } else if (route.name === "Wishlist") {
                   iconName = focused ? "star" : "star-border";
@@ -52,7 +57,7 @@ export default function App() {
               tabBarInactiveTintColor: "gray",
             })}
           >
-            {/* <Tab.Screen name="Explore" component={ExplorePage} /> */}
+            <Tab.Screen name="Explore" component={ExplorePage} />
             <Tab.Screen name="Travel" component={TravelPage} />
             <Tab.Screen name="Wishlist" component={WishlistPage} />
             <Tab.Screen name="Profile" component={ProfilePage} />
