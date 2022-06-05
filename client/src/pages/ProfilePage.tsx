@@ -1,9 +1,10 @@
 import React from "react";
+import { Text } from "react-native-svg";
 
 export default function ProfilePage() {
   return (
-    <React.Fragment>
-      <div>Profile Page</div>
-    </React.Fragment>
+    <Text>
+      Profile
+    </Text>
   );
 }

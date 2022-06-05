@@ -1,9 +1,10 @@
 import React from "react";
+import { Text } from "react-native-svg";
 
 export default function WishlistPage() {
   return (
-    <React.Fragment>
-      <div>Wishlist Page</div>
-    </React.Fragment>
+    <Text>
+      Wishlist
+    </Text>
   );
 }
