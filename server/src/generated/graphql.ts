@@ -22,6 +22,38 @@ export enum BlockType {
   Sight = 'SIGHT'
 }
 
+export type CreatePlanInput = {
+  name: Scalars['String'];
+  creatorId: Scalars['String'];
+  budget: Scalars['Int'];
+  rating: Scalars['Int'];
+  tags: Array<Scalars['String']>;
+  description: Scalars['String'];
+};
+
+export type CreateUserInput = {
+  name: Scalars['String'];
+  email: Scalars['String'];
+  profile_pic: Scalars['String'];
+  prefs: Array<Maybe<PrefInput>>;
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  addUser: User;
+  addPlan: Plan;
+};
+
+
+export type MutationAddUserArgs = {
+  input: CreateUserInput;
+};
+
+
+export type MutationAddPlanArgs = {
+  input: CreatePlanInput;
+};
+
 export type Plan = {
   __typename?: 'Plan';
   id: Scalars['ID'];
@@ -50,6 +82,11 @@ export type PlanBlock = {
 
 export type Preference = {
   __typename?: 'Preference';
+  prefTag: Scalars['String'];
+  userRating?: Maybe<Scalars['Float']>;
+};
+
+export type PrefInput = {
   prefTag: Scalars['String'];
   userRating?: Maybe<Scalars['Float']>;
 };
@@ -181,6 +218,10 @@ export type ResolversTypes = {
   Plan: ResolverTypeWrapper<Plan>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   PlanBlock: ResolverTypeWrapper<PlanBlock>;
+  Mutation: ResolverTypeWrapper<{}>;
+  CreateUserInput: CreateUserInput;
+  PrefInput: PrefInput;
+  CreatePlanInput: CreatePlanInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BlockType: BlockType;
 };
@@ -196,7 +237,16 @@ export type ResolversParentTypes = {
   Plan: Plan;
   Int: Scalars['Int'];
   PlanBlock: PlanBlock;
+  Mutation: {};
+  CreateUserInput: CreateUserInput;
+  PrefInput: PrefInput;
+  CreatePlanInput: CreatePlanInput;
   Boolean: Scalars['Boolean'];
+};
+
+export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddUserArgs, 'input'>>;
+  addPlan?: Resolver<ResolversTypes['Plan'], ParentType, ContextType, RequireFields<MutationAddPlanArgs, 'input'>>;
 };
 
 export type PlanResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Plan'] = ResolversParentTypes['Plan']> = {
@@ -251,6 +301,7 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
 };
 
 export type Resolvers<ContextType = Context> = {
+  Mutation?: MutationResolvers<ContextType>;
   Plan?: PlanResolvers<ContextType>;
   PlanBlock?: PlanBlockResolvers<ContextType>;
   Preference?: PreferenceResolvers<ContextType>;
