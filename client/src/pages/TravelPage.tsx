@@ -8,6 +8,8 @@ import {
   Heading,
   Text,
   HStack,
+  VStack,
+  ScrollView,
 } from "native-base";
 
 const styles = {
@@ -20,7 +22,7 @@ const styles = {
 };
 
 const travelPlan = (
-  <div style={styles.travelPlan}>
+  <VStack marginBottom={"1"}>
     <Box alignItems="center">
       <Box
         rounded="lg"
@@ -106,14 +108,14 @@ const travelPlan = (
         </Stack>
       </Box>
     </Box>
-  </div>
+  </VStack>
 );
 
 export default function TravelPage() {
   return (
-    <div style={styles.screenLayout}>
+    <VStack margin={"1"}>
       {travelPlan}
       {travelPlan}
-    </div>
+    </VStack>
   );
 }
