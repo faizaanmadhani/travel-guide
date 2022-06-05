@@ -1,38 +1,49 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import explorePage from "./src/pages/explore";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import TravelPage from "./src/pages/TravelPage";
 import WishlistPage from "./src/pages/WishlistPage";
 import ProfilePage from "./src/pages/ProfilePage";
 
-const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        {/* <Stack.Screen
-          name="Explore"
-          component={explorePage}
-          options={{ title: "Explore" }}
-        /> */}
-        <Stack.Screen
-          name="Travel"
-          component={TravelPage}
-          options={{ title: "Travel" }}
-        />
-        <Stack.Screen
-          name="Wishlist"
-          component={WishlistPage}
-          options={{ title: "Wishlist" }}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={ProfilePage}
-          options={{ title: "Profile" }}
-        />
-      </Stack.Navigator>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            const iconColour = focused ? "black" : "gray";
+
+            // if (route.name === "Explore") {
+            //   iconName = focused ? "search" : "search-outline";
+            // } else
+            if (route.name === "Travel") {
+              iconName = focused ? "airplane" : "airplane-outline";
+            } else if (route.name === "Wishlist") {
+              iconName = focused ? "star" : "star-border";
+            } else if (route.name === "Profile") {
+              iconName = focused ? "person" : "person-outline";
+            }
+
+            // navigation icons
+            return route.name === "Travel" || route.name === "Explore" ? (
+              <Ionicons name={iconName} size={24} color={iconColour} />
+            ) : (
+              <MaterialIcons name={iconName} size={24} color={iconColour} />
+            );
+          },
+          tabBarActiveTintColor: "black",
+          tabBarInactiveTintColor: "gray",
+        })}
+      >
+        {/* <Tab.Screen name="Explore" component={ExplorePage} /> */}
+        <Tab.Screen name="Travel" component={TravelPage} />
+        <Tab.Screen name="Wishlist" component={WishlistPage} />
+        <Tab.Screen name="Profile" component={ProfilePage} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
