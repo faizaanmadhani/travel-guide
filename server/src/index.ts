@@ -48,6 +48,26 @@ const initDb = async () => {
     blocks: [],
   });
 
+  const samplePlan2 = new PlanModel({
+    name: "Travel through Italy",
+    creator: "629866d100dc6494a0668401",
+    rating: 4,
+    budget: 5,
+    tags: ["indoor", "sightseeing", "long"],
+    description: "travel through italy with us",
+    blocks: [],
+  });
+
+  const samplePlan3 = new PlanModel({
+    name: "Travel through Germany",
+    creator: "629866d100dc6494a0668401",
+    rating: 5,
+    budget: 1,
+    tags: ["outdoor", "hiking", "food"],
+    description: "A journey through Germany",
+    blocks: [],
+  });
+
   const user = new UserModel({
     name: "Faizaan",
     email: "fzmadhani@gmail.com",
@@ -63,6 +83,8 @@ const initDb = async () => {
 
   await user.save();
   await samplePlan.save();
+  await samplePlan2.save();
+  await samplePlan3.save();
 };
 
 // This `listen` method launches a web-server.  Existing apps

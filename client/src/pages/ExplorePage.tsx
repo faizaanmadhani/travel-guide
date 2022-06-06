@@ -27,13 +27,13 @@ export default function ExplorePage() {
                    
                      <ScrollView horizontal={true} minH={"210"} _contentContainerStyle={{ p : "2px"}}>
                         <Box maxW={ useWindowDimensions().width }>
-                            {PlanView()}
+                            {PlanView(0)}
                         </Box>
                         <Box maxW={ useWindowDimensions().width }>
-                            {PlanView()}
+                            {PlanView(1)}
                         </Box>
                         <Box maxW={ useWindowDimensions().width }>
-                            {PlanView()}
+                            {PlanView(2)}
                         </Box>
                     </ScrollView>
                 </VStack>
