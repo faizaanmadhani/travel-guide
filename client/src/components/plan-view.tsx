@@ -7,8 +7,31 @@ import { UserProvider } from "../../../server/src/provider"
 import { gql, useQuery, ApolloProvider } from "@apollo/client";
 import { client } from "../../App";
 
+const GET_PLANS = gql`query GetPlan {
+    plans {
+      id
+      name
+      creator {
+        id
+        name
+      }
+      rating
+      budget
+      description
+      tags
+    }
+  }`;
+
 // "condensed" view of travel plan, used on home page etc.
 export default function PlanView() {
+    const { loading, error, data } = useQuery(GET_PLANS);
+
+    if (loading) return 'Loading...';
+    if (error) return `Error! ${error.message}`;
+
+    const plan_name = data.plans[0].name;
+    const plan_tags = data.plans[0].tags;
+
     return (
         <NativeBaseProvider>
             <Box bg="tertiary.300" borderWidth="1" width={"80%"} >
@@ -24,24 +47,24 @@ export default function PlanView() {
                         <VStack space={1} alignItems={"center"} width={'30%'}>
                             <Box bg="secondary.200">
                                 <Text>
-                                    Tag 1
+                                    {plan_tags[0]}
                                 </Text>
                             </Box>
                             <Box bg="secondary.200">
                                 <Text>
-                                    Tag 2
+                                    {plan_tags[1]}
                                 </Text>
                             </Box>
                             <Box bg="secondary.200">
                                 <Text>
-                                    Tag 3
+                                    {plan_tags[2]}
                                 </Text>
                             </Box>
                         </VStack>
                     </HStack>
                     <HStack width={'80%'}>
                         <Text width={'100%'} alignSelf={'center'}>
-                            Travel Plan Name
+                            {plan_name}
                         </Text>
                         <Box alignSelf={"center"}>
                             <Entypo name="dots-three-horizontal" size={24} color="black" /> 
