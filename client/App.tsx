@@ -19,7 +19,7 @@ import ProfilePage from "./src/pages/ProfilePage";
 import ExplorePage from "./src/pages/ExplorePage";
 
 export const client = new ApolloClient({
-  uri: "http://18bb-192-159-178-168.ngrok.io",
+  uri: "SERVER_URL",
   cache: new InMemoryCache(),
 });
 
