@@ -4,6 +4,7 @@ import { UserProvider, PlanProvider, PlanBlockProvider } from "./provider";
 import { resolvers, typeDefs } from "./resolver";
 import { connect } from "mongoose";
 import { DB_URL } from "./config";
+import { UserModel, PlanModel } from "./data/model";
 
 // This is where we define the context type which is used
 // to have correct typing when using context in the resolvers.
@@ -37,31 +38,31 @@ const server = new ApolloServer({
 
 const initDb = async () => {
   await connect(DB_URL);
-  // const samplePlan = new PlanModel({
-  //   name: "Travel through France",
-  //   creator: "629866d100dc6494a0668401",
-  //   rating: 5,
-  //   budget: 2,
-  //   tags: ["outdoor", "museum", "easy"],
-  //   description: "Travel through france on this plan",
-  //   blocks: [],
-  // });
+  const samplePlan = new PlanModel({
+    name: "Travel through France",
+    creator: "629866d100dc6494a0668401",
+    rating: 5,
+    budget: 2,
+    tags: ["outdoor", "museum", "easy"],
+    description: "Travel through france on this plan",
+    blocks: [],
+  });
 
-  // const user = new UserModel({
-  //   name: "Faizaan",
-  //   email: "fzmadhani@gmail.com",
-  //   profile_pic: "Hi",
-  //   prefs: [
-  //     {
-  //       pref_tag: "outdoors",
-  //       user_rating: 1,
-  //     },
+  const user = new UserModel({
+    name: "Faizaan",
+    email: "fzmadhani@gmail.com",
+    profile_pic: "Hi",
+    prefs: [
+      {
+        pref_tag: "outdoors",
+        user_rating: 1,
+      },
 
-  //   ],
-  // });
+    ],
+  });
 
-  // await user.save();
-  // await samplePlan.save();
+  await user.save();
+  await samplePlan.save();
 };
 
 // This `listen` method launches a web-server.  Existing apps
