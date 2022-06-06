@@ -31,6 +31,14 @@ export default function PlanView() {
 
     const plan_name = data.plans[0].name;
     const plan_tags = data.plans[0].tags;
+    const plan_rating = data.plans[0].rating;
+    const plan_budget = data.plans[0].budget;
+    const plan_description = data.plans[0].description;
+
+    let plan_budget_display = "" as String;
+    for (let i = 0; i < plan_budget; i++) {
+        plan_budget_display = plan_budget_display.concat("$".toString());
+    }      
 
     return (
         <NativeBaseProvider>
@@ -40,7 +48,7 @@ export default function PlanView() {
                         <Box width={'70%'}>
                         <Image source={{
                             uri: "https://prod-virtuoso.dotcmscloud.com/dA/188da7ea-f44f-4b9c-92f9-6a65064021c1/heroImage1/PowerfulReasons_hero.jpg"
-                            }} alt="Alternate Text" width={'100%'} height={'80%'} />
+                            }} alt="Alternate Text" width={'100%'} height={"120"} />
                         
                         </Box>
                         
@@ -63,14 +71,25 @@ export default function PlanView() {
                         </VStack>
                     </HStack>
                     <HStack width={'80%'}>
-                        <Text width={'100%'} alignSelf={'center'}>
+                        <Text bold width={'100%'} alignSelf={'center'} fontSize={"lg"}>
                             {plan_name}
-                        </Text>
-                        <Box alignSelf={"center"}>
-                            <Entypo name="dots-three-horizontal" size={24} color="black" /> 
-                        </Box>
-                                                    
+                        </Text>             
                     </HStack>
+                    
+                    <HStack width={'80%'}>
+                        <Text width={'100%'} alignSelf={'center'}>
+                            {plan_rating}/5
+                        </Text>
+                        <Text width={'100%'} alignSelf={'center'}>
+                            {plan_budget_display}
+                        </Text>                     
+                    </HStack>
+
+                    <Box width={'80%'}>
+                        <Text width={'100%'} alignSelf={'center'}>
+                            {plan_description}
+                        </Text>             
+                    </Box>
                 </VStack>
             </Box>    
         </NativeBaseProvider>

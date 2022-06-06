@@ -25,7 +25,7 @@ export default function ExplorePage() {
                     </Heading>
                     
                    
-                     <ScrollView horizontal={true} minH={"180"} _contentContainerStyle={{ p : "2px"}}>
+                     <ScrollView horizontal={true} minH={"210"} _contentContainerStyle={{ p : "2px"}}>
                         <Box maxW={ useWindowDimensions().width }>
                             {PlanView()}
                         </Box>
