@@ -23,17 +23,17 @@ const GET_PLANS = gql`query GetPlan {
   }`;
 
 // "condensed" view of travel plan, used on home page etc.
-export default function PlanView() {
+export default function PlanView(idx : number) {
     const { loading, error, data } = useQuery(GET_PLANS);
 
     if (loading) return 'Loading...';
     if (error) return `Error! ${error.message}`;
 
-    const plan_name = data.plans[0].name;
-    const plan_tags = data.plans[0].tags;
-    const plan_rating = data.plans[0].rating;
-    const plan_budget = data.plans[0].budget;
-    const plan_description = data.plans[0].description;
+    const plan_name = data.plans[idx].name;
+    const plan_tags = data.plans[idx].tags;
+    const plan_rating = data.plans[idx].rating;
+    const plan_budget = data.plans[idx].budget;
+    const plan_description = data.plans[idx].description;
 
     let plan_budget_display = "" as String;
     for (let i = 0; i < plan_budget; i++) {
