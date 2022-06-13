@@ -17,11 +17,16 @@ import TravelPage from "./src/pages/TravelPage";
 import WishlistPage from "./src/pages/WishlistPage";
 import ProfilePage from "./src/pages/ProfilePage";
 import ExplorePage from "./src/pages/ExplorePage";
+import TravelStackScreen from "./src/navigation/TravelPageStack";
 
 export const client = new ApolloClient({
   uri: "SERVER_URL",
   cache: new InMemoryCache(),
 });
+
+const tabNavigationOptions = {
+  headerShown: false
+}
 
 const Tab = createBottomTabNavigator();
 
@@ -76,7 +81,7 @@ export default function App() {
             })}
           >
             <Tab.Screen name="Explore" component={ExplorePage} />
-            <Tab.Screen name="Travel" component={TravelPage} />
+            <Tab.Screen name="Travel" options={tabNavigationOptions} component={TravelStackScreen} />
             <Tab.Screen name="Wishlist" component={WishlistPage} />
             <Tab.Screen name="Profile" component={ProfilePage} />
           </Tab.Navigator>
