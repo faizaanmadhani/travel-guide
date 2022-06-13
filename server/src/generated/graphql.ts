@@ -18,7 +18,7 @@ export type Scalars = {
 export enum BlockType {
   Eat = 'EAT',
   Activity = 'ACTIVITY',
-  Travel = 'TRAVEL',
+  Route = 'ROUTE',
   Sight = 'SIGHT'
 }
 

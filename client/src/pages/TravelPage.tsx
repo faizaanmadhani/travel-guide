@@ -116,7 +116,7 @@ const travelPlan = (
   </VStack>
 );
 
-export default function TravelPage({ navigation }) {
+export default function TravelPage({ navigation }: { navigation: any}) {
   return (
     <SafeAreaView>
       <VStack >
@@ -124,7 +124,7 @@ export default function TravelPage({ navigation }) {
         <HStack justifyContent="space-between">
       <Input mx="3" placeholder="Search Travel Plans" w="70%" />
       <IconButton icon={<AntDesign name="filter" size={25} color="#CCD2E3" />} />
-      <IconButton icon={<AntDesign name="pluscircle" size={25} color="#06B6D4" />} onPress={() => navigation.navigate('CreateTravelPlan')}/>
+      <IconButton icon={<AntDesign name="pluscircle" size={25} color="#06B6D4" />} onPress={() => navigation.navigate('Create Travel Plan')}/>
       </HStack>
     </Box>
         </VStack>

@@ -38,17 +38,17 @@ export const typeDefs = gql`
     # Store some links additional assets
     audio: String!
     video: String!
+    #
+    externalUrl: [String!]
   }
 
   enum BlockType {
     EAT #food places, something to eat
     ACTIVITY # things to do
-    TRAVEL # for journeys from one place to another
+    ROUTE # for journeys from one place to another
     SIGHT # things to see
   }
 
-  # The "Query" type is the root of all GraphQL queries.
-  # (A "Mutation" type will be covered later on.)
   type Query {
     user(id: String!): User!
     users: [User!]!

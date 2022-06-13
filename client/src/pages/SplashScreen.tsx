@@ -2,5 +2,5 @@ import React from "react";
 import { Text } from "native-base"
 
 export function SplashScreen() {
-    return <React.Fragment><Text>Loading...</Text></React.Fragment>
+    return <React.Fragment><Text></Text></React.Fragment>
 }
