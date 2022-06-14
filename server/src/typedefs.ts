@@ -24,6 +24,7 @@ export const typeDefs = gql`
     tags: [String!]!
     description: String!
     blocks: [PlanBlock!]
+    assetLinks: [String]!
   }
 
   type PlanBlock {
@@ -86,5 +87,6 @@ export const typeDefs = gql`
     rating: Int! # value between 1 and 5
     tags: [String!]!
     description: String!
+    imageLinks: [String!]
   }
 `;
