@@ -38,7 +38,21 @@ export default function PlanView(idx : number) {
     let plan_budget_display = "" as String;
     for (let i = 0; i < plan_budget; i++) {
         plan_budget_display = plan_budget_display.concat("$".toString());
-    }      
+    }    
+    
+    let plan_tags_display = []
+    for (let i = 0; i < 10; i++) {
+        if (plan_tags[i] != undefined)
+        {
+            plan_tags_display.push(
+                <Box key={i} bg="secondary.200" rounded="lg">
+                    <Text ml={"1"} mr={"1"}>
+                            {plan_tags[i]}
+                    </Text>
+                </Box>
+            );
+        }
+    }
 
     return (
         <NativeBaseProvider>
@@ -46,7 +60,7 @@ export default function PlanView(idx : number) {
                 <VStack width={'100%'}>
                     
                     <HStack width={'80%'}>
-                        <Text bold width={'100%'} alignSelf={'center'} fontSize={"lg"}>
+                        <Text bold width={'100%'} alignSelf={'center'} fontSize={"lg"} ml={"1"}>
                             {plan_name}
                         </Text>             
                     </HStack>
@@ -73,36 +87,12 @@ export default function PlanView(idx : number) {
                     </HStack>
 
                     <Box width={'100%'}>
-                        <Text width={'100%'} alignSelf={'center'}>
+                        <Text width={'100%'} alignSelf={'center'} ml={"1"}>
                             {plan_description}
                         </Text>             
                     </Box>
-                    <HStack space={1} alignItems={"center"} width={'30%'}>
-                        <Box bg="secondary.200">
-                            <Text>
-                                {plan_tags[0]}
-                            </Text>
-                        </Box>
-                        <Box bg="secondary.200">
-                            <Text>
-                                {plan_tags[1]}
-                            </Text>
-                        </Box>
-                        <Box bg="secondary.200">
-                            <Text>
-                                {plan_tags[2]}
-                            </Text>
-                        </Box>
-                        <Box bg="secondary.200">
-                            <Text>
-                                {plan_tags[3]}
-                            </Text>
-                        </Box>
-                        <Box bg="secondary.200">
-                            <Text>
-                                {plan_tags[4]}
-                            </Text>
-                        </Box>
+                    <HStack space={1} alignItems={"center"} width={'30%'} ml={"1"} mb={"1"}>
+                        {plan_tags_display}
                     </HStack>
                 </VStack>
             </Box>    
