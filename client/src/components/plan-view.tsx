@@ -22,7 +22,7 @@ const GET_PLANS = gql`query GetPlan {
     }
   }`;
 
-// "condensed" view of travel plan, used on home page etc.
+// card view of travel plan, used on home page etc.
 export default function PlanView(idx : number) {
     const { loading, error, data } = useQuery(GET_PLANS);
 
@@ -42,34 +42,9 @@ export default function PlanView(idx : number) {
 
     return (
         <NativeBaseProvider>
-            <Box bg="tertiary.300" borderWidth="1" width={"80%"} >
+            <Box bg="white" rounded="lg" overflow="hidden" borderWidth="0" width={"80%"} shadow={"2"}>
                 <VStack width={'100%'}>
-                    <HStack alignItems={'center'} width={'100%'}>
-                        <Box width={'70%'}>
-                        <Image source={{
-                            uri: "https://prod-virtuoso.dotcmscloud.com/dA/188da7ea-f44f-4b9c-92f9-6a65064021c1/heroImage1/PowerfulReasons_hero.jpg"
-                            }} alt="Alternate Text" width={'100%'} height={"120"} />
-                        
-                        </Box>
-                        
-                        <VStack space={1} alignItems={"center"} width={'30%'}>
-                            <Box bg="secondary.200">
-                                <Text>
-                                    {plan_tags[0]}
-                                </Text>
-                            </Box>
-                            <Box bg="secondary.200">
-                                <Text>
-                                    {plan_tags[1]}
-                                </Text>
-                            </Box>
-                            <Box bg="secondary.200">
-                                <Text>
-                                    {plan_tags[2]}
-                                </Text>
-                            </Box>
-                        </VStack>
-                    </HStack>
+                    
                     <HStack width={'80%'}>
                         <Text bold width={'100%'} alignSelf={'center'} fontSize={"lg"}>
                             {plan_name}
@@ -77,19 +52,58 @@ export default function PlanView(idx : number) {
                     </HStack>
                     
                     <HStack width={'80%'}>
-                        <Text width={'100%'} alignSelf={'center'}>
+                        <Text width={'20%'} alignSelf={'center'}>
                             {plan_rating}/5
                         </Text>
-                        <Text width={'100%'} alignSelf={'center'}>
+                        <Text width={'20%'} alignSelf={'center'}>
                             {plan_budget_display}
+                        </Text>
+                        <Text width={'110%'} alignSelf={'center'}>
+                            Last Updated: Jun 6, 2022
                         </Text>                     
                     </HStack>
 
-                    <Box width={'80%'}>
+                    <HStack alignItems={'center'} width={'100%'}>
+                        <Box width={'100%'}>
+                        <Image source={{
+                            uri: "https://prod-virtuoso.dotcmscloud.com/dA/188da7ea-f44f-4b9c-92f9-6a65064021c1/heroImage1/PowerfulReasons_hero.jpg"
+                            }} alt="Alternate Text" width={'100%'} height={"120"} />
+                        
+                        </Box>
+                    </HStack>
+
+                    <Box width={'100%'}>
                         <Text width={'100%'} alignSelf={'center'}>
                             {plan_description}
                         </Text>             
                     </Box>
+                    <HStack space={1} alignItems={"center"} width={'30%'}>
+                        <Box bg="secondary.200">
+                            <Text>
+                                {plan_tags[0]}
+                            </Text>
+                        </Box>
+                        <Box bg="secondary.200">
+                            <Text>
+                                {plan_tags[1]}
+                            </Text>
+                        </Box>
+                        <Box bg="secondary.200">
+                            <Text>
+                                {plan_tags[2]}
+                            </Text>
+                        </Box>
+                        <Box bg="secondary.200">
+                            <Text>
+                                {plan_tags[3]}
+                            </Text>
+                        </Box>
+                        <Box bg="secondary.200">
+                            <Text>
+                                {plan_tags[4]}
+                            </Text>
+                        </Box>
+                    </HStack>
                 </VStack>
             </Box>    
         </NativeBaseProvider>
