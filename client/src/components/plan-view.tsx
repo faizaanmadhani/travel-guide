@@ -1,7 +1,7 @@
 import React from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
-import { NativeBaseProvider, Text, Box, extendTheme, Center, Image, HStack, VStack, Container, AspectRatio, Divider } from "native-base";
+import { NativeBaseProvider, Button, SunIcon, Text, Box, Icon, extendTheme, Center, Image, HStack, VStack, Container, AspectRatio, Divider } from "native-base";
 import { Entypo } from '@expo/vector-icons';
 import { UserProvider } from "../../../server/src/provider"
 import { gql, useQuery, ApolloProvider } from "@apollo/client";
@@ -45,7 +45,7 @@ export default function PlanView(idx : number) {
         if (plan_tags[i] != undefined)
         {
             plan_tags_display.push(
-                <Box key={i} bg="secondary.200" rounded="lg">
+                <Box key={i} bg="info.100" rounded="lg" justifyContent="center">
                     <Text ml={"1"} mr={"1"}>
                             {plan_tags[i]}
                     </Text>
@@ -59,20 +59,29 @@ export default function PlanView(idx : number) {
             <Box bg="white" rounded="lg" overflow="hidden" borderWidth="0" width={"80%"} shadow={"2"}>
                 <VStack width={'100%'} ml={"1.5"} mr={"1"}>
                     
-                    <HStack width={'80%'} mb={"1"} mt={"1"}>
-                        <Text bold width={'100%'} alignSelf={'center'} fontSize={"lg"}>
+                    <HStack width={'100%'} mb={"1"} mt={"1"} mr={"1"} justifyContent="space-between">
+                        <Text bold alignSelf={'center'} fontSize={"lg"}>
                             {plan_name}
-                        </Text>             
+                        </Text>      
+                        <Icon as={Entypo} name={"dots-three-horizontal"} size={"lg"} color={"black"} mr={"3"} alignSelf={'baseline'}/> 
                     </HStack>
                     
-                    <HStack width={'80%'} mb={"1"} mt={"1"}>
-                        <Text width={'20%'} alignSelf={'center'}>
-                            {plan_rating}/5
-                        </Text>
-                        <Text width={'20%'} alignSelf={'center'}>
-                            {plan_budget_display}
-                        </Text>
-                        <Text width={'110%'} alignSelf={'center'}>
+                    <HStack width={"95%"} mb={"1"} mt={"1"} justifyContent="space-between">
+                        <HStack justify-content={"start"} space={2}>
+                            <Box bg="yellow.100" rounded="lg" justifyContent="center">
+                                <Text alignSelf={'center'} ml={"1"} mr={"1"}>
+                                    {plan_rating}/5
+                                    {/* <SunIcon color={"black"} alignSelf={'baseline'} ml={"1"} mr={"1"}/>  */}
+                                </Text>
+                            </Box>
+                            <Box bg="red.100" rounded="lg" justifyContent="center">
+                                <Text  alignSelf={'center'} ml={"1"} mr={"1"}>
+                                    {plan_budget_display}
+                                </Text>
+                            </Box>
+                        </HStack>
+                        
+                        <Text justifyContent={"center"}>
                             Last Updated: Jun 6, 2022
                         </Text>                     
                     </HStack>
