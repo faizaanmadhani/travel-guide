@@ -57,15 +57,15 @@ export default function PlanView(idx : number) {
     return (
         <NativeBaseProvider>
             <Box bg="white" rounded="lg" overflow="hidden" borderWidth="0" width={"80%"} shadow={"2"}>
-                <VStack width={'100%'}>
+                <VStack width={'100%'} ml={"1.5"} mr={"1"}>
                     
-                    <HStack width={'80%'}>
-                        <Text bold width={'100%'} alignSelf={'center'} fontSize={"lg"} ml={"1"}>
+                    <HStack width={'80%'} mb={"1"} mt={"1"}>
+                        <Text bold width={'100%'} alignSelf={'center'} fontSize={"lg"}>
                             {plan_name}
                         </Text>             
                     </HStack>
                     
-                    <HStack width={'80%'}>
+                    <HStack width={'80%'} mb={"1"} mt={"1"}>
                         <Text width={'20%'} alignSelf={'center'}>
                             {plan_rating}/5
                         </Text>
@@ -77,21 +77,19 @@ export default function PlanView(idx : number) {
                         </Text>                     
                     </HStack>
 
-                    <HStack alignItems={'center'} width={'100%'}>
-                        <Box width={'100%'}>
-                        <Image source={{
+                    
+                    <Center width={'100%'} justifyContent={'center'} ml={"-1.5"} mb={"1"} mt={"1"}>
+                        <Image rounded="lg" source={{
                             uri: "https://prod-virtuoso.dotcmscloud.com/dA/188da7ea-f44f-4b9c-92f9-6a65064021c1/heroImage1/PowerfulReasons_hero.jpg"
-                            }} alt="Alternate Text" width={'100%'} height={"120"} />
-                        
-                        </Box>
-                    </HStack>
+                            }} alt="Alternate Text" height={"120"} width={"325"} resizeMode={"contain"} alignSelf={"center"}/>
+                    </Center>
 
-                    <Box width={'100%'}>
-                        <Text width={'100%'} alignSelf={'center'} ml={"1"}>
+                    <Box width={'90%'} mb={"1"} mt={"1"}>
+                        <Text numberOfLines={2} ellipsizeMode='tail' width={'100%'} alignSelf={'center'} ml={"1.5"} mr={"1.5"}>
                             {plan_description}
                         </Text>             
                     </Box>
-                    <HStack space={1} alignItems={"center"} width={'30%'} ml={"1"} mb={"1"}>
+                    <HStack space={1} alignItems={"center"} width={'30%'} mb={"2"} mt={"1"}>
                         {plan_tags_display}
                     </HStack>
                 </VStack>
