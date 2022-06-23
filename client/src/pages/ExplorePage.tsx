@@ -10,6 +10,8 @@ import {
   ScrollView,
   HStack,
   Icon,
+  IconButton,
+  Flex,
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
@@ -31,7 +33,7 @@ export default function ExplorePage() {
       </Center>
       <SafeAreaView>
         <VStack w="90%" alignSelf="center">
-          <HStack justifyContent="space-between" mb="2">
+          <Flex direction="row" mb="2">
             <Input
               InputLeftElement={
                 <Icon
@@ -44,19 +46,24 @@ export default function ExplorePage() {
                   }
                 />
               }
-              w="90%"
+              flexGrow={1}
               size="lg"
               placeholder="Search by name or #tag"
             />
-            <VStack alignSelf="center" ml="2">
-              <MaterialCommunityIcons
-                name="filter-outline"
-                size={24}
-                color="grey"
+            <VStack alignSelf="center" ml="1">
+              <IconButton
+                variant="ghost"
                 onPress={onOpen}
+                icon={
+                  <MaterialCommunityIcons
+                    name="filter-outline"
+                    size={24}
+                    color="gray"
+                  />
+                }
               />
             </VStack>
-          </HStack>
+          </Flex>
 
           <ScrollView _contentContainerStyle={{ paddingBottom: 160 }}>
             <Heading size="sm" mt="6">
