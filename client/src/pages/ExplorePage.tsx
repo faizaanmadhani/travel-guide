@@ -1,20 +1,18 @@
 import React from "react";
-import { useWindowDimensions } from "react-native";
 import {
-  NativeBaseProvider,
   Box,
   Heading,
   Center,
   Input,
   VStack,
   Actionsheet,
-  Button,
   useDisclose,
   ScrollView,
   HStack,
+  Icon,
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 
 import PlanView from "../components/plan-view";
 import Filters from "../components/Filters";
@@ -23,7 +21,7 @@ export default function ExplorePage() {
   const { isOpen, onOpen, onClose } = useDisclose();
 
   return (
-    <NativeBaseProvider>
+    <Box>
       <Center>
         <Actionsheet isOpen={isOpen} onClose={onClose}>
           <Actionsheet.Content>
@@ -31,39 +29,88 @@ export default function ExplorePage() {
           </Actionsheet.Content>
         </Actionsheet>
       </Center>
-      <SafeAreaView style={{ flex: 1 }}>
-        <VStack width={"90%"} alignSelf={"center"}>
-          <HStack>
+      <SafeAreaView>
+        <VStack w="90%" alignSelf="center">
+          <HStack justifyContent="space-between" mb="2">
             <Input
-              placeholder="Search"
-              variant="filled"
-              borderRadius="10"
-              py="1"
-              px="2"
-              borderWidth="0"
-              w="100%"
+              InputLeftElement={
+                <Icon
+                  as={
+                    <Ionicons
+                      name="search-outline"
+                      color="gray"
+                      style={{ marginLeft: 12 }}
+                    />
+                  }
+                />
+              }
+              w="90%"
+              size="lg"
+              placeholder="Search by name or #tag"
             />
-            <MaterialCommunityIcons
-              name="filter-outline"
-              size={24}
-              color="grey"
-              mt="4px"
-              onPress={onOpen}
-            />
+            <VStack alignSelf="center" ml="2">
+              <MaterialCommunityIcons
+                name="filter-outline"
+                size={24}
+                color="grey"
+                onPress={onOpen}
+              />
+            </VStack>
           </HStack>
-          <Heading size={"xl"}>Recommended for You</Heading>
 
-          <ScrollView
-            horizontal={true}
-            minH={"210"}
-            _contentContainerStyle={{ p: "2px" }}
-          >
-            <Box maxW={useWindowDimensions().width}>{PlanView(0)}</Box>
-            <Box maxW={useWindowDimensions().width}>{PlanView(1)}</Box>
-            <Box maxW={useWindowDimensions().width}>{PlanView(2)}</Box>
+          <ScrollView _contentContainerStyle={{ paddingBottom: 160 }}>
+            <Heading size="sm" mt="6">
+              Most Popular
+            </Heading>
+
+            <ScrollView horizontal={true} my="2">
+              {/* <Box maxW={useWindowDimensions().width}>{PlanView(0)}</Box>
+              <Box maxW={useWindowDimensions().width}>{PlanView(1)}</Box>
+              <Box maxW={useWindowDimensions().width}>{PlanView(2)}</Box> */}
+            </ScrollView>
+
+            <Heading size="sm" mt="6">
+              National Destinations
+            </Heading>
+
+            <ScrollView horizontal={true} my="2">
+              {/* <Box maxW={useWindowDimensions().width}>{PlanView(0)}</Box>
+              <Box maxW={useWindowDimensions().width}>{PlanView(1)}</Box>
+              <Box maxW={useWindowDimensions().width}>{PlanView(2)}</Box> */}
+            </ScrollView>
+
+            <Heading size="sm" mt="6">
+              International Destinations
+            </Heading>
+
+            <ScrollView horizontal={true} my="2">
+              {/* <Box maxW={useWindowDimensions().width}>{PlanView(0)}</Box>
+              <Box maxW={useWindowDimensions().width}>{PlanView(1)}</Box>
+              <Box maxW={useWindowDimensions().width}>{PlanView(2)}</Box> */}
+            </ScrollView>
+
+            <Heading size="sm" mt="6">
+              Budget Travel
+            </Heading>
+
+            <ScrollView horizontal={true} my="2">
+              {/* <Box maxW={useWindowDimensions().width}>{PlanView(0)}</Box>
+              <Box maxW={useWindowDimensions().width}>{PlanView(1)}</Box>
+              <Box maxW={useWindowDimensions().width}>{PlanView(2)}</Box> */}
+            </ScrollView>
+
+            <Heading size="sm" mt="6">
+              Luxury Travel
+            </Heading>
+
+            <ScrollView horizontal={true} my="2">
+              {/* <Box maxW={useWindowDimensions().width}>{PlanView(0)}</Box>
+              <Box maxW={useWindowDimensions().width}>{PlanView(1)}</Box>
+              <Box maxW={useWindowDimensions().width}>{PlanView(2)}</Box> */}
+            </ScrollView>
           </ScrollView>
         </VStack>
       </SafeAreaView>
-    </NativeBaseProvider>
+    </Box>
   );
 }
