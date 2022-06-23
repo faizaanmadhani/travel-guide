@@ -46,6 +46,8 @@ const initDb = async () => {
     tags: ["outdoor", "museum", "easy"],
     description: "Travel through france on this plan",
     blocks: [],
+    countries: ["Canada", "Brazil", "Austria"],
+    months: ["Jan", "Feb"],
   });
 
   const samplePlan2 = new PlanModel({
@@ -56,6 +58,8 @@ const initDb = async () => {
     tags: ["indoor", "sightseeing", "long"],
     description: "travel through italy with us",
     blocks: [],
+    countries: ["Vietnam", "South Korea", "France"],
+    months: ["Mar", "Apr"],
   });
 
   const samplePlan3 = new PlanModel({
@@ -66,6 +70,8 @@ const initDb = async () => {
     tags: ["outdoor", "hiking", "food"],
     description: "A journey through Germany",
     blocks: [],
+    countries: ["China", "Spain", "England"],
+    months: ["Nov"],
   });
 
   const user = new UserModel({

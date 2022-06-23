@@ -65,6 +65,8 @@ export type Plan = {
   tags: Array<Scalars['String']>;
   description: Scalars['String'];
   blocks?: Maybe<Array<PlanBlock>>;
+  countries: Array<Scalars['String']>;
+  months: Array<Scalars['String']>;
 };
 
 export type PlanBlock = {
@@ -259,6 +261,8 @@ export type PlanResolvers<ContextType = Context, ParentType extends ResolversPar
   tags?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   blocks?: Resolver<Maybe<Array<ResolversTypes['PlanBlock']>>, ParentType, ContextType>;
+  countries?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  months?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

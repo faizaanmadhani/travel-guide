@@ -21,7 +21,9 @@ const castIPlantoPlan = (plan: any) => {
     budget: !plan?.budget ? 1 : plan?.budget,
     rating: !plan?.rating ? 1 : plan?.rating,
     tags: !plan?.tags ? "" : plan?.tags,
-    description: !plan?.description? "" : plan?.description
+    description: !plan?.description? "" : plan?.description,
+    countries: !plan?.countries ? "" : plan?.countries,
+    months: !plan?.months ? "" : plan?.months,
   }
   return gqlPlan;
 }

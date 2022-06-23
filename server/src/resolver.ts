@@ -30,6 +30,8 @@ export const typeDefs = gql`
     tags: [String!]!
     description: String!
     blocks: [PlanBlock!]
+    countries: [String!]!
+    months: [String!]!
   }
 
   type PlanBlock {
