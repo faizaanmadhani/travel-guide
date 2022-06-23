@@ -24,6 +24,8 @@ export const planSchema = new Schema<IPlan>({
   tags: { type: [String], required: true },
   description: { type: String, required: true },
   blocks: { type: [Types.ObjectId], required: true, ref: "PlanBlock" },
+  countries: { type: [String], required: true },
+  months: { type: [String], required: true },
 });
 
 export const planBlockSchema = new Schema<IPlanBlock>({

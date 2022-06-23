@@ -22,6 +22,8 @@ export interface IPlan {
   tags: Types.Array<string>;
   description: string;
   blocks: Types.Array<Types.ObjectId>;
+  countries: Types.Array<string>;
+  months: Types.Array<string>;
 }
 
 export interface IPlanBlock {

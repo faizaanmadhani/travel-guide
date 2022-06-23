@@ -19,7 +19,7 @@ import ProfilePage from "./src/pages/ProfilePage";
 import ExplorePage from "./src/pages/ExplorePage";
 
 export const client = new ApolloClient({
-  uri: "mongodb://localhost:27017",
+  uri: "http://18bb-192-159-178-168.ngrok.io",
   cache: new InMemoryCache(),
 });
 
@@ -36,22 +36,40 @@ export default function App() {
                 let iconName;
                 const iconColour = focused ? "black" : "gray";
 
-                if (route.name === "Explore") {
-                  iconName = focused ? "search" : "search-outline";
-                } else if (route.name === "Travel") {
-                  iconName = focused ? "airplane" : "airplane-outline";
-                } else if (route.name === "Wishlist") {
-                  iconName = focused ? "star" : "star-border";
-                } else if (route.name === "Profile") {
-                  iconName = focused ? "person" : "person-outline";
-                }
-
                 // navigation icons
-                return route.name === "Travel" || route.name === "Explore" ? (
-                  <Ionicons name={iconName} size={24} color={iconColour} />
-                ) : (
-                  <MaterialIcons name={iconName} size={24} color={iconColour} />
-                );
+                if (route.name === "Explore") {
+                  return (
+                    <Ionicons
+                      name={focused ? "search" : "search-outline"}
+                      size={24}
+                      color={iconColour}
+                    />
+                  );
+                } else if (route.name === "Travel") {
+                  return (
+                    <Ionicons
+                      name={focused ? "airplane" : "airplane-outline"}
+                      size={24}
+                      color={iconColour}
+                    />
+                  );
+                } else if (route.name === "Wishlist") {
+                  return (
+                    <MaterialIcons
+                      name={focused ? "star" : "star-border"}
+                      size={24}
+                      color={iconColour}
+                    />
+                  );
+                } else if (route.name === "Profile") {
+                  return (
+                    <MaterialIcons
+                      name={focused ? "person" : "person-outline"}
+                      size={24}
+                      color={iconColour}
+                    />
+                  );
+                }
               },
               tabBarActiveTintColor: "black",
               tabBarInactiveTintColor: "gray",
