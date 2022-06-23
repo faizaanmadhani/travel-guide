@@ -19,7 +19,7 @@ import ProfilePage from "./src/pages/ProfilePage";
 import ExplorePage from "./src/pages/ExplorePage";
 
 export const client = new ApolloClient({
-  uri: "mongodb://localhost:27017",
+  uri: "http://73d3-192-159-178-168.ngrok.io",
   cache: new InMemoryCache(),
 });
 
