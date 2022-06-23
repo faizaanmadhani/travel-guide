@@ -40,13 +40,7 @@ export default function Filters() {
       <ScrollView>
         {/* Filter 1: Destination */}
         <Actionsheet.Item>
-          <Text
-            // w="100%"
-            pt="8px"
-            fontSize="lg"
-            fontWeight={600}
-            color="coolGray.600"
-          >
+          <Text pt="8px" fontSize="lg" fontWeight={600} color="coolGray.600">
             Destination
           </Text>
           <HStack pt="16px">
@@ -83,27 +77,27 @@ export default function Filters() {
             }}
           >
             <Flex direction="row" wrap="wrap" pt="16px">
-              <Box mr={4}>
+              <Box mr={4} mb={2}>
                 <Radio value="all-ratings" my={1}>
                   All
                 </Radio>
               </Box>
-              <Box mr={4}>
+              <Box mr={4} mb={2}>
                 <Radio value="four-plus" my={1}>
                   4.0 +
                 </Radio>
               </Box>
-              <Box mr={4}>
+              <Box mr={4} mb={2}>
                 <Radio value="three-plus" my={1}>
                   3.0 +
                 </Radio>
               </Box>
-              <Box mr={4}>
+              <Box mr={4} mb={2}>
                 <Radio value="twp-plus" my={1}>
                   2.0 +
                 </Radio>
               </Box>
-              <Box mr={4}>
+              <Box mr={4} mb={2}>
                 <Radio value="one-plus" my={1}>
                   1.0 +
                 </Radio>
@@ -126,24 +120,24 @@ export default function Filters() {
             }}
           >
             <Flex direction="row" wrap="wrap" pt="16px">
-              <Box mr={4}>
+              <Box mr={4} mb={2}>
                 <Radio value="all" my={1}>
                   All
                 </Radio>
               </Box>
-              <Box mr={4}>
+              <Box mr={4} mb={2}>
                 <Radio value="cheap" my={1}>
-                  $
+                  $ +
                 </Radio>
               </Box>
-              <Box mr={4}>
+              <Box mr={4} mb={2}>
                 <Radio value="normal" my={1}>
-                  $$
+                  $$ +
                 </Radio>
               </Box>
-              <Box mr={4}>
+              <Box mr={4} mb={2}>
                 <Radio value="expensive" my={1}>
-                  $$$
+                  $$$ +
                 </Radio>
               </Box>
             </Flex>
@@ -156,109 +150,126 @@ export default function Filters() {
             Popular Months to Travel
           </Text>
 
-          <Flex direction="row" wrap="wrap" pt="16px">
-            <Box mr={4}>
+          <Flex
+            direction="row"
+            wrap="wrap"
+            pt="16px"
+            justifyContent="space-between"
+          >
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="Jan"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "Jan")}
               >
                 Jan
               </Checkbox>
             </Box>
-            <Box mr={4}>
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="Feb"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "Feb")}
               >
                 Feb
               </Checkbox>
             </Box>
-            <Box mr={4}>
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="Mar"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "Mar")}
               >
                 Mar
               </Checkbox>
             </Box>
-            <Box mr={4}>
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="Apr"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "Apr")}
               >
                 Apr
               </Checkbox>
             </Box>
-            <Box mr={4}>
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="May"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "May")}
               >
                 May
               </Checkbox>
             </Box>
-            <Box mr={4}>
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="Jun"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "Jun")}
               >
                 Jun
               </Checkbox>
             </Box>
-            <Box mr={4}>
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="Jul"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "Jul")}
               >
                 Jul
               </Checkbox>
             </Box>
-            <Box mr={4}>
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="Aug"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "Aug")}
               >
                 Aug
               </Checkbox>
             </Box>
-            <Box mr={4}>
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="Sep"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "Sep")}
               >
                 Sep
               </Checkbox>
             </Box>
-            <Box mr={4}>
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="Oct"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "Oct")}
               >
                 Oct
               </Checkbox>
             </Box>
-            <Box mr={4}>
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="Nov"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "Nov")}
               >
                 Nov
               </Checkbox>
             </Box>
-            <Box mr={4}>
+            <Box w="20%" mr={4} mb={2}>
               <Checkbox
                 value="Dec"
+                size="md"
                 my="1"
                 onChange={(state) => toggleMonth(state, "Dec")}
               >
