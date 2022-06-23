@@ -17,6 +17,9 @@ import TravelPage from "./src/pages/TravelPage";
 import WishlistPage from "./src/pages/WishlistPage";
 import ProfilePage from "./src/pages/ProfilePage";
 import ExplorePage from "./src/pages/ExplorePage";
+import LandingPage from "./src/pages/LandingPage";
+import RegisterPage from "./src/pages/RegisterPage";
+import LoginPage from "./src/pages/LoginPage";
 
 export const client = new ApolloClient({
   uri: "http://18bb-192-159-178-168.ngrok.io",
@@ -79,6 +82,10 @@ export default function App() {
             <Tab.Screen name="Travel" component={TravelPage} />
             <Tab.Screen name="Wishlist" component={WishlistPage} />
             <Tab.Screen name="Profile" component={ProfilePage} />
+
+            <Tab.Screen name="Landing" component={LandingPage} />
+            <Tab.Screen name="Register" component={RegisterPage} />
+            <Tab.Screen name="Login" component={LoginPage} />
           </Tab.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>
