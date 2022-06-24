@@ -7,7 +7,7 @@ import { UserProvider } from "../../../server/src/provider"
 import { gql, useQuery, ApolloProvider } from "@apollo/client";
 import { client } from "../../App";
 
-export const GET_PLANS = gql`query GetPlan {
+const GET_PLANS = gql`query GetPlan {
     plans {
       id
       name
@@ -24,62 +24,34 @@ export const GET_PLANS = gql`query GetPlan {
     }
   }`;
 
-export type PlanView_Data = {
-    name : String;
-    budget: number;
-    rating: number;
-    tags: String[];
-    description: String;
-    countries: String[];
-    months: String[];
-};
-
 // card view of travel plan, used on home page etc.
-export default function PlanView(plan : PlanView_Data) {
-    const plan_name = plan.name;
-    const plan_tags = plan.tags;
-    const plan_rating = plan.rating;
-    const plan_budget = plan.budget;
-    const plan_description = plan.description;
-    const plan_countries = plan.countries;
-    const plan_months = plan.months;
+export default function PlanView(idx : number) {
+    const { loading, error, data } = useQuery(GET_PLANS);
+
+    if (loading) return 'Loading...';
+    if (error) return `Error! ${error.message}`;
+
+    const plan_name = data.plans[idx].name;
+    const plan_tags = data.plans[idx].tags;
+    const plan_rating = data.plans[idx].rating;
+    const plan_budget = data.plans[idx].budget;
+    const plan_description = data.plans[idx].description;
+    const plan_countries = data.plans[idx].countries;
+    const plan_months = data.plans[idx].months;
 
     let plan_budget_display = "" as String;
     for (let i = 0; i < plan_budget; i++) {
         plan_budget_display = plan_budget_display.concat("$".toString());
     }    
     
-    let plan_labels= []
     let plan_tags_display = []
-    for (let i = 0; i < 3; i++) {
-        if (plan_countries[i] != undefined)
-        {
-            plan_labels.push(
-                <Box key={i} bg="success.100" rounded="lg" justifyContent="center">
-                    <Text ml={"1"} mr={"1"}>
-                            {plan_countries[i]}
-                    </Text>
-                </Box>
-            );
-        }
-    }
-    for (let i = 0; i < 3; i++) {
-        if (plan_months[i] != undefined)
-        {
-            plan_labels.push(
-                <Box key={i+3} bg="info.100" rounded="lg" justifyContent="center">
-                    <Text ml={"1"} mr={"1"}>
-                            {plan_months[i]}
-                    </Text>
-                </Box>
-            );
-        }
-    }
-    for (let i = 0; i < 6; i++) {
+    let plan_countries_display = []
+    let plan_months_display = []
+    for (let i = 0; i < 10; i++) {
         if (plan_tags[i] != undefined)
         {
             plan_tags_display.push(
-                <Box key={i} bg="orange.100" rounded="lg" justifyContent="center">
+                <Box key={i} bg="info.100" rounded="lg" justifyContent="center">
                     <Text ml={"1"} mr={"1"}>
                             {plan_tags[i]}
                     </Text>
@@ -132,10 +104,6 @@ export default function PlanView(plan : PlanView_Data) {
                             {plan_description}
                         </Text>             
                     </Box>
-                    <HStack space={1} alignItems={"center"} width={'30%'} mb={"2"} mt={"1"}>
-                        {plan_labels}
-                    </HStack>
-                    
                     <HStack space={1} alignItems={"center"} width={'30%'} mb={"2"} mt={"1"}>
                         {plan_tags_display}
                     </HStack>
