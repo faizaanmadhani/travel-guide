@@ -1,4 +1,5 @@
 import React from "react";
+import { useWindowDimensions } from "react-native";
 import {
   Box,
   Heading,
@@ -74,6 +75,9 @@ export default function ExplorePage() {
               {/* <Box maxW={useWindowDimensions().width}>{PlanView(0)}</Box>
               <Box maxW={useWindowDimensions().width}>{PlanView(1)}</Box>
               <Box maxW={useWindowDimensions().width}>{PlanView(2)}</Box> */}
+              <Box maxW={ useWindowDimensions().width }>
+                            {PlanView(0)}
+                        </Box>
             </ScrollView>
 
             <Heading size="sm" mt="6">
