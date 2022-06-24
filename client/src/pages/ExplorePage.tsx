@@ -17,7 +17,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 
-import PlanView from "../components/plan-view";
+import PlanView from "../components/PlanView";
 import Filters from "../components/Filters";
 
 export default function ExplorePage() {
@@ -76,8 +76,8 @@ export default function ExplorePage() {
               <Box maxW={useWindowDimensions().width}>{PlanView(1)}</Box>
               <Box maxW={useWindowDimensions().width}>{PlanView(2)}</Box> */}
               <Box maxW={ useWindowDimensions().width }>
-                            {PlanView(0)}
-                        </Box>
+                {PlanView(0)}
+              </Box>
             </ScrollView>
 
             <Heading size="sm" mt="6">

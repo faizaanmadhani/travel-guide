@@ -19,6 +19,8 @@ const GET_PLANS = gql`query GetPlan {
       budget
       description
       tags
+      countries
+      months
     }
   }`;
 
@@ -34,6 +36,8 @@ export default function PlanView(idx : number) {
     const plan_rating = data.plans[idx].rating;
     const plan_budget = data.plans[idx].budget;
     const plan_description = data.plans[idx].description;
+    const plan_countries = data.plans[idx].countries;
+    const plan_months = data.plans[idx].months;
 
     let plan_budget_display = "" as String;
     for (let i = 0; i < plan_budget; i++) {
@@ -41,6 +45,8 @@ export default function PlanView(idx : number) {
     }    
     
     let plan_tags_display = []
+    let plan_countries_display = []
+    let plan_months_display = []
     for (let i = 0; i < 10; i++) {
         if (plan_tags[i] != undefined)
         {
