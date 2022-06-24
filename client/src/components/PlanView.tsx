@@ -44,14 +44,37 @@ export default function PlanView(idx : number) {
         plan_budget_display = plan_budget_display.concat("$".toString());
     }    
     
+    let plan_labels= []
     let plan_tags_display = []
-    let plan_countries_display = []
-    let plan_months_display = []
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 3; i++) {
+        if (plan_countries[i] != undefined)
+        {
+            plan_labels.push(
+                <Box key={i} bg="success.100" rounded="lg" justifyContent="center">
+                    <Text ml={"1"} mr={"1"}>
+                            {plan_countries[i]}
+                    </Text>
+                </Box>
+            );
+        }
+    }
+    for (let i = 0; i < 3; i++) {
+        if (plan_months[i] != undefined)
+        {
+            plan_labels.push(
+                <Box key={i+3} bg="info.100" rounded="lg" justifyContent="center">
+                    <Text ml={"1"} mr={"1"}>
+                            {plan_months[i]}
+                    </Text>
+                </Box>
+            );
+        }
+    }
+    for (let i = 0; i < 6; i++) {
         if (plan_tags[i] != undefined)
         {
             plan_tags_display.push(
-                <Box key={i} bg="info.100" rounded="lg" justifyContent="center">
+                <Box key={i} bg="orange.100" rounded="lg" justifyContent="center">
                     <Text ml={"1"} mr={"1"}>
                             {plan_tags[i]}
                     </Text>
@@ -104,6 +127,10 @@ export default function PlanView(idx : number) {
                             {plan_description}
                         </Text>             
                     </Box>
+                    <HStack space={1} alignItems={"center"} width={'30%'} mb={"2"} mt={"1"}>
+                        {plan_labels}
+                    </HStack>
+                    
                     <HStack space={1} alignItems={"center"} width={'30%'} mb={"2"} mt={"1"}>
                         {plan_tags_display}
                     </HStack>
