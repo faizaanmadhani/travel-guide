@@ -7,7 +7,7 @@ import { UserProvider } from "../../../server/src/provider"
 import { gql, useQuery, ApolloProvider } from "@apollo/client";
 import { client } from "../../App";
 
-const GET_PLANS = gql`query GetPlan {
+export const GET_PLANS = gql`query GetPlan {
     plans {
       id
       name
@@ -24,20 +24,25 @@ const GET_PLANS = gql`query GetPlan {
     }
   }`;
 
+export type PlanView_Data = {
+    name : String;
+    budget: number;
+    rating: number;
+    tags: String[];
+    description: String;
+    countries: String[];
+    months: String[];
+};
+
 // card view of travel plan, used on home page etc.
-export default function PlanView(idx : number) {
-    const { loading, error, data } = useQuery(GET_PLANS);
-
-    if (loading) return 'Loading...';
-    if (error) return `Error! ${error.message}`;
-
-    const plan_name = data.plans[idx].name;
-    const plan_tags = data.plans[idx].tags;
-    const plan_rating = data.plans[idx].rating;
-    const plan_budget = data.plans[idx].budget;
-    const plan_description = data.plans[idx].description;
-    const plan_countries = data.plans[idx].countries;
-    const plan_months = data.plans[idx].months;
+export default function PlanView(plan : PlanView_Data) {
+    const plan_name = plan.name;
+    const plan_tags = plan.tags;
+    const plan_rating = plan.rating;
+    const plan_budget = plan.budget;
+    const plan_description = plan.description;
+    const plan_countries = plan.countries;
+    const plan_months = plan.months;
 
     let plan_budget_display = "" as String;
     for (let i = 0; i < plan_budget; i++) {
