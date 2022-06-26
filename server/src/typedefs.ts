@@ -24,7 +24,9 @@ export const typeDefs = gql`
     tags: [String!]!
     description: String!
     blocks: [PlanBlock!]
-    assetLinks: [String]!
+    countries: [String!]!
+    months: [String!]!
+    assetLinks: [String]
   }
 
   type PlanBlock {
