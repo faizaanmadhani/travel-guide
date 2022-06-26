@@ -35,7 +35,8 @@ const CREATE_PLAN = gql`
   }
 `;
 
-const TravelPlanForm = () => {
+const TravelPlanForm = ({ navigation }: { navigation: any }) => {
+  console.log("The navigator", navigation);
   const [addPlan, { data, loading, error }] = useMutation(CREATE_PLAN);
   const [tags, setTags] = useState({
     tag: "",
@@ -74,7 +75,7 @@ const TravelPlanForm = () => {
       }}
     >
       <Box>
-        <Pressable>
+        <Pressable onPress={() => navigation.navigate("Select Images")}>
           {/* TODO: Navigate to AssetSelector */}
           <Center>
             <Center
@@ -123,7 +124,7 @@ const TravelPlanForm = () => {
   );
 };
 
-export default function EditTravelPlan() {
+export default function EditTravelPlan({ navigation }: { navigation: any }) {
   const [numDays, setNumDays] = useState(1);
   const [daysLabels, setDaysLabels] = useState(["Intro", "Day 1"]);
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -196,7 +197,7 @@ export default function EditTravelPlan() {
       </Stack>
       {
         activeTab == 0 ? (
-          <TravelPlanForm />
+          <TravelPlanForm navigation={navigation} />
         ) : null /* Create a Block Component to Render here */
       }
     </ScrollView>
