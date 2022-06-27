@@ -17,14 +17,21 @@ import TravelPage from "./src/pages/TravelPage";
 import WishlistPage from "./src/pages/WishlistPage";
 import ProfilePage from "./src/pages/ProfilePage";
 import ExplorePage from "./src/pages/ExplorePage";
+
 import LandingPage from "./src/pages/LandingPage";
 import RegisterPage from "./src/pages/RegisterPage";
 import LoginPage from "./src/pages/LoginPage";
+import TravelStackScreen from "./src/navigation/TravelPageStack";
+import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
 
 export const client = new ApolloClient({
-  uri: "http://18bb-192-159-178-168.ngrok.io",
+  uri: "SERVER_URL",
   cache: new InMemoryCache(),
 });
+
+const tabNavigationOptions = {
+  headerShown: false,
+};
 
 const Tab = createBottomTabNavigator();
 
@@ -86,7 +93,11 @@ export default function App() {
                         options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
             
             <Tab.Screen name="Explore" component={ExplorePage} />
-            <Tab.Screen name="Travel" component={TravelPage} />
+            <Tab.Screen
+              name="Travel"
+              options={tabNavigationOptions}
+              component={EditTravelPlanStackScreen}
+            />
             <Tab.Screen name="Wishlist" component={WishlistPage} />
             <Tab.Screen name="Profile" component={ProfilePage} />
    

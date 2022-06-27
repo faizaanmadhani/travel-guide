@@ -20,10 +20,11 @@ const castIPlantoPlan = (plan: any) => {
     creatorId: !plan?.creator ? "" : plan?.creator,
     budget: !plan?.budget ? 1 : plan?.budget,
     rating: !plan?.rating ? 1 : plan?.rating,
-    tags: !plan?.tags ? "" : plan?.tags,
+    tags: !plan?.tags ? [] : plan?.tags,
     description: !plan?.description? "" : plan?.description,
     countries: !plan?.countries ? "" : plan?.countries,
     months: !plan?.months ? "" : plan?.months,
+    assetLinks: !plan?.assetLinks ? [] : plan?.assetLinks,
   }
   return gqlPlan;
 }

@@ -10,7 +10,12 @@ import {
   HStack,
   VStack,
   ScrollView,
+  Input,
+  IconButton
 } from "native-base";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { AntDesign } from '@expo/vector-icons';
+import { NavigationContainer } from "@react-navigation/native";
 
 const styles = {
   screenLayout: {
@@ -111,11 +116,22 @@ const travelPlan = (
   </VStack>
 );
 
-export default function TravelPage() {
+export default function TravelPage({ navigation }: { navigation: any}) {
   return (
+    <SafeAreaView>
+      <VStack >
+      <Box alignItems="flex-start">
+        <HStack justifyContent="space-between">
+      <Input mx="3" placeholder="Search Travel Plans" w="70%" />
+      <IconButton icon={<AntDesign name="filter" size={25} color="#CCD2E3" />} />
+      <IconButton icon={<AntDesign name="pluscircle" size={25} color="#06B6D4" />} onPress={() => navigation.navigate('Create Travel Plan')}/>
+      </HStack>
+    </Box>
+        </VStack>
     <VStack margin={"1"}>
       {travelPlan}
       {travelPlan}
     </VStack>
+    </SafeAreaView>
   );
 }
