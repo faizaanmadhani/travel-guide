@@ -4519,7 +4519,7 @@ expo-image-loader@~3.2.0:
   resolved "https://registry.npmjs.org/expo-image-loader/-/expo-image-loader-3.2.0.tgz"
   integrity sha512-LU3Q2prn64/HxdToDmxgMIRXS1ZvD9Q3iCxRVTZn1fPQNNDciIQFE5okaa74Ogx20DFHs90r6WoUd7w9Af1OGQ==
 
-expo-image-manipulator@~10.3.1:
+expo-image-manipulator@^10.3.1:
   version "10.3.1"
   resolved "https://registry.yarnpkg.com/expo-image-manipulator/-/expo-image-manipulator-10.3.1.tgz#e16dd76a550c7f5d653a2a666f26429eba311a6b"
   integrity sha512-D08dMD6MerxBu23DmCIhurySQih+eLP7VxKvY5mWqYz9payjDOS1cAGs3HvXPrEDusPQFQ0uIfqc+oqeMNFBIA==
