@@ -17,6 +17,10 @@ import TravelPage from "./src/pages/TravelPage";
 import WishlistPage from "./src/pages/WishlistPage";
 import ProfilePage from "./src/pages/ProfilePage";
 import ExplorePage from "./src/pages/ExplorePage";
+
+import LandingPage from "./src/pages/LandingPage";
+import RegisterPage from "./src/pages/RegisterPage";
+import LoginPage from "./src/pages/LoginPage";
 import TravelStackScreen from "./src/navigation/TravelPageStack";
 import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
 
@@ -81,6 +85,13 @@ export default function App() {
               tabBarInactiveTintColor: "gray",
             })}
           >
+            <Tab.Screen name="Landing" component={LandingPage}
+                        options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
+            <Tab.Screen name="Register" component={RegisterPage}
+                        options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
+            <Tab.Screen name="Login" component={LoginPage}
+                        options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
+            
             <Tab.Screen name="Explore" component={ExplorePage} />
             <Tab.Screen
               name="Travel"
@@ -89,6 +100,7 @@ export default function App() {
             />
             <Tab.Screen name="Wishlist" component={WishlistPage} />
             <Tab.Screen name="Profile" component={ProfilePage} />
+   
           </Tab.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>
