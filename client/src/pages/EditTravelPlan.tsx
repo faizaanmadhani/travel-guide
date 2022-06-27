@@ -18,6 +18,7 @@ import { Dimensions, Pressable } from "react-native";
 import StyledTagInput from "../components/taginput";
 import { gql, useMutation } from "@apollo/client";
 import { AntDesign } from "@expo/vector-icons";
+import BlockPage from "./BlockPage";
 
 const CREATE_PLAN = gql`
   mutation CreatePlan($input: CreatePlanInput) {
@@ -76,7 +77,6 @@ const TravelPlanForm = ({ navigation }: { navigation: any }) => {
     >
       <Box>
         <Pressable onPress={() => navigation.navigate("Select Images")}>
-          {/* TODO: Navigate to AssetSelector */}
           <Center>
             <Center
               _text={{
@@ -94,7 +94,6 @@ const TravelPlanForm = ({ navigation }: { navigation: any }) => {
             </Center>
           </Center>
         </Pressable>
-        ;
       </Box>
       <FormControl mb="1" isRequired>
         <FormControl.Label>Description</FormControl.Label>
@@ -116,9 +115,14 @@ const TravelPlanForm = ({ navigation }: { navigation: any }) => {
         </FormControl>
       </Box>
       <Box>
-        <Button onPress={onSubmit} mt="5" colorScheme="#06B6D4">
-          Done
-        </Button>
+        <FormControl mb="1">
+          <Button backgroundColor="#06B6D4">Done</Button>
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl mb="1">
+          <Button backgroundColor="#AF2C43">Delete Plan</Button>
+        </FormControl>
       </Box>
     </Stack>
   );
@@ -174,6 +178,7 @@ export default function EditTravelPlan({ navigation }: { navigation: any }) {
                   marginRight="1"
                   onPress={(_) => setActiveTab(index)}
                   key={label}
+                  backgroundColor="#06B6D4"
                 >
                   {label}
                 </Button>
@@ -198,7 +203,9 @@ export default function EditTravelPlan({ navigation }: { navigation: any }) {
       {
         activeTab == 0 ? (
           <TravelPlanForm navigation={navigation} />
-        ) : null /* Create a Block Component to Render here */
+        ) : (
+          <BlockPage navigation={navigation} blocks={[]} />
+        ) /* Create a Block Component to Render here */
       }
     </ScrollView>
   );
