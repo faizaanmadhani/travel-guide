@@ -1,6 +1,6 @@
 import { DataSource } from "apollo-datasource";
 import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
-import { User, Preference, Plan, PlanBlock, CreateUserInput, CreatePlanInput } from "./generated/graphql";
+import { User, Preference, Plan, PlanBlock, CreateUserInput, CreatePlanInput, FilterInput } from "./generated/graphql";
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -129,10 +129,46 @@ export class PlanProvider extends DataSource {
     return plans.map((obj, _) => castIPlantoPlan(obj));
   }
 
+  public async getFilteredPlans(input: FilterInput) {
+    // filtering logic: rating AND budget AND (country 1 OR country 2 OR ...) AND (month 1 OR month 2 OR ...)
+
+    const shouldApplyFilters = input.countries && input.rating  && input.budget && input.months;
+    let plans = (await PlanModel.find({}).exec()).map((obj, _) => castIPlantoPlan(obj));
+
+    if (!shouldApplyFilters) {
+      return plans;
+    }
+
+    if (input.rating) {
+      plans = plans.filter((plan) => plan.rating === input.rating);
+    }
+    
+    if (input.budget) {
+      plans = plans.filter((plan) => plan.budget === input.budget);
+    }
+
+    const countriesFilter = input.countries? input.countries: [];
+    const monthsFilter = input.months? input.months: [];
+    
+    if (countriesFilter) {
+      plans = plans.filter(plan => {
+        return plan.countries.some(country => countriesFilter.includes(country));
+      })
+    }
+
+    if (monthsFilter) {
+      plans = plans.filter(plan => {
+        return plan.months.some(month => monthsFilter.includes(month));
+      })
+    }
+    
+    return plans.map((obj, _) => castIPlantoPlan(obj));
+  }
+
   public async createPlan(input: CreatePlanInput) {
     const newPlan = new PlanModel({
       name: input.name,
-      creator: input.creatorId,
+      creatorId: input.creatorId,
       rating: input.rating,
       budget: input.budget,
       tags: input.tags,

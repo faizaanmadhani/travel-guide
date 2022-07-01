@@ -64,6 +64,7 @@ export const typeDefs = gql`
     planBlock(id: String!): PlanBlock!
     plans: [Plan!]!
     planblocks: [PlanBlock!]!
+    filteredPlans(input: FilterInput!): [Plan!]!
   }
 
   type Mutation {
@@ -73,6 +74,13 @@ export const typeDefs = gql`
     #modifyUser(input: UserInput!)
     #modifyPlan(input: modifyPlan!)
     #modifyPlanBlock(input: PlanBlockInput!)
+  }
+
+  input FilterInput {
+    countries: [String!]
+    rating: Int!
+    budget: Int!
+    months: [String!]
   }
 
   input PrefInput {
@@ -107,6 +115,7 @@ export const resolvers: Resolvers = {
     plan: (_, args, context) =>
       context.dataSources.planProvider.getPlan(args.id),
     plans: (_, __, context) => context.dataSources.planProvider.getAllPlans(),
+    filteredPlans: (_, args, context) => context.dataSources.planProvider.getFilteredPlans(args.input),
   },
   Mutation: {
     addUser: (_, args, context) =>
