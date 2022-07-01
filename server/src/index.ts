@@ -1,7 +1,8 @@
 import { ApolloServer } from "apollo-server";
 
 import { UserProvider, PlanProvider, PlanBlockProvider } from "./provider";
-import { resolvers, typeDefs } from "./resolver";
+import { resolvers } from "./resolver";
+import { typeDefs } from "./typedefs";
 import { connect } from "mongoose";
 import { DB_URL } from "./config";
 import { UserModel, PlanModel } from "./data/model";
@@ -83,7 +84,6 @@ const initDb = async () => {
         pref_tag: "outdoors",
         user_rating: 1,
       },
-
     ],
   });
 

@@ -18,7 +18,7 @@ export type Scalars = {
 export enum BlockType {
   Eat = 'EAT',
   Activity = 'ACTIVITY',
-  Travel = 'TRAVEL',
+  Route = 'ROUTE',
   Sight = 'SIGHT'
 }
 
@@ -29,6 +29,7 @@ export type CreatePlanInput = {
   rating: Scalars['Int'];
   tags: Array<Scalars['String']>;
   description: Scalars['String'];
+  imageLinks?: Maybe<Array<Scalars['String']>>;
 };
 
 export type CreateUserInput = {
@@ -74,6 +75,7 @@ export type Plan = {
   blocks?: Maybe<Array<PlanBlock>>;
   countries: Array<Scalars['String']>;
   months: Array<Scalars['String']>;
+  assetLinks?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type PlanBlock = {
@@ -87,6 +89,7 @@ export type PlanBlock = {
   locationUrl?: Maybe<Scalars['String']>;
   audio: Scalars['String'];
   video: Scalars['String'];
+  externalUrl?: Maybe<Array<Scalars['String']>>;
 };
 
 export type Preference = {
@@ -278,6 +281,7 @@ export type PlanResolvers<ContextType = Context, ParentType extends ResolversPar
   blocks?: Resolver<Maybe<Array<ResolversTypes['PlanBlock']>>, ParentType, ContextType>;
   countries?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   months?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
+  assetLinks?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -291,6 +295,7 @@ export type PlanBlockResolvers<ContextType = Context, ParentType extends Resolve
   locationUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   audio?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   video?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  externalUrl?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
