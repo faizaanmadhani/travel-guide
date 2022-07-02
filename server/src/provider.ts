@@ -102,13 +102,13 @@ export class UserProvider extends DataSource {
       email: input.email,
       profile_pic: input.profile_pic,
       password: input.password,
-      prefs: input.prefs.map((obj, _) => {
-        const modelPref = {
-          pref_tag: obj?.prefTag,
-          user_rating: obj?.userRating
-        }
-        return modelPref
-      }),
+      // prefs: input.prefs.map((obj, _) => {
+      //   const modelPref = {
+      //     pref_tag: obj?.prefTag,
+      //     user_rating: obj?.userRating
+      //   }
+      //   return modelPref
+      // }),
       saved_plans: []
     });
 

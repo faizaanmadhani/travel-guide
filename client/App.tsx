@@ -25,7 +25,7 @@ import TravelStackScreen from "./src/navigation/TravelPageStack";
 import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
 
 export const client = new ApolloClient({
-  uri: "SERVER_URL",
+  uri: "https://f56e-72-138-238-184.ngrok.io",
   cache: new InMemoryCache(),
 });
 

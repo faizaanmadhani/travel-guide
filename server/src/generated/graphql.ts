@@ -37,7 +37,7 @@ export type CreateUserInput = {
   email: Scalars['String'];
   profile_pic: Scalars['String'];
   password: Scalars['String'];
-  prefs: Array<Maybe<PrefInput>>;
+  // prefs: Array<Maybe<PrefInput>>;
 };
 
 export type Mutation = {
@@ -129,7 +129,7 @@ export type User = {
   email: Scalars['String'];
   profile_pic: Scalars['String'];
   password: Scalars['String'];
-  prefs?: Maybe<Array<Maybe<Preference>>>;
+  // prefs?: Maybe<Array<Maybe<Preference>>>;
   savedPlans?: Maybe<Array<Maybe<Plan>>>;
 };
 
@@ -306,7 +306,7 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   profile_pic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  prefs?: Resolver<Maybe<Array<Maybe<ResolversTypes['Preference']>>>, ParentType, ContextType>;
+  // prefs?: Resolver<Maybe<Array<Maybe<ResolversTypes['Preference']>>>, ParentType, ContextType>;
   savedPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
