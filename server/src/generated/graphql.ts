@@ -40,10 +40,10 @@ export type CreateUserInput = {
 };
 
 export type FilterInput = {
-  countries?: Maybe<Array<Scalars['String']>>;
-  rating: Scalars['Int'];
-  budget: Scalars['Int'];
-  months?: Maybe<Array<Scalars['String']>>;
+  countries?: Maybe<Array<Maybe<Scalars['String']>>>;
+  rating?: Maybe<Scalars['Int']>;
+  budget?: Maybe<Scalars['Int']>;
+  months?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type Mutation = {

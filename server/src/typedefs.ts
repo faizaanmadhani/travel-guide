@@ -72,10 +72,10 @@ export const typeDefs = gql`
   }
   
   input FilterInput {
-    countries: [String!]
-    rating: Int!
-    budget: Int!
-    months: [String!]
+    countries: [String]
+    rating: Int
+    budget: Int
+    months: [String]
   }
 
   input PrefInput {

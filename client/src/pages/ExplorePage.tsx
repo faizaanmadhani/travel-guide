@@ -9,31 +9,17 @@ import {
   Actionsheet,
   useDisclose,
   ScrollView,
-  HStack,
   Icon,
   IconButton,
   Flex,
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
-
-import PlanView from "../components/PlanView";
-import PlanView_Data from "../components/PlanView";
+import PlansList from "../components/explore/PlansList";
 import Filters from "../components/Filters";
 
 export default function ExplorePage() {
   const { isOpen, onOpen, onClose } = useDisclose();
-
-  // sample data, should be queried
-  const plan : PlanView_Data = {
-    name : "Travel through France",
-    budget: 1,
-    rating: 5,
-    tags: ["indoor", "museum", "long"],
-    description: "travel through France with this travel plan",
-    countries: ["China", "Spain", "England"],
-    months: ["Jan", "Feb"]
-  }
 
   return (
     <Box>
@@ -82,15 +68,7 @@ export default function ExplorePage() {
             <Heading size="sm" mt="6">
               Most Popular
             </Heading>
-
-            <ScrollView horizontal={true} my="2">
-              {/* <Box maxW={useWindowDimensions().width}>{PlanView(0)}</Box>
-              <Box maxW={useWindowDimensions().width}>{PlanView(1)}</Box>
-              <Box maxW={useWindowDimensions().width}>{PlanView(2)}</Box> */}
-              <Box maxW={ useWindowDimensions().width }>
-                {PlanView(plan)}
-              </Box>
-            </ScrollView>
+            {PlansList()}
 
             <Heading size="sm" mt="6">
               National Destinations
