@@ -5,7 +5,8 @@ import { resolvers } from "./resolver";
 import { typeDefs } from "./typedefs";
 import { connect } from "mongoose";
 import { DB_URL } from "./config";
-import { UserModel, PlanModel } from "./data/model";
+// import { UserModel, PlanModel } from "./data/model";
+import { PlanModel } from "./data/model";
 
 // This is where we define the context type which is used
 // to have correct typing when using context in the resolvers.
@@ -75,20 +76,20 @@ const initDb = async () => {
     months: ["Nov"],
   });
 
-  const user = new UserModel({
-    name: "Faizaan",
-    email: "fzmadhani@gmail.com",
-    profile_pic: "Hi",
-    password: "123",
-    prefs: [
-      {
-        pref_tag: "outdoors",
-        user_rating: 1,
-      },
-    ],
-  });
+  // const user = new UserModel({
+  //   name: "Faizaan",
+  //   email: "fzmadhani@gmail.com",
+  //   profile_pic: "Hi",
+  //   password: "123",
+  //   prefs: [
+  //     {
+  //       pref_tag: "outdoors",
+  //       user_rating: 1,
+  //     },
+  //   ],
+  // });
 
-  await user.save();
+  // await user.save();
   await samplePlan.save();
   await samplePlan2.save();
   await samplePlan3.save();
