@@ -5,6 +5,7 @@ export const typeDefs = gql`
     name: String!
     email: String!
     profile_pic: String!
+    password: String!
     prefs: [Preference]
     savedPlans: [Plan]
   }

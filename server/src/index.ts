@@ -79,6 +79,7 @@ const initDb = async () => {
     name: "Faizaan",
     email: "fzmadhani@gmail.com",
     profile_pic: "Hi",
+    password: "123",
     prefs: [
       {
         pref_tag: "outdoors",

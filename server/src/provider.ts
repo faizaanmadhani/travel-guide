@@ -8,6 +8,7 @@ const castIUserToUser = (user: any) => {
     name: !user?.name ? "" : user?.name,
     email: !user?.email ? "" : user?.email,
     profile_pic: !user?.profile_pic ? "" : user?.profile_pic,
+    password: !user?.password ? "" : user?.password,
   }
   return gqlUser
 }
@@ -100,6 +101,7 @@ export class UserProvider extends DataSource {
       name: input.name,
       email: input.email,
       profile_pic: input.profile_pic,
+      password: input.password,
       prefs: input.prefs.map((obj, _) => {
         const modelPref = {
           pref_tag: obj?.prefTag,

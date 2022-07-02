@@ -36,6 +36,7 @@ export type CreateUserInput = {
   name: Scalars['String'];
   email: Scalars['String'];
   profile_pic: Scalars['String'];
+  password: Scalars['String'];
   prefs: Array<Maybe<PrefInput>>;
 };
 
@@ -127,6 +128,7 @@ export type User = {
   name: Scalars['String'];
   email: Scalars['String'];
   profile_pic: Scalars['String'];
+  password: Scalars['String'];
   prefs?: Maybe<Array<Maybe<Preference>>>;
   savedPlans?: Maybe<Array<Maybe<Plan>>>;
 };
