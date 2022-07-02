@@ -20,7 +20,7 @@ export const GET_FILTERED_PLANS = gql`
 `;
 
 // card view of travel plan, used on home page etc.
-export default function PlansList() {
+export default function ExplorePlans() {
   const { loading, error, data, refetch, networkStatus } = useQuery(
     GET_FILTERED_PLANS,
     {
@@ -42,18 +42,18 @@ export default function PlansList() {
     });
   };
 
-  //   const refetchPlans = () => {
-  //     refetch({
-  //       input: {
-  //         "countries": ["Canada"],
-  //         "rating": 5,
-  //         "budget": 2,
-  //         "months": ["Feb"]
-  //       },
-  //     }).then((data) => {
-  //         console.log("data refetch - ", data);
-  //     });
-  //   };
+  const refetchPlans = () => {
+    refetch({
+      input: {
+        countries: ["Canada"],
+        rating: 5,
+        budget: 2,
+        months: ["Feb"],
+      },
+    }).then((data) => {
+      console.log("data refetch - ", data);
+    });
+  };
 
   return (
     <Box>

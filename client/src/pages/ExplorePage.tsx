@@ -15,7 +15,7 @@ import {
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
-import PlansList from "../components/explore/PlansList";
+import ExplorePlans from "../components/explore/ExplorePlans";
 import Filters from "../components/Filters";
 
 export default function ExplorePage() {
@@ -26,7 +26,7 @@ export default function ExplorePage() {
       <Center>
         <Actionsheet isOpen={isOpen} onClose={onClose}>
           <Actionsheet.Content>
-            <Filters />
+              <Filters />
           </Actionsheet.Content>
         </Actionsheet>
       </Center>
@@ -68,7 +68,7 @@ export default function ExplorePage() {
             <Heading size="sm" mt="6">
               Most Popular
             </Heading>
-            {PlansList()}
+            <Box>{ExplorePlans()}</Box>
 
             <Heading size="sm" mt="6">
               National Destinations
