@@ -43,20 +43,34 @@ export function GetUser(username : String)
   const user_profilePic = (user_idx < 0) ? "N/A" : data.users[user_idx].profile_pic;
 
   return (
-    <Box>
-      <Text>
-        User Name: {user_name}
-      </Text>
-      <Text>
-        Email: {user_email}
-      </Text>
-      <Text>
-        Profile Pic: {user_profilePic}
-      </Text>
-      <Text>
-        Password: {user_password}
-      </Text>
-    </Box>
+    <VStack>
+      <HStack>
+        <Box m = "2">
+          {/* <Text>
+            Profile Pic: {user_profilePic}
+          </Text> */}
+           <Image rounded="lg" source={{
+                            uri: "https://prod-virtuoso.dotcmscloud.com/dA/188da7ea-f44f-4b9c-92f9-6a65064021c1/heroImage1/PowerfulReasons_hero.jpg"
+                            }}
+                            alt="Alternate Text"
+                            height={"100"} width={"100"} resizeMode={"contain"} alignSelf={"center"}/>
+        </Box>
+        <Center m={"2"}>
+        <VStack>
+          
+          <Text>
+            User Name: {user_name}
+          </Text>
+          <Text>
+            Password: {user_password}
+          </Text>
+          
+        </VStack>
+        </Center>
+      </HStack>
+      
+    </VStack>
+    
     
   );
 }
@@ -64,7 +78,7 @@ export function GetUser(username : String)
 export default function ProfilePage({ navigation, route }: { navigation: any, route : any }) {
   function Logout() {
     setUserLoggedIn("");
-    navigation.navigate("Landing");
+    navigation.navigate("Wandr");
   }
 
   return (

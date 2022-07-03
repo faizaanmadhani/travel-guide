@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import { Alert } from "react-native";
+import { Alert, useWindowDimensions, ImageBackground } from "react-native";
 import {
   Input,
   Box,
@@ -144,7 +144,10 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     }
 
     return (
-        <VStack>
+        <ImageBackground source={{uri:"https://prod-virtuoso.dotcmscloud.com/dA/188da7ea-f44f-4b9c-92f9-6a65064021c1/heroImage1/PowerfulReasons_hero.jpg"}}
+        imageStyle={{opacity:0.1}}>
+        <VStack h={useWindowDimensions().height} w={useWindowDimensions().width}>
+            <Box h={0.25 * useWindowDimensions().height}></Box>
             <FormControl isRequired>
             <Stack mx="4">
                 <FormControl.Label>User Name</FormControl.Label>
@@ -176,6 +179,6 @@ export default function LoginPage({ navigation }: { navigation: any }) {
                 </Box> 
             </Center>
         </VStack>
-
+        </ImageBackground>
     );
 }

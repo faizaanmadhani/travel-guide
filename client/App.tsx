@@ -85,7 +85,7 @@ export default function App() {
               tabBarInactiveTintColor: "gray",
             })}
           >
-            <Tab.Screen name="Landing" component={LandingPage}
+            <Tab.Screen name="Wandr" component={LandingPage}
                         options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
             <Tab.Screen name="Register" component={RegisterPage}
                         options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
