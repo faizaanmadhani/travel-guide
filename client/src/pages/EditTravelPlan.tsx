@@ -36,8 +36,13 @@ const CREATE_PLAN = gql`
   }
 `;
 
-const TravelPlanForm = ({ navigation }: { navigation: any }) => {
-  console.log("The navigator", navigation);
+const TravelPlanForm = ({
+  navigation,
+  planID,
+}: {
+  navigation: any;
+  planID: string;
+}) => {
   const [addPlan, { data, loading, error }] = useMutation(CREATE_PLAN);
   const [tags, setTags] = useState({
     tag: "",
@@ -128,11 +133,19 @@ const TravelPlanForm = ({ navigation }: { navigation: any }) => {
   );
 };
 
-export default function EditTravelPlan({ navigation }: { navigation: any }) {
+export default function EditTravelPlan({
+  route,
+  navigation,
+}: {
+  route: any;
+  navigation: any;
+}) {
   const [numDays, setNumDays] = useState(1);
   const [daysLabels, setDaysLabels] = useState(["Intro", "Day 1"]);
   const [activeTab, setActiveTab] = useState<number>(0);
   const [title, setTitle] = useState("");
+
+  const { planID } = route.params;
 
   const incrementDays = () => {
     setNumDays(numDays + 1);
@@ -202,9 +215,9 @@ export default function EditTravelPlan({ navigation }: { navigation: any }) {
       </Stack>
       {
         activeTab == 0 ? (
-          <TravelPlanForm navigation={navigation} />
+          <TravelPlanForm navigation={navigation} planID={planID} />
         ) : (
-          <BlockPage navigation={navigation} blocks={[]} />
+          <BlockPage navigation={navigation} planID={planID} />
         ) /* Create a Block Component to Render here */
       }
     </ScrollView>
