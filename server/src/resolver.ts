@@ -19,8 +19,8 @@ export const resolvers: Resolvers = {
       context.dataSources.planProvider.createPlan(args.input),
   },
   User: {
-    prefs: (parent, __, context) =>
-      context.dataSources.userProvider.getPrefs(parent.id),
+    // prefs: (parent, __, context) =>
+    //   context.dataSources.userProvider.getPrefs(parent.id),
     savedPlans: (parent, __, context) =>
       context.dataSources.userProvider.getPlansFromUser(parent.id),
   },

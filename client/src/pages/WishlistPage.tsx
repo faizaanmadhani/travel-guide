@@ -1,10 +1,9 @@
 import React from "react";
-import { Text } from "react-native-svg";
+import { Button } from "native-base";
 
-export default function WishlistPage() {
-  return (
-    <Text>
-      Wishlist
-    </Text>
-  );
+// For testing purposes
+import TravelPlanPage from "./PlanMain";
+
+export default function WishlistPage({ navigation }: { navigation: any }) {
+  return <Button>Open Sample Travel Plan</Button>;
 }

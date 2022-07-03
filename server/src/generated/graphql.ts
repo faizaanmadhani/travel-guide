@@ -36,7 +36,15 @@ export type CreateUserInput = {
   name: Scalars['String'];
   email: Scalars['String'];
   profile_pic: Scalars['String'];
-  prefs: Array<Maybe<PrefInput>>;
+  password: Scalars['String'];
+  // prefs: Array<Maybe<PrefInput>>;
+};
+
+export type FilterInput = {
+  countries?: Maybe<Array<Maybe<Scalars['String']>>>;
+  rating?: Maybe<Scalars['Int']>;
+  budget?: Maybe<Scalars['Int']>;
+  months?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type FilterInput = {
@@ -140,7 +148,8 @@ export type User = {
   name: Scalars['String'];
   email: Scalars['String'];
   profile_pic: Scalars['String'];
-  prefs?: Maybe<Array<Maybe<Preference>>>;
+  password: Scalars['String'];
+  // prefs?: Maybe<Array<Maybe<Preference>>>;
   savedPlans?: Maybe<Array<Maybe<Plan>>>;
 };
 
@@ -320,7 +329,7 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   profile_pic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  prefs?: Resolver<Maybe<Array<Maybe<ResolversTypes['Preference']>>>, ParentType, ContextType>;
+  // prefs?: Resolver<Maybe<Array<Maybe<ResolversTypes['Preference']>>>, ParentType, ContextType>;
   savedPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

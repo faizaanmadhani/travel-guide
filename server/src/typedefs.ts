@@ -5,7 +5,7 @@ export const typeDefs = gql`
     name: String!
     email: String!
     profile_pic: String!
-    prefs: [Preference]
+    password: String!
     savedPlans: [Plan]
   }
 
@@ -87,7 +87,7 @@ export const typeDefs = gql`
     name: String!
     email: String!
     profile_pic: String!
-    prefs: [PrefInput]!
+    password: String!
   }
 
   input CreatePlanInput {

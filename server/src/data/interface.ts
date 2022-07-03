@@ -10,6 +10,7 @@ export interface IUser {
   name: string;
   email: string;
   profile_pic: string;
+  password: string;
   prefs: Types.DocumentArray<IPrefs>;
   saved_plans?: Types.Array<Types.ObjectId>;
 }

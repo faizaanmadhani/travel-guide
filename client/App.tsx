@@ -25,7 +25,7 @@ import TravelStackScreen from "./src/navigation/TravelPageStack";
 import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
 
 export const client = new ApolloClient({
-  uri: "SERVER_URL",
+  uri: "https://f56e-72-138-238-184.ngrok.io",
   cache: new InMemoryCache(),
 });
 
@@ -85,7 +85,7 @@ export default function App() {
               tabBarInactiveTintColor: "gray",
             })}
           >
-            <Tab.Screen name="Landing" component={LandingPage}
+            <Tab.Screen name="Wandr" component={LandingPage}
                         options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
             <Tab.Screen name="Register" component={RegisterPage}
                         options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
@@ -99,7 +99,8 @@ export default function App() {
               component={EditTravelPlanStackScreen}
             />
             <Tab.Screen name="Wishlist" component={WishlistPage} />
-            <Tab.Screen name="Profile" component={ProfilePage} />
+            <Tab.Screen name="Profile" component={ProfilePage} 
+                      initialParams={{ username : "" }}/>
    
           </Tab.Navigator>
         </NavigationContainer>
