@@ -121,7 +121,7 @@ const travelPlan = (
 export default function TravelPage({ navigation }: { navigation: any }) {
   return (
     <SafeAreaView>
-      {/* <VStack>
+      <VStack>
         <Box alignItems="flex-start">
           <HStack justifyContent="space-between">
             <Input mx="3" placeholder="Search Travel Plans" w="70%" />
@@ -133,13 +133,14 @@ export default function TravelPage({ navigation }: { navigation: any }) {
               onPress={() =>
                 navigation.push("Create Travel Plan", {
                   planID: undefined,
+                  new: true,
                 })
               }
             />
           </HStack>
         </Box>
       </VStack>
-      <VStack margin={"1"}></VStack> */}
+      <VStack margin={"1"}></VStack>
       <TravelPlanPage />
     </SafeAreaView>
   );
