@@ -17,7 +17,8 @@ export default function LandingPage({ navigation }) {
     </Stack.Navigator>
 
     return (
-        <VStack>
+        <Center>
+            <VStack>
             <HStack>
                 <Box>
                     <Button size={"md"} variant="outline" colorScheme="primary"
@@ -33,14 +34,7 @@ export default function LandingPage({ navigation }) {
                     </Button>
                 </Box>
             </HStack>
-
-            <Box>
-                <Button size={"md"} variant="ghost" colorScheme="primary"
-                        onPress={() => navigation.navigate("Explore")}>
-                    Browse as guest
-                </Button>
-            </Box>
         </VStack>
-            
+        </Center>  
     );
 }

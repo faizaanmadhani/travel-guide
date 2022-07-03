@@ -8,6 +8,7 @@ import { UserProvider } from "../../../server/src/provider"
 import { gql, useQuery, ApolloProvider } from "@apollo/client";
 import { client } from "../../App";
 import { GET_PLANS } from "../components/PlanView";
+import { setUserLoggedIn, userLoggedIn } from "./LoginPage";
 
 export const GET_USERS = gql`query GetUsers {
   users {
@@ -20,7 +21,7 @@ export const GET_USERS = gql`query GetUsers {
 
 export function GetUser(username : String)
 {
-  const { loading, error, data } = useQuery(GET_USERS);
+  const { loading, error, data } = useQuery(GET_USERS, {fetchPolicy : 'cache-and-network'});
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
 
@@ -59,13 +60,24 @@ export function GetUser(username : String)
   );
 }
 
-export default function ProfilePage() {
-  let username = "JiawenZ";
+export default function ProfilePage({ navigation }: { navigation: any }) {
+  function Logout() {
+    setUserLoggedIn("");
+    navigation.navigate("Landing");
+  }
 
   return (
-    <Box maxW={ useWindowDimensions().width }>
-      {GetUser(username)}
-    </Box>
+    <VStack>
+      <Box maxW={ useWindowDimensions().width }>
+      {GetUser(userLoggedIn)}
+      </Box>
+
+      <Button variant="solid" colorScheme="red"
+                        onPress={() => {Logout()}}>
+                    Log Out
+                </Button>
+    </VStack>
+    
   // <VStack width={'100%'} mb={"1"} mt={"1"} mr={"1"} justifyContent="space-between">
   //   <Text bold alignSelf={'center'} fontSize={"lg"}>
   //     name

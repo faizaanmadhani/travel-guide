@@ -27,6 +27,12 @@ import { MutationAddUserArgs } from "../../../server/src/generated/graphql";
 import { GET_USERS } from "./ProfilePage";
 import { CREATE_USER } from "./RegisterPage";
 
+export let userLoggedIn = "" as String;
+export function setUserLoggedIn(name : String)
+{
+    userLoggedIn = name;
+}
+
 export default function LoginPage({ navigation }: { navigation: any }) {
     // fetch pre-existing data
     const { data, error, loading } = useQuery(GET_USERS, {fetchPolicy : 'cache-and-network'});
@@ -125,6 +131,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
         }
         else
         {
+            userLoggedIn = name;
             Alert.alert("Login Success",
                     `User ${name} successfully logged in!`,
                     [
