@@ -18,6 +18,7 @@ import { Dimensions, Pressable } from "react-native";
 import StyledTagInput from "../components/taginput";
 import { gql, useMutation } from "@apollo/client";
 import { AntDesign } from "@expo/vector-icons";
+import BlockPage from "./BlockPage";
 
 const CREATE_PLAN = gql`
   mutation CreatePlan($input: CreatePlanInput) {
@@ -35,33 +36,22 @@ const CREATE_PLAN = gql`
   }
 `;
 
-const TravelPlanForm = ({ navigation }: { navigation: any }) => {
-  console.log("The navigator", navigation);
-  const [addPlan, { data, loading, error }] = useMutation(CREATE_PLAN);
+const TravelPlanForm = ({
+  navigation,
+  planID,
+  title,
+  triggerNext,
+}: {
+  navigation: any;
+  planID: string;
+  title: string;
+  triggerNext: any;
+}) => {
   const [tags, setTags] = useState({
     tag: "",
     tagsArray: [],
   });
-  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-
-  const onSubmit = () => {
-    // Upload images to Google Cloud Bucket first
-
-    addPlan({
-      variables: {
-        input: {
-          name: title,
-          creatorId: "629ad1210c267cfbc50d0440", // hardcoded ID --> replace with context
-          rating: 0, // Hardcoded default rating created at the initial plan creation
-          tags: tags,
-          budget: 0, // Change this to a specific rating
-          description: description,
-          imageLinks: [String!],
-        },
-      },
-    });
-  };
 
   return (
     <Stack
@@ -76,7 +66,6 @@ const TravelPlanForm = ({ navigation }: { navigation: any }) => {
     >
       <Box>
         <Pressable onPress={() => navigation.navigate("Select Images")}>
-          {/* TODO: Navigate to AssetSelector */}
           <Center>
             <Center
               _text={{
@@ -94,7 +83,6 @@ const TravelPlanForm = ({ navigation }: { navigation: any }) => {
             </Center>
           </Center>
         </Pressable>
-        ;
       </Box>
       <FormControl mb="1" isRequired>
         <FormControl.Label>Description</FormControl.Label>
@@ -116,19 +104,63 @@ const TravelPlanForm = ({ navigation }: { navigation: any }) => {
         </FormControl>
       </Box>
       <Box>
-        <Button onPress={onSubmit} mt="5" colorScheme="#06B6D4">
-          Done
-        </Button>
+        <FormControl mb="1">
+          <Button backgroundColor="#06B6D4" onPress={triggerNext}>
+            Next
+          </Button>
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl mb="1">
+          <Button backgroundColor="#3CB371">Finish Plan</Button>
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl mb="1">
+          <Button backgroundColor="#AF2C43">Delete Plan</Button>
+        </FormControl>
       </Box>
     </Stack>
   );
 };
 
-export default function EditTravelPlan({ navigation }: { navigation: any }) {
+export default function EditTravelPlan({
+  route,
+  navigation,
+}: {
+  route: any;
+  navigation: any;
+  new: boolean;
+}) {
   const [numDays, setNumDays] = useState(1);
   const [daysLabels, setDaysLabels] = useState(["Intro", "Day 1"]);
   const [activeTab, setActiveTab] = useState<number>(0);
   const [title, setTitle] = useState("");
+
+  const [addPlan, { data, loading, error }] = useMutation(CREATE_PLAN);
+
+  const { planID, justCreated } = route.params;
+  const [isJustCreated, setIsJustCreated] = useState(justCreated);
+
+  const triggerNext = () => {
+    addPlan({
+      variables: {
+        input: {
+          name: title,
+          creatorId: "629ad1210c267cfbc50d0440", // hardcoded ID --> replace with context
+          rating: 0, // Hardcoded default rating created at the initial plan creation
+          tags: tags,
+          budget: 0, // Change this to a specific rating
+          description: description,
+          imageLinks: [String!],
+        },
+      },
+    }).then(() => {
+      if (isJustCreated) {
+        setIsJustCreated(false);
+      }
+    });
+  };
 
   const incrementDays = () => {
     setNumDays(numDays + 1);
@@ -174,6 +206,8 @@ export default function EditTravelPlan({ navigation }: { navigation: any }) {
                   marginRight="1"
                   onPress={(_) => setActiveTab(index)}
                   key={label}
+                  backgroundColor="#06B6D4"
+                  disabled={isJustCreated}
                 >
                   {label}
                 </Button>
@@ -183,6 +217,7 @@ export default function EditTravelPlan({ navigation }: { navigation: any }) {
                   variant="outline"
                   onPress={(_) => setActiveTab(index)}
                   key={label}
+                  disabled={isJustCreated}
                 >
                   {label}
                 </Button>
@@ -191,14 +226,22 @@ export default function EditTravelPlan({ navigation }: { navigation: any }) {
             <IconButton
               icon={<AntDesign name="plus" size={25} color="#06B6D4" />}
               onPress={incrementDays}
+              disabled={!isJustCreated}
             />
           </HStack>
         </ScrollView>
       </Stack>
       {
         activeTab == 0 ? (
-          <TravelPlanForm navigation={navigation} />
-        ) : null /* Create a Block Component to Render here */
+          <TravelPlanForm
+            navigation={navigation}
+            planID={planID}
+            title={title}
+            triggerNext={triggerNext}
+          />
+        ) : (
+          <BlockPage navigation={navigation} planID={planID} />
+        ) /* Create a Block Component to Render here */
       }
     </ScrollView>
   );
