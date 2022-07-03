@@ -39,12 +39,12 @@ export const CREATE_USER = gql`
 
 export default function RegisterPage({ navigation }: { navigation: any }) {
     // fetch pre-existing data
-    const { data: data1, error: error1, loading: loading1 } = useQuery(GET_USERS);
+    const { data: data1, error: error1, loading: loading1 } = useQuery(GET_USERS, {fetchPolicy : 'cache-and-network'});
     if (loading1) console.log("Loading...");
     if (error1) console.log(`Error! ${error1.message}`);
 
     // set up for adding user
-    const [addUser, { data, loading, error }] = useMutation(CREATE_USER);
+    const [addUser, { data, loading, error }] = useMutation(CREATE_USER, {refetchQueries: [{query: GET_USERS}]});
 
     if (loading) console.log("Loading...");;
     if (error) console.log(`Error! ${error.message}`);
