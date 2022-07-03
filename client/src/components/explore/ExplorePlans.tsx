@@ -49,30 +49,6 @@ export default function ExplorePlans() {
   );
 
   const { isOpen, onOpen, onClose } = useDisclose();
-  //   const [allPlans, setAllPlans] = React.useState(null);
-  //   const [popularPlans, setPopularPlans] = React.useState([]);
-  //   const [nationalPlans, setNationalPlans] = React.useState([]);
-  //   const [internationalPlans, setInternationalPlans] = React.useState([]);
-  //   const [budgetPlans, setBudgetPlans] = React.useState([]);
-  //   const [luxuryPlans, setLuxuryPlans] = React.useState([]);
-
-  //   React.useEffect(() => {
-  //     const popular = data.filteredPlans.filter((plan) => plan.rating >= 4);
-  //     const national = data.filteredPlans.filter((plan) =>
-  //       plan.countries.includes(CURRENT_LOCATION)
-  //     );
-  //     const international = data.filteredPlans.filter(
-  //       (plan) => !plan.countries.includes(CURRENT_LOCATION)
-  //     );
-  //     const budget = data.filteredPlans.filter((plan) => plan.budget === 1);
-  //     const luxury = data.filteredPlans.filter((plan) => plan.budget >= 4);
-
-  //     setPopularPlans(popular);
-  //     setNationalPlans(national);
-  //     setInternationalPlans(international);
-  //     setBudgetPlans(budget);
-  //     setLuxuryPlans(luxury);
-  //   }, []);
 
   if (networkStatus === NetworkStatus.refetch) return "Refetching!";
   if (loading) return "Loading...";
@@ -98,7 +74,7 @@ export default function ExplorePlans() {
     });
   };
 
-  const refetchPlans = () => {
+  const refetchPlans = (countries, ratings, budgets, months) => {
     refetch({
       input: {
         countries: ["Canada"],
