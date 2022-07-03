@@ -5,7 +5,7 @@ export const typeDefs = gql`
     name: String!
     email: String!
     profile_pic: String!
-    prefs: [Preference]
+    password: String!
     savedPlans: [Plan]
   }
 
@@ -59,6 +59,7 @@ export const typeDefs = gql`
     planBlock(id: String!): PlanBlock!
     plans: [Plan!]!
     planblocks: [PlanBlock!]!
+    filteredPlans(input: FilterInput!): [Plan!]!
   }
 
   type Mutation {
@@ -68,6 +69,13 @@ export const typeDefs = gql`
     #modifyUser(input: UserInput!)
     #modifyPlan(input: modifyPlan!)
     #modifyPlanBlock(input: PlanBlockInput!)
+  }
+  
+  input FilterInput {
+    countries: [String]
+    rating: Int
+    budget: Int
+    months: [String]
   }
 
   input PrefInput {
@@ -79,7 +87,7 @@ export const typeDefs = gql`
     name: String!
     email: String!
     profile_pic: String!
-    prefs: [PrefInput]!
+    password: String!
   }
 
   input CreatePlanInput {

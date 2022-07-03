@@ -5,12 +5,13 @@ export const userSchema = new Schema<IUser>({
   name: { type: String, required: true },
   email: { type: String, required: true },
   profile_pic: { type: String, required: true },
-  prefs: [
-    {
-      pref_tag: { type: String, required: true },
-      user_rating: { type: Schema.Types.Decimal128, required: true },
-    },
-  ],
+  password: { type: String, required: true },
+  // prefs: [
+  //   {
+  //     pref_tag: { type: String, required: true },
+  //     user_rating: { type: Schema.Types.Decimal128, required: true },
+  //   },
+  // ],
   saved_plans: [
     { type: [Schema.Types.ObjectId], required: false, ref: "Plan" },
   ],
