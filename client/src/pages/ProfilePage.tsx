@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useWindowDimensions } from "react-native";
+import { Alert, useWindowDimensions } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { NativeBaseProvider, Button, Text, Box, Icon, extendTheme, Center, Image, HStack, VStack, Container, AspectRatio, Divider } from "native-base";
@@ -77,20 +77,27 @@ export function GetUser(username : String)
 
 export default function ProfilePage({ navigation, route }: { navigation: any, route : any }) {
   function Logout() {
-    setUserLoggedIn("");
-    navigation.navigate("Wandr");
+    Alert.alert("Log Out Success",
+                    `User ${userLoggedIn} Logged Out`,
+                    [
+                        {
+                            text: "OK", onPress: () => {setUserLoggedIn(""), navigation.navigate("Wandr")}
+                        }
+                    ]);
   }
 
   return (
     <VStack>
       <Box maxW={ useWindowDimensions().width }>
       {GetUser(userLoggedIn)}
-      </Box>
-
-      <Button variant="solid" colorScheme="red"
+      
+      <Button size={"md"} variant="solid" colorScheme="red"
                         onPress={() => {Logout()}}>
                     Log Out
                 </Button>
+      </Box>
+
+      
     </VStack>
     
   // <VStack width={'100%'} mb={"1"} mt={"1"} mr={"1"} justifyContent="space-between">
