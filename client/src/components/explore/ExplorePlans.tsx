@@ -19,6 +19,8 @@ export const GET_FILTERED_PLANS = gql`
   }
 `;
 
+const CURRENT_LOCATION = "Canada";
+
 // card view of travel plan, used on home page etc.
 export default function ExplorePlans() {
   const { loading, error, data, refetch, networkStatus } = useQuery(
@@ -28,8 +30,12 @@ export default function ExplorePlans() {
       notifyOnNetworkStatusChange: true,
     }
   );
+  const [popularPlans, setPopularPlans] = React.useState([]);
+  const [nationalPlans, setNationalPlans] = React.useState([]);
+  const [internationalPlans, setInternationalPlans] = React.useState([]);
+  const [budgetPlans, setBudgetPlans] = React.useState([]);
   if (networkStatus === NetworkStatus.refetch) return "Refetching!";
-  if (loading) return null;
+  if (loading) return "Loading...";
   if (error) return `Error! ${error}`;
 
   const listPlans = () => {

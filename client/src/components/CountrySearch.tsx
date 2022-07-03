@@ -62,7 +62,7 @@ export default function CountrySearch(props) {
             />
 
             <Text fontSize="lg" fontWeight={600} color="coolGray.600">
-              Select a Country
+              Select a country
             </Text>
           </HStack>
           <HStack pt="16px">
@@ -92,15 +92,6 @@ export default function CountrySearch(props) {
           ) : null}
         </Actionsheet.Item>
       </ScrollView>
-
-      <Actionsheet.Item>
-        <HStack py="16px">
-          <Button w="70%">Apply</Button>
-          <Box w="30%" pl="2">
-            <Button variant="outline">Clear</Button>
-          </Box>
-        </HStack>
-      </Actionsheet.Item>
     </Box>
   );
 }

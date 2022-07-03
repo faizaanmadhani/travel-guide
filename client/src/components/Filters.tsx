@@ -2,36 +2,25 @@ import React from "react";
 import {
   Text,
   Box,
-  Input,
   Actionsheet,
   Button,
-  Radio,
   HStack,
   ScrollView,
-  Flex,
-  Checkbox,
-  Icon,
-  Center,
-  useDisclose,
-  Slide,
+  Stack,
 } from "native-base";
-import { Ionicons } from "@expo/vector-icons";
-import { ArgumentNode } from "graphql";
 import axios from "axios";
 import CountrySearch from "./CountrySearch";
 
 export default function Filters() {
-  const [selectedPriceRange, setSelectedPriceRange] =
-    React.useState<string>("all");
-  const [selectedRatings, setSelectedRatings] =
-    React.useState<string>("all-ratings");
-  const [selectedMonths, setSelectedMonths] = React.useState<string[]>([]);
   const [isCountrySearchOpen, setIsCountrySearchOpen] =
     React.useState<boolean>(false);
   const [countriesList, setCountriesList] = React.useState(null);
+  const [countriesSelected, setCountriesSelected] = React.useState([]); // countries filter
+  const [ratingsSelected, setRatingsSelected] = React.useState([]);
+  const [priceRangesSelected, setPriceRangesSelected] = React.useState([]);
+  const [monthsSelected, setMonthsSelected] = React.useState([]);
 
   React.useEffect(() => {
-    console.log("fetch!");
     axios
       .get("https://countriesnow.space/api/v0.1/countries")
       .then(function (response) {
@@ -47,25 +36,93 @@ export default function Filters() {
       });
   }, []);
 
-  const toggleMonth = (checked: boolean, month: string): void => {
-    let months: string[] = selectedMonths;
-    const index: number = months.indexOf(month);
-    if (checked) {
-      months.push(month);
-    } else {
-      if (index > -1) {
-        months.splice(index, 1);
-      }
+  const selectCountry = (country: String) => {
+    if (!countriesSelected.includes(country)) {
+      let newCountriesSelected = countriesSelected;
+      newCountriesSelected.push(country);
+      setCountriesSelected(newCountriesSelected);
     }
-    setSelectedMonths(months);
   };
 
-  const selectCountry = (country) => {
-    console.log("countries selected - ", country);
+  const removeCountry = (country: String) => {
+    if (countriesSelected.includes(country)) {
+      const newCountriesSelected = countriesSelected.filter(
+        (countrySelected) => countrySelected !== country
+      );
+      setCountriesSelected(newCountriesSelected);
+    }
   };
 
   const closeCountrySearch = () => {
     setIsCountrySearchOpen(false);
+  };
+
+  const displayCountries = () => {
+    return countriesSelected.map((countrySelected, index) => {
+      return (
+        <Box key={index} mb="1">
+          <Button
+            key="sm"
+            size="sm"
+            onPress={() => removeCountry(countrySelected)}
+          >
+            {countrySelected}
+          </Button>
+        </Box>
+      );
+    });
+  };
+
+  const updateMonthsSelected = (monthOption: string) => {
+    let newMonthsSelected = [];
+
+    const index = monthsSelected.indexOf(monthOption);
+
+    monthsSelected.map((month) => newMonthsSelected.push(month));
+    if (index > -1) {
+      newMonthsSelected.splice(index, 1);
+    } else {
+      newMonthsSelected.push(monthOption);
+    }
+    setMonthsSelected(newMonthsSelected);
+  };
+
+  const updatePriceRangesSelected = (priceRangeOption: string) => {
+    let newPriceRangesSelected = [];
+
+    if (priceRangeOption === "allPriceRanges") {
+      setPriceRangesSelected([]);
+    } else {
+      const index = priceRangesSelected.indexOf(priceRangeOption);
+
+      priceRangesSelected.map((priceRange) =>
+        newPriceRangesSelected.push(priceRange)
+      );
+      if (index > -1) {
+        newPriceRangesSelected.splice(index, 1);
+      } else {
+        newPriceRangesSelected.push(priceRangeOption);
+      }
+      setPriceRangesSelected(newPriceRangesSelected);
+    }
+  };
+
+  const updateRatingsSelected = (ratingOption: string) => {
+    let newRatingsSelected = [];
+
+    if (ratingOption === "allRatings") {
+      setRatingsSelected([]);
+    } else {
+      const index = ratingsSelected.indexOf(ratingOption);
+
+      ratingsSelected.map((rating) => newRatingsSelected.push(rating));
+      if (index > -1) {
+        newRatingsSelected.splice(index, 1);
+      } else {
+        newRatingsSelected.push(ratingOption);
+      }
+      setRatingsSelected(newRatingsSelected);
+    }
   };
 
   return (
@@ -81,266 +138,331 @@ export default function Filters() {
           <ScrollView>
             {/* Filter 1: Destination */}
             <Actionsheet.Item>
-              <Text
-                pt="8px"
-                fontSize="lg"
-                fontWeight={600}
-                color="coolGray.600"
-              >
-                Countries
+              <Text fontSize="md" fontWeight={600} color="coolGray.600">
+                COUNTRIES
               </Text>
-              <Button onPress={() => setIsCountrySearchOpen(true)}>
-                Select
-              </Button>
-              <HStack pt="16px">
-                <Input
-                  InputLeftElement={
-                    <Icon
-                      as={
-                        <Ionicons
-                          name="search-outline"
-                          color="gray"
-                          style={{ marginLeft: 12 }}
-                        />
-                      }
-                    />
-                  }
-                  w="100%"
-                  size="lg"
-                  placeholder="Search destination"
-                />
-              </HStack>
+
+              {countriesSelected ? (
+                <Stack
+                  mt="4"
+                  direction="row"
+                  space={1}
+                  alignItems={{
+                    base: "center",
+                    md: "flex-start",
+                  }}
+                  flexWrap="wrap"
+                >
+                  {displayCountries()}
+                  <Box mb="1">
+                    <Button
+                      key="sm"
+                      size="sm"
+                      variant={"outline"}
+                      onPress={() => setIsCountrySearchOpen(true)}
+                    >
+                      + Select a country
+                    </Button>
+                  </Box>
+                </Stack>
+              ) : null}
             </Actionsheet.Item>
 
             {/* Filter 2: Ratings */}
             <Actionsheet.Item>
-              <Text
-                pt="8px"
-                fontSize="lg"
-                fontWeight={600}
-                color="coolGray.600"
-              >
-                Ratings
+              <Text fontSize="md" fontWeight={600} color="coolGray.600">
+                RATINGS
               </Text>
-              <Radio.Group
-                name="ratings"
-                defaultValue="all-ratings"
-                value={selectedRatings}
-                onChange={(nextValue) => {
-                  setSelectedRatings(nextValue);
+              <Stack
+                mt="4"
+                direction="row"
+                space={1}
+                alignItems={{
+                  base: "center",
+                  md: "flex-start",
                 }}
+                flexWrap="wrap"
               >
-                <Flex direction="row" wrap="wrap" pt="16px">
-                  <Box mr={4} mb={2}>
-                    <Radio value="all-ratings" my={1}>
-                      All
-                    </Radio>
-                  </Box>
-                  <Box mr={4} mb={2}>
-                    <Radio value="four-plus" my={1}>
-                      4.0 +
-                    </Radio>
-                  </Box>
-                  <Box mr={4} mb={2}>
-                    <Radio value="three-plus" my={1}>
-                      3.0 +
-                    </Radio>
-                  </Box>
-                  <Box mr={4} mb={2}>
-                    <Radio value="twp-plus" my={1}>
-                      2.0 +
-                    </Radio>
-                  </Box>
-                  <Box mr={4} mb={2}>
-                    <Radio value="one-plus" my={1}>
-                      1.0 +
-                    </Radio>
-                  </Box>
-                </Flex>
-              </Radio.Group>
+                <Box mb="1">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={ratingsSelected.length === 0}
+                    onPress={() => updateRatingsSelected("allRatings")}
+                  >
+                    All
+                  </Button>
+                </Box>
+                <Box mb="1">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={ratingsSelected.includes("oneRating")}
+                    onPress={() => updateRatingsSelected("oneRating")}
+                  >
+                    1 Star
+                  </Button>
+                </Box>
+                <Box mb="1">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={ratingsSelected.includes("twoRating")}
+                    onPress={() => updateRatingsSelected("twoRating")}
+                  >
+                    2 Stars
+                  </Button>
+                </Box>
+                <Box mb="1">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={ratingsSelected.includes("threeRating")}
+                    onPress={() => updateRatingsSelected("threeRating")}
+                  >
+                    3 Stars
+                  </Button>
+                </Box>
+                <Box mb="1">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={ratingsSelected.includes("fourRating")}
+                    onPress={() => updateRatingsSelected("fourRating")}
+                  >
+                    4 Stars
+                  </Button>
+                </Box>
+              </Stack>
             </Actionsheet.Item>
 
             {/* Filter 3: Price Range */}
             <Actionsheet.Item>
-              <Text
-                pt="8px"
-                fontSize="lg"
-                fontWeight={600}
-                color="coolGray.600"
-              >
-                Price Range
+              <Text fontSize="md" fontWeight={600} color="coolGray.600">
+                PRICE RANGE
               </Text>
-              <Radio.Group
-                name="price-range"
-                defaultValue="all"
-                value={selectedPriceRange}
-                onChange={(nextValue) => {
-                  setSelectedPriceRange(nextValue);
+              <Stack
+                mt="4"
+                direction="row"
+                space={1}
+                alignItems={{
+                  base: "center",
+                  md: "flex-start",
                 }}
+                flexWrap="wrap"
               >
-                <Flex direction="row" wrap="wrap" pt="16px">
-                  <Box mr={4} mb={2}>
-                    <Radio value="all" my={1}>
-                      All
-                    </Radio>
-                  </Box>
-                  <Box mr={4} mb={2}>
-                    <Radio value="cheap" my={1}>
-                      $ +
-                    </Radio>
-                  </Box>
-                  <Box mr={4} mb={2}>
-                    <Radio value="normal" my={1}>
-                      $$ +
-                    </Radio>
-                  </Box>
-                  <Box mr={4} mb={2}>
-                    <Radio value="expensive" my={1}>
-                      $$$ +
-                    </Radio>
-                  </Box>
-                </Flex>
-              </Radio.Group>
+                <Box mb="1">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={priceRangesSelected.length === 0}
+                    onPress={() => updatePriceRangesSelected("allPriceRanges")}
+                  >
+                    All
+                  </Button>
+                </Box>
+                <Box mb="1">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={priceRangesSelected.includes("onePriceRange")}
+                    onPress={() => updatePriceRangesSelected("onePriceRange")}
+                  >
+                    $ (1)
+                  </Button>
+                </Box>
+                <Box mb="1">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={priceRangesSelected.includes("twoPriceRange")}
+                    onPress={() => updatePriceRangesSelected("twoPriceRange")}
+                  >
+                    $$ (2)
+                  </Button>
+                </Box>
+                <Box mb="1">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={priceRangesSelected.includes("threePriceRange")}
+                    onPress={() => updatePriceRangesSelected("threePriceRange")}
+                  >
+                    $$$ (3)
+                  </Button>
+                </Box>
+                <Box mb="1">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={priceRangesSelected.includes("fourPriceRange")}
+                    onPress={() => updatePriceRangesSelected("fourPriceRange")}
+                  >
+                    $$$$ (4)
+                  </Button>
+                </Box>
+              </Stack>
             </Actionsheet.Item>
 
             {/* Filter 4: Popular Months */}
             <Actionsheet.Item>
-              <Text
-                pt="8px"
-                fontSize="lg"
-                fontWeight={600}
-                color="coolGray.600"
-              >
-                Popular Months to Travel
+              <Text fontSize="md" fontWeight={600} color="coolGray.600">
+                POPULAR MONTHS TO TRAVEL
               </Text>
 
-              <Flex
+              <Stack
+                mt="4"
                 direction="row"
-                wrap="wrap"
-                pt="16px"
-                justifyContent="space-between"
+                space={1}
+                alignItems={{
+                  base: "center",
+                  md: "flex-start",
+                }}
+                flexWrap="wrap"
               >
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="Jan"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "Jan")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("Jan")}
+                    onPress={() => updateMonthsSelected("Jan")}
                   >
                     Jan
-                  </Checkbox>
+                  </Button>
                 </Box>
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="Feb"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "Feb")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("Feb")}
+                    onPress={() => updateMonthsSelected("Feb")}
                   >
                     Feb
-                  </Checkbox>
+                  </Button>
                 </Box>
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="Mar"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "Mar")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("Mar")}
+                    onPress={() => updateMonthsSelected("Mar")}
                   >
                     Mar
-                  </Checkbox>
+                  </Button>
                 </Box>
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="Apr"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "Apr")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("Apr")}
+                    onPress={() => updateMonthsSelected("Apr")}
                   >
                     Apr
-                  </Checkbox>
+                  </Button>
                 </Box>
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="May"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "May")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("May")}
+                    onPress={() => updateMonthsSelected("May")}
                   >
                     May
-                  </Checkbox>
+                  </Button>
                 </Box>
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="Jun"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "Jun")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("Jun")}
+                    onPress={() => updateMonthsSelected("Jun")}
                   >
                     Jun
-                  </Checkbox>
+                  </Button>
                 </Box>
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="Jul"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "Jul")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("Jul")}
+                    onPress={() => updateMonthsSelected("Jul")}
                   >
                     Jul
-                  </Checkbox>
+                  </Button>
                 </Box>
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="Aug"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "Aug")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("Aug")}
+                    onPress={() => updateMonthsSelected("Aug")}
                   >
                     Aug
-                  </Checkbox>
+                  </Button>
                 </Box>
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="Sep"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "Sep")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("Sep")}
+                    onPress={() => updateMonthsSelected("Sep")}
                   >
                     Sep
-                  </Checkbox>
+                  </Button>
                 </Box>
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="Oct"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "Oct")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("Oct")}
+                    onPress={() => updateMonthsSelected("Oct")}
                   >
                     Oct
-                  </Checkbox>
+                  </Button>
                 </Box>
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="Nov"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "Nov")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("Nov")}
+                    onPress={() => updateMonthsSelected("Nov")}
                   >
                     Nov
-                  </Checkbox>
+                  </Button>
                 </Box>
-                <Box w="20%" mr={4} mb={2}>
-                  <Checkbox
-                    value="Dec"
-                    size="md"
-                    my="1"
-                    onChange={(state) => toggleMonth(state, "Dec")}
+                <Box mb="2">
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant="outline"
+                    isPressed={monthsSelected.includes("Dec")}
+                    onPress={() => updateMonthsSelected("Dec")}
                   >
                     Dec
-                  </Checkbox>
+                  </Button>
                 </Box>
-              </Flex>
+              </Stack>
             </Actionsheet.Item>
           </ScrollView>
 
@@ -349,7 +471,17 @@ export default function Filters() {
             <HStack py="16px">
               <Button w="70%">Apply</Button>
               <Box w="30%" pl="2">
-                <Button variant="outline">Clear</Button>
+                <Button
+                  variant="outline"
+                  onPress={() => {
+                    setCountriesSelected([]);
+                    setRatingsSelected([]);
+                    setPriceRangesSelected([]);
+                    setMonthsSelected([]);
+                  }}
+                >
+                  Clear
+                </Button>
               </Box>
             </HStack>
           </Actionsheet.Item>

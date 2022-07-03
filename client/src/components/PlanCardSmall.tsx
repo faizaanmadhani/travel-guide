@@ -98,7 +98,7 @@ export default function PlanCardSmall(plan: PlanView_Data) {
           ml="-0.5"
           mt="-1"
         >
-          {plan.rating} Likes {"\u2022"} {displayBudget(plan.budget)}
+          {plan.rating} Stars {"\u2022"} {displayBudget(plan.budget)}
         </Text>
         <Box>
           <AspectRatio w="100%" ratio={16 / 9}>
