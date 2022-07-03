@@ -10,6 +10,7 @@ export const resolvers: Resolvers = {
     plan: (_, args, context) =>
       context.dataSources.planProvider.getPlan(args.id),
     plans: (_, __, context) => context.dataSources.planProvider.getAllPlans(),
+    filteredPlans: (_, args, context) => context.dataSources.planProvider.getFilteredPlans(args.input),
   },
   Mutation: {
     addUser: (_, args, context) =>

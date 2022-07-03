@@ -40,6 +40,13 @@ export type CreateUserInput = {
   prefs: Array<Maybe<PrefInput>>;
 };
 
+export type FilterInput = {
+  countries?: Maybe<Array<Maybe<Scalars['String']>>>;
+  rating?: Maybe<Scalars['Int']>;
+  budget?: Maybe<Scalars['Int']>;
+  months?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addUser: User;
@@ -105,6 +112,7 @@ export type Query = {
   planBlock: PlanBlock;
   plans: Array<Plan>;
   planblocks: Array<PlanBlock>;
+  filteredPlans: Array<Plan>;
 };
 
 
@@ -120,6 +128,11 @@ export type QueryPlanArgs = {
 
 export type QueryPlanBlockArgs = {
   id: Scalars['String'];
+};
+
+
+export type QueryFilteredPlansArgs = {
+  input: FilterInput;
 };
 
 export type User = {
@@ -225,6 +238,7 @@ export type ResolversTypes = {
   Plan: ResolverTypeWrapper<Plan>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   PlanBlock: ResolverTypeWrapper<PlanBlock>;
+  FilterInput: FilterInput;
   Mutation: ResolverTypeWrapper<{}>;
   CreateUserInput: CreateUserInput;
   PrefInput: PrefInput;
@@ -244,6 +258,7 @@ export type ResolversParentTypes = {
   Plan: Plan;
   Int: Scalars['Int'];
   PlanBlock: PlanBlock;
+  FilterInput: FilterInput;
   Mutation: {};
   CreateUserInput: CreateUserInput;
   PrefInput: PrefInput;
@@ -299,6 +314,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   planBlock?: Resolver<ResolversTypes['PlanBlock'], ParentType, ContextType, RequireFields<QueryPlanBlockArgs, 'id'>>;
   plans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType>;
   planblocks?: Resolver<Array<ResolversTypes['PlanBlock']>, ParentType, ContextType>;
+  filteredPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryFilteredPlansArgs, 'input'>>;
 };
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {

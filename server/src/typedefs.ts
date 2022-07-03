@@ -60,6 +60,7 @@ export const typeDefs = gql`
     planBlock(id: String!): PlanBlock!
     plans: [Plan!]!
     planblocks: [PlanBlock!]!
+    filteredPlans(input: FilterInput!): [Plan!]!
   }
 
   type Mutation {
@@ -69,6 +70,13 @@ export const typeDefs = gql`
     #modifyUser(input: UserInput!)
     #modifyPlan(input: modifyPlan!)
     #modifyPlanBlock(input: PlanBlockInput!)
+  }
+  
+  input FilterInput {
+    countries: [String]
+    rating: Int
+    budget: Int
+    months: [String]
   }
 
   input PrefInput {

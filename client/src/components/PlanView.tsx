@@ -7,22 +7,23 @@ import { UserProvider } from "../../../server/src/provider"
 import { gql, useQuery, ApolloProvider } from "@apollo/client";
 import { client } from "../../App";
 
-export const GET_PLANS = gql`query GetPlan {
-    plans {
-      id
-      name
-      creator {
-        id
-        name
-      }
-      rating
-      budget
-      description
-      tags
-      countries
-      months
-    }
-  }`;
+// export const GET_PLANS = gql`query GetPlan {
+//     plans {
+//       id
+//       name
+//     }
+//   }`;
+
+//   export const GET_FILTERED_PLANS = gql`query getFilteredPlans($input: FilterInput!) {
+//     filteredPlans(input: $input) {
+//       id
+//       name
+//       countries
+//       rating
+//       budget
+//       months
+//     }
+//   }`;
 
 export type PlanView_Data = {
     name : String;
@@ -36,6 +37,11 @@ export type PlanView_Data = {
 
 // card view of travel plan, used on home page etc.
 export default function PlanView(plan : PlanView_Data) {
+    // const { loading, error, data } = useQuery(GET_PLANS);
+    // const { loading, error, data, refetch } = useQuery(GET_FILTERED_PLANS);
+    // if (loading) return 'Loading...';
+    // if (error) return `Error! ${error.message}`;
+
     const plan_name = plan.name;
     const plan_tags = plan.tags;
     const plan_rating = plan.rating;
@@ -43,6 +49,11 @@ export default function PlanView(plan : PlanView_Data) {
     const plan_description = plan.description;
     const plan_countries = plan.countries;
     const plan_months = plan.months;
+
+    // console.log("plan view here");
+    
+
+    // console.log("plans data - ", data);
 
     let plan_budget_display = "" as String;
     for (let i = 0; i < plan_budget; i++) {
