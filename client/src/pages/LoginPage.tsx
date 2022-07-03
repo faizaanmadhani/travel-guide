@@ -132,6 +132,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
         else
         {
             userLoggedIn = name;
+            console.log(userLoggedIn);
             Alert.alert("Login Success",
                     `User ${name} successfully logged in!`,
                     [

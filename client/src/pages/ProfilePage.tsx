@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { useWindowDimensions } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import { NativeBaseProvider, Button, Text, Box, Icon, extendTheme, Center, Image, HStack, VStack, Container, AspectRatio, Divider } from "native-base";
 import { Entypo } from '@expo/vector-icons';
 import { UserProvider } from "../../../server/src/provider"
-import { gql, useQuery, ApolloProvider } from "@apollo/client";
+import { gql, useQuery, ApolloProvider, useMutation } from "@apollo/client";
 import { client } from "../../App";
 import { GET_PLANS } from "../components/PlanView";
 import { setUserLoggedIn, userLoggedIn } from "./LoginPage";
+import { CREATE_USER } from "./RegisterPage";
 
 export const GET_USERS = gql`query GetUsers {
   users {
@@ -60,7 +61,7 @@ export function GetUser(username : String)
   );
 }
 
-export default function ProfilePage({ navigation }: { navigation: any }) {
+export default function ProfilePage({ navigation, route }: { navigation: any, route : any }) {
   function Logout() {
     setUserLoggedIn("");
     navigation.navigate("Landing");

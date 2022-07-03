@@ -99,7 +99,8 @@ export default function App() {
               component={EditTravelPlanStackScreen}
             />
             <Tab.Screen name="Wishlist" component={WishlistPage} />
-            <Tab.Screen name="Profile" component={ProfilePage} />
+            <Tab.Screen name="Profile" component={ProfilePage} 
+                      initialParams={{ username : "" }}/>
    
           </Tab.Navigator>
         </NavigationContainer>
