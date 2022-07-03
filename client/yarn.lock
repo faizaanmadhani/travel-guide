@@ -10,10 +10,10 @@
     "@jridgewell/gen-mapping" "^0.1.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@apollo/client@^3.6.6":
-  version "3.6.6"
-  resolved "https://registry.npmjs.org/@apollo/client/-/client-3.6.6.tgz"
-  integrity sha512-AzNLN043wy0bDTTR9wzKYSu+I1IT2Ox3+vWckxgIt88Jfw5jHBvumf3lXE1JlgvbFCTiKS/Sa66AadQXWMVBRQ==
+"@apollo/client@^3.6.9":
+  version "3.6.9"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.6.9.tgz#ad0ee2e3a3c92dbed4acd6917b6158a492739d94"
+  integrity sha512-Y1yu8qa2YeaCUBVuw08x8NHenFi0sw2I3KCu7Kw9mDSu86HmmtHJkCAifKVrN2iPgDTW/BbP3EpSV8/EQCcxZA==
   dependencies:
     "@graphql-typed-document-node/core" "^3.1.1"
     "@wry/context" "^0.6.0"
@@ -3083,21 +3083,21 @@
 
 "@wry/context@^0.6.0":
   version "0.6.1"
-  resolved "https://registry.npmjs.org/@wry/context/-/context-0.6.1.tgz"
+  resolved "https://registry.yarnpkg.com/@wry/context/-/context-0.6.1.tgz#c3c29c0ad622adb00f6a53303c4f965ee06ebeb2"
   integrity sha512-LOmVnY1iTU2D8tv4Xf6MVMZZ+juIJ87Kt/plMijjN20NMAXGmH4u8bS1t0uT74cZ5gwpocYueV58YwyI8y+GKw==
   dependencies:
     tslib "^2.3.0"
 
 "@wry/equality@^0.5.0":
   version "0.5.2"
-  resolved "https://registry.npmjs.org/@wry/equality/-/equality-0.5.2.tgz"
+  resolved "https://registry.yarnpkg.com/@wry/equality/-/equality-0.5.2.tgz#72c8a7a7d884dff30b612f4f8464eba26c080e73"
   integrity sha512-oVMxbUXL48EV/C0/M7gLVsoK6qRHPS85x8zECofEZOVvxGmIPLA9o5Z27cc2PoAyZz1S2VoM2A7FLAnpfGlneA==
   dependencies:
     tslib "^2.3.0"
 
 "@wry/trie@^0.3.0":
   version "0.3.1"
-  resolved "https://registry.npmjs.org/@wry/trie/-/trie-0.3.1.tgz"
+  resolved "https://registry.yarnpkg.com/@wry/trie/-/trie-0.3.1.tgz#2279b790f15032f8bcea7fc944d27988e5b3b139"
   integrity sha512-WwB53ikYudh9pIorgxrkHKrQZcCqNM/Q/bDzZBffEaGUKGuHrRb3zZUT9Sh2qw9yogC7SsdRmQ1ER0pqvd3bfw==
   dependencies:
     tslib "^2.3.0"
@@ -6783,7 +6783,7 @@ open@^8.0.4, open@^8.3.0:
 
 optimism@^0.16.1:
   version "0.16.1"
-  resolved "https://registry.npmjs.org/optimism/-/optimism-0.16.1.tgz"
+  resolved "https://registry.yarnpkg.com/optimism/-/optimism-0.16.1.tgz#7c8efc1f3179f18307b887e18c15c5b7133f6e7d"
   integrity sha512-64i+Uw3otrndfq5kaoGNoY7pvOhSsjFEN4bdEFh80MWVk/dbgJfMv7VFDeCT8LxNAlEVhQmdVEbfE7X2nWNIIg==
   dependencies:
     "@wry/context" "^0.6.0"
@@ -8107,7 +8107,7 @@ supports-preserve-symlinks-flag@^1.0.0:
 
 symbol-observable@^4.0.0:
   version "4.0.0"
-  resolved "https://registry.npmjs.org/symbol-observable/-/symbol-observable-4.0.0.tgz"
+  resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-4.0.0.tgz#5b425f192279e87f2f9b937ac8540d1984b39205"
   integrity sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ==
 
 tar@^6.0.2, tar@^6.0.5:
@@ -8298,7 +8298,7 @@ ts-interface-checker@^0.1.9:
 
 ts-invariant@^0.10.3:
   version "0.10.3"
-  resolved "https://registry.npmjs.org/ts-invariant/-/ts-invariant-0.10.3.tgz"
+  resolved "https://registry.yarnpkg.com/ts-invariant/-/ts-invariant-0.10.3.tgz#3e048ff96e91459ffca01304dbc7f61c1f642f6c"
   integrity sha512-uivwYcQaxAucv1CzRp2n/QdYPo4ILf9VXgH19zEIjFx2EJufV16P0JtJVpYHy89DItG6Kwj2oIUjrcK5au+4tQ==
   dependencies:
     tslib "^2.1.0"
@@ -8764,12 +8764,12 @@ yocto-queue@^0.1.0:
 
 zen-observable-ts@^1.2.5:
   version "1.2.5"
-  resolved "https://registry.npmjs.org/zen-observable-ts/-/zen-observable-ts-1.2.5.tgz"
+  resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-1.2.5.tgz#6c6d9ea3d3a842812c6e9519209365a122ba8b58"
   integrity sha512-QZWQekv6iB72Naeake9hS1KxHlotfRpe+WGNbNx5/ta+R3DNjVO2bswf63gXlWDcs+EMd7XY8HfVQyP1X6T4Zg==
   dependencies:
     zen-observable "0.8.15"
 
 zen-observable@0.8.15:
   version "0.8.15"
-  resolved "https://registry.npmjs.org/zen-observable/-/zen-observable-0.8.15.tgz"
+  resolved "https://registry.yarnpkg.com/zen-observable/-/zen-observable-0.8.15.tgz#96415c512d8e3ffd920afd3889604e30b9eaac15"
   integrity sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==
