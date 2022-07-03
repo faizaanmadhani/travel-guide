@@ -61,9 +61,9 @@ export function GetUser(username : String)
           <Text>
             User Name: {user_name}
           </Text>
-          <Text>
+          {/* <Text>
             Password: {user_password}
-          </Text>
+          </Text> */}
           
         </VStack>
         </Center>
