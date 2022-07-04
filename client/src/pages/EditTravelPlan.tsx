@@ -36,93 +36,21 @@ const CREATE_PLAN = gql`
   }
 `;
 
-const TravelPlanForm = ({
-  navigation,
-  planID,
-  title,
-  triggerNext,
-}: {
-  navigation: any;
-  planID: string;
-  title: string;
-  triggerNext: any;
-}) => {
-  const [tags, setTags] = useState({
-    tag: "",
-    tagsArray: [],
-  });
-  const [description, setDescription] = useState("");
+// const TravelPlanForm = ({
+//   navigation,
+//   planID,
+//   title,
+//   triggerNext,
+// }: {
+//   navigation: any;
+//   planID: string;
+//   title: string;
+//   triggerNext: any;
+// }) => {
 
-  return (
-    <Stack
-      space={2.5}
-      alignSelf="center"
-      px="4"
-      safeArea
-      w={{
-        base: "100%",
-        md: "25%",
-      }}
-    >
-      <Box>
-        <Pressable onPress={() => navigation.navigate("Select Images")}>
-          <Center>
-            <Center
-              _text={{
-                color: "#B0B0B0",
-                fontWeight: "bold",
-              }}
-              height={200}
-              width={{
-                base: 200,
-                lg: 250,
-              }}
-            >
-              <AntDesign name="plus" size={25} color="#B0B0B0" />
-              Add Picture or Video
-            </Center>
-          </Center>
-        </Pressable>
-      </Box>
-      <FormControl mb="1" isRequired>
-        <FormControl.Label>Description</FormControl.Label>
-        <TextArea
-          h={20}
-          placeholder="Add Plan Description"
-          value={description}
-          onChangeText={(text) => setDescription(text)}
-          autoCompleteType={undefined}
-        />
-        <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-          This field is required
-        </FormControl.ErrorMessage>
-      </FormControl>
-      <Box>
-        <FormControl mb="1">
-          <FormControl.Label>Tags</FormControl.Label>
-          <StyledTagInput tags={tags} setTags={setTags} />
-        </FormControl>
-      </Box>
-      <Box>
-        <FormControl mb="1">
-          <Button backgroundColor="#06B6D4" onPress={triggerNext}>
-            Next
-          </Button>
-        </FormControl>
-      </Box>
-      <Box>
-        <FormControl mb="1">
-          <Button backgroundColor="#3CB371">Finish Plan</Button>
-        </FormControl>
-      </Box>
-      <Box>
-        <FormControl mb="1">
-          <Button backgroundColor="#AF2C43">Delete Plan</Button>
-        </FormControl>
-      </Box>
-    </Stack>
-  );
-};
+//   return (
+//   );
+// };
 
 export default function EditTravelPlan({
   route,
@@ -130,7 +58,6 @@ export default function EditTravelPlan({
 }: {
   route: any;
   navigation: any;
-  new: boolean;
 }) {
   const [numDays, setNumDays] = useState(1);
   const [daysLabels, setDaysLabels] = useState(["Intro", "Day 1"]);
@@ -142,25 +69,13 @@ export default function EditTravelPlan({
   const { planID, justCreated } = route.params;
   const [isJustCreated, setIsJustCreated] = useState(justCreated);
 
-  const triggerNext = () => {
-    addPlan({
-      variables: {
-        input: {
-          name: title,
-          creatorId: "629ad1210c267cfbc50d0440", // hardcoded ID --> replace with context
-          rating: 0, // Hardcoded default rating created at the initial plan creation
-          tags: tags,
-          budget: 0, // Change this to a specific rating
-          description: description,
-          imageLinks: [String!],
-        },
-      },
-    }).then(() => {
-      if (isJustCreated) {
-        setIsJustCreated(false);
-      }
-    });
-  };
+  const [tags, setTags] = useState({
+    tag: "",
+    tagsArray: [],
+  });
+  const [description, setDescription] = useState("");
+
+  const updatePlan = () => {};
 
   const incrementDays = () => {
     setNumDays(numDays + 1);
@@ -204,10 +119,12 @@ export default function EditTravelPlan({
               activeTab === index ? (
                 <Button
                   marginRight="1"
-                  onPress={(_) => setActiveTab(index)}
+                  onPress={(_) => {
+                    setActiveTab(index);
+                    updatePlan();
+                  }}
                   key={label}
                   backgroundColor="#06B6D4"
-                  disabled={isJustCreated}
                 >
                   {label}
                 </Button>
@@ -215,9 +132,11 @@ export default function EditTravelPlan({
                 <Button
                   marginRight="1"
                   variant="outline"
-                  onPress={(_) => setActiveTab(index)}
+                  onPress={(_) => {
+                    setActiveTab(index);
+                    updatePlan();
+                  }}
                   key={label}
-                  disabled={isJustCreated}
                 >
                   {label}
                 </Button>
@@ -233,12 +152,68 @@ export default function EditTravelPlan({
       </Stack>
       {
         activeTab == 0 ? (
-          <TravelPlanForm
-            navigation={navigation}
-            planID={planID}
-            title={title}
-            triggerNext={triggerNext}
-          />
+          <Stack
+            space={2.5}
+            alignSelf="center"
+            px="4"
+            safeArea
+            w={{
+              base: "100%",
+              md: "25%",
+            }}
+          >
+            <Box>
+              <Pressable onPress={() => navigation.navigate("Select Images")}>
+                <Center>
+                  <Center
+                    _text={{
+                      color: "#B0B0B0",
+                      fontWeight: "bold",
+                    }}
+                    height={200}
+                    width={{
+                      base: 200,
+                      lg: 250,
+                    }}
+                  >
+                    <AntDesign name="plus" size={25} color="#B0B0B0" />
+                    Add Picture or Video
+                  </Center>
+                </Center>
+              </Pressable>
+            </Box>
+            <FormControl mb="1" isRequired>
+              <FormControl.Label>Description</FormControl.Label>
+              <TextArea
+                h={20}
+                placeholder="Add Plan Description"
+                value={description}
+                onChangeText={(text) => setDescription(text)}
+                autoCompleteType={undefined}
+              />
+              <FormControl.ErrorMessage
+                leftIcon={<WarningOutlineIcon size="xs" />}
+              >
+                This field is required
+              </FormControl.ErrorMessage>
+            </FormControl>
+            <Box>
+              <FormControl mb="1">
+                <FormControl.Label>Tags</FormControl.Label>
+                <StyledTagInput tags={tags} setTags={setTags} />
+              </FormControl>
+            </Box>
+            <Box>
+              <FormControl mb="1">
+                <Button backgroundColor="#3CB371">Finish Plan</Button>
+              </FormControl>
+            </Box>
+            <Box>
+              <FormControl mb="1">
+                <Button backgroundColor="#AF2C43">Delete Plan</Button>
+              </FormControl>
+            </Box>
+          </Stack>
         ) : (
           <BlockPage navigation={navigation} planID={planID} />
         ) /* Create a Block Component to Render here */

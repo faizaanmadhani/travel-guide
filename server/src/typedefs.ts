@@ -33,7 +33,6 @@ export const typeDefs = gql`
     id: ID!
     title: String!
     description: String!
-    tags: [String!]
     # type: BlockType!
     images: [String!] # Link to image urls. string at images[0] is first one displayed
     mapId: String! #Something to help render gmaps url. Maybe a google maps link
@@ -41,6 +40,7 @@ export const typeDefs = gql`
     # Store some links additional assets
     audio: String!
     video: String!
+    price: Int!
     #
     externalUrl: [String!]
   }
@@ -64,13 +64,15 @@ export const typeDefs = gql`
 
   type Mutation {
     addUser(input: CreateUserInput!): User!
-    addPlan(input: CreatePlanInput!): Plan!
+    addPlan(creatorId: String!): Plan!
+    modifyPlan(input: UpdatePlanInput!): Plan
+    addPlanBlock(input: UpdatePlanBlockInput!): PlanBlock!
     #addPlanBlock(input: PlanBlockInput!)
     #modifyUser(input: UserInput!)
     #modifyPlan(input: modifyPlan!)
     #modifyPlanBlock(input: PlanBlockInput!)
   }
-  
+
   input FilterInput {
     countries: [String]
     rating: Int
@@ -90,13 +92,25 @@ export const typeDefs = gql`
     password: String!
   }
 
-  input CreatePlanInput {
+  input UpdatePlanInput {
     name: String!
     creatorId: String!
+    id: String!
     budget: Int! # Number between 1 and 4 representing num $ signs
     rating: Int! # value between 1 and 5
     tags: [String!]!
     description: String!
-    imageLinks: [String!]
+    imageLinks: [String!]!
+  }
+
+  input UpdatePlanBlockInput {
+    location: String
+    description: String
+    title: String
+    price: Int
+    links: [String]
+    audio: Int
+    video: Int
+    images: [String]
   }
 `;

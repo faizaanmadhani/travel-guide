@@ -1,6 +1,6 @@
 import { DataSource } from "apollo-datasource";
 import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
-import { User, Preference, Plan, PlanBlock, CreateUserInput, CreatePlanInput, FilterInput } from "./generated/graphql";
+import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput } from "./generated/graphql";
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -35,9 +35,10 @@ const castIPlanBlocktoPlanBlock = (planBlock: any) => {
     id: !planBlock?.id ? "" : planBlock?.id,
     title: !planBlock?.title ? "" : planBlock?.title,
     description: !planBlock?.description ? "" : planBlock?.description,
-    mapId: !planBlock?.description ? "" : planBlock?.description,
-    audio: !planBlock?.description ? "" : planBlock?.description,
-    video: !planBlock?.description ? "" : planBlock?.description,
+    mapId: !planBlock?.mapId ? "" : planBlock?.mapId,
+    audio: !planBlock?.audio ? "" : planBlock?.audio,
+    video: !planBlock?.video ? "" : planBlock?.video,
+    price: !planBlock?.price ? 0 : planBlock?.price,
   }
   return gqlPlanBlock;
 }
@@ -177,20 +178,45 @@ export class PlanProvider extends DataSource {
     return plans.map((obj, _) => castIPlantoPlan(obj));
   }
 
-  public async createPlan(input: CreatePlanInput) {
+  public async createPlan(creatorId: String) {
+
     const newPlan = new PlanModel({
-      name: input.name,
-      creatorId: input.creatorId,
-      rating: input.rating,
-      budget: input.budget,
-      tags: input.tags,
-      description: input.description,
+      name: "",
+      creatorId: creatorId,
+      rating: "",
+      budget: 0,
+      tags: [],
+      description: "",
       blocks: []
     });
 
     await newPlan.save();
     const id = newPlan._id.toString();
     return this.getPlan(id);
+  }
+
+  public async updatePlan(input: UpdatePlanInput) {
+
+    const doc = await PlanModel.findById(input.id);
+    if (doc) {
+      doc.name = input.name;
+      doc.budget = input.budget;
+
+      doc.tags.length = 0;
+      input.tags.forEach((tag, _) => {
+        doc.tags.push(tag);
+      })
+      doc.description = input.description;
+      doc.imageLinks.length = 0;
+      input.imageLinks.forEach((link, _) => {
+        doc.tags.push(link);
+      })
+
+      await doc.save();
+      return this.getPlan(input.id);
+    }
+
+    return null;
   }
 }
 
