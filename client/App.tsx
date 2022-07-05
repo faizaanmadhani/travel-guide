@@ -25,7 +25,7 @@ import TravelStackScreen from "./src/navigation/TravelPageStack";
 import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
 
 export const client = new ApolloClient({
-  uri: "https://f56e-72-138-238-184.ngrok.io",
+  uri: process.env.SERVER_URL,
   cache: new InMemoryCache(),
 });
 
@@ -85,13 +85,34 @@ export default function App() {
               tabBarInactiveTintColor: "gray",
             })}
           >
-            <Tab.Screen name="Wandr" component={LandingPage}
-                        options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
-            <Tab.Screen name="Register" component={RegisterPage}
-                        options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
-            <Tab.Screen name="Login" component={LoginPage}
-                        options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
-            
+            <Tab.Screen
+              name="Wandr"
+              component={LandingPage}
+              options={{
+                tabBarButton: () => null,
+                tabBarVisible: false,
+                tabBarStyle: { display: "none" },
+              }}
+            />
+            <Tab.Screen
+              name="Register"
+              component={RegisterPage}
+              options={{
+                tabBarButton: () => null,
+                tabBarVisible: false,
+                tabBarStyle: { display: "none" },
+              }}
+            />
+            <Tab.Screen
+              name="Login"
+              component={LoginPage}
+              options={{
+                tabBarButton: () => null,
+                tabBarVisible: false,
+                tabBarStyle: { display: "none" },
+              }}
+            />
+
             <Tab.Screen name="Explore" component={ExplorePage} />
             <Tab.Screen
               name="Travel"
@@ -99,9 +120,11 @@ export default function App() {
               component={EditTravelPlanStackScreen}
             />
             <Tab.Screen name="Wishlist" component={WishlistPage} />
-            <Tab.Screen name="Profile" component={ProfilePage} 
-                      initialParams={{ username : "" }}/>
-   
+            <Tab.Screen
+              name="Profile"
+              component={ProfilePage}
+              initialParams={{ username: "" }}
+            />
           </Tab.Navigator>
         </NavigationContainer>
       </NativeBaseProvider>

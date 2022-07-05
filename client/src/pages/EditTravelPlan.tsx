@@ -14,43 +14,12 @@ import {
   IconButton,
   Center,
 } from "native-base";
-import { Dimensions, Pressable } from "react-native";
+import { Dimensions, Pressable, Image } from "react-native";
 import StyledTagInput from "../components/taginput";
 import { gql, useMutation } from "@apollo/client";
 import { AntDesign } from "@expo/vector-icons";
 import BlockPage from "./BlockPage";
-
-const CREATE_PLAN = gql`
-  mutation CreatePlan($input: CreatePlanInput) {
-    addPlan(input: $input) {
-      name
-      creator {
-        id
-        name
-      }
-      rating
-      budget
-      tags
-      description
-    }
-  }
-`;
-
-// const TravelPlanForm = ({
-//   navigation,
-//   planID,
-//   title,
-//   triggerNext,
-// }: {
-//   navigation: any;
-//   planID: string;
-//   title: string;
-//   triggerNext: any;
-// }) => {
-
-//   return (
-//   );
-// };
+import * as ImagePicker from "expo-image-picker";
 
 export default function EditTravelPlan({
   route,
@@ -62,20 +31,9 @@ export default function EditTravelPlan({
   const [numDays, setNumDays] = useState(1);
   const [daysLabels, setDaysLabels] = useState(["Intro", "Day 1"]);
   const [activeTab, setActiveTab] = useState<number>(0);
-  const [title, setTitle] = useState("");
-
-  const [addPlan, { data, loading, error }] = useMutation(CREATE_PLAN);
 
   const { planID, justCreated } = route.params;
   const [isJustCreated, setIsJustCreated] = useState(justCreated);
-
-  const [tags, setTags] = useState({
-    tag: "",
-    tagsArray: [],
-  });
-  const [description, setDescription] = useState("");
-
-  const updatePlan = () => {};
 
   const incrementDays = () => {
     setNumDays(numDays + 1);
@@ -88,7 +46,30 @@ export default function EditTravelPlan({
     }
   }, [numDays]);
 
-  // TODO: Implement delete days functionality
+  // Form state:
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [tags, setTags] = useState({
+    tag: "",
+    tagsArray: [],
+  });
+  const [image, setImage] = useState(null);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      setImage(result["uri"]);
+    }
+  };
+
+  console.log("The image url", image);
+
+  const updatePlan = () => {};
 
   return (
     <ScrollView w="100%">
@@ -163,22 +144,29 @@ export default function EditTravelPlan({
             }}
           >
             <Box>
-              <Pressable onPress={() => navigation.navigate("Select Images")}>
+              <Pressable onPress={() => pickImage()}>
                 <Center>
-                  <Center
-                    _text={{
-                      color: "#B0B0B0",
-                      fontWeight: "bold",
-                    }}
-                    height={200}
-                    width={{
-                      base: 200,
-                      lg: 250,
-                    }}
-                  >
-                    <AntDesign name="plus" size={25} color="#B0B0B0" />
-                    Add Picture or Video
-                  </Center>
+                  {!image ? (
+                    <Center
+                      _text={{
+                        color: "#B0B0B0",
+                        fontWeight: "bold",
+                      }}
+                      height={200}
+                      width={{
+                        base: 200,
+                        lg: 250,
+                      }}
+                    >
+                      <AntDesign name="plus" size={25} color="#B0B0B0" />
+                      Add Picture or Video
+                    </Center>
+                  ) : (
+                    <Image
+                      source={{ uri: image }}
+                      style={{ width: 400, height: 400 }}
+                    />
+                  )}
                 </Center>
               </Pressable>
             </Box>

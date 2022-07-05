@@ -130,12 +130,12 @@ export default function TravelPage({ navigation }: { navigation: any }) {
             />
             <IconButton
               icon={<AntDesign name="pluscircle" size={25} color="#06B6D4" />}
-              onPress={() =>
+              onPress={() => {
                 navigation.push("Create Travel Plan", {
                   planID: undefined,
                   new: true,
-                })
-              }
+                });
+              }}
             />
           </HStack>
         </Box>
