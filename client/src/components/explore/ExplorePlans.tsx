@@ -13,6 +13,7 @@ import {
   Icon,
   IconButton,
   Flex,
+  Spinner,
 } from "native-base";
 import { gql, useQuery, NetworkStatus } from "@apollo/client";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -40,6 +41,63 @@ const CURRENT_LOCATION = "Canada";
 
 // card view of travel plan, used on home page etc.
 export default function ExplorePlans() {
+  const [filtersApplied, setFiltersApplied] = React.useState(null);
+
+  React.useEffect(() => {
+    if (filtersApplied) {
+      let filtersInput = {};
+
+      if (filtersApplied.countries && filtersApplied.countries.length) {
+        filtersInput["countries"] = filtersApplied.countries;
+      }
+
+      if (filtersApplied.ratings && filtersApplied.ratings.length) {
+        let ratingsInput = filtersApplied.ratings.map((rating) => {
+          if (rating === "oneRating") {
+            return 1;
+          }
+          if (rating === "twoRating") {
+            return 2;
+          }
+          if (rating === "threeRating") {
+            return 3;
+          }
+          if (rating === "fourRating") {
+            return 4;
+          }
+        });
+
+        filtersInput["rating"] = ratingsInput;
+      }
+
+      if (filtersApplied.priceRanges && filtersApplied.priceRanges.length) {
+        let priceRangesInput = filtersApplied.priceRanges.map((priceRange) => {
+          if (priceRange === "onePriceRange") {
+            return 1;
+          }
+          if (priceRange === "twoPriceRange") {
+            return 2;
+          }
+          if (priceRange === "threePriceRange") {
+            return 3;
+          }
+          if (priceRange === "fourPriceRange") {
+            return 4;
+          }
+        });
+        filtersInput["budget"] = priceRangesInput;
+      }
+
+      if (filtersApplied.months && filtersApplied.months.length) {
+        filtersInput["months"] = filtersApplied.months;
+      }
+
+      refetch({
+        input: filtersInput,
+      });
+    }
+  }, [filtersApplied]);
+
   const { loading, error, data, refetch, networkStatus } = useQuery(
     GET_FILTERED_PLANS,
     {
@@ -51,7 +109,15 @@ export default function ExplorePlans() {
   const { isOpen, onOpen, onClose } = useDisclose();
 
   if (networkStatus === NetworkStatus.refetch) return "Refetching!";
-  if (loading) return "Loading...";
+  if (loading)
+    return (
+      <HStack mt="6" space={2} justifyContent="center">
+        <Spinner accessibilityLabel="Loading posts" />
+        <Heading color="primary.500" fontSize="md">
+          Loading
+        </Heading>
+      </HStack>
+    );
   if (error) return `Error! ${error}`;
 
   const popularPlans = data.filteredPlans.filter((plan) => plan.rating >= 4);
@@ -74,38 +140,28 @@ export default function ExplorePlans() {
     });
   };
 
-  const refetchPlans = (countries, ratings, budgets, months) => {
-    refetch({
-      input: {
-        countries: ["Canada"],
-        rating: 5,
-        budget: 2,
-        months: ["Feb"],
-      },
-    }).then((data) => {
-      console.log("data refetch - ", data);
-    });
+  const refetchPlans = (countries, ratings, priceRanges, months) => {
+    if (countries && ratings && priceRanges && months) {
+      setFiltersApplied({
+        countries: countries,
+        ratings: ratings,
+        priceRanges: priceRanges,
+        months: months,
+      });
+    }
   };
 
   return (
     <Box mb="200">
-      <Button
-        onPress={() => {
-          console.log("refetching...");
-          refetch({
-            input: {
-              countries: ["South Korea"],
-            },
-          });
-        }}
-      >
-        Refetch
-      </Button>
       <Box>
         <Center>
           <Actionsheet isOpen={isOpen} onClose={onClose}>
             <Actionsheet.Content>
-              <Filters />
+              <Filters
+                refetchPlans={refetchPlans}
+                closeFilters={onClose}
+                currentFilters={filtersApplied}
+              />
             </Actionsheet.Content>
           </Actionsheet>
         </Center>

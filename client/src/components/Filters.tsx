@@ -11,14 +11,22 @@ import {
 import axios from "axios";
 import CountrySearch from "./CountrySearch";
 
-export default function Filters() {
+export default function Filters(props) {
   const [isCountrySearchOpen, setIsCountrySearchOpen] =
     React.useState<boolean>(false);
   const [countriesList, setCountriesList] = React.useState(null);
-  const [countriesSelected, setCountriesSelected] = React.useState([]); // countries filter
-  const [ratingsSelected, setRatingsSelected] = React.useState([]);
-  const [priceRangesSelected, setPriceRangesSelected] = React.useState([]);
-  const [monthsSelected, setMonthsSelected] = React.useState([]);
+  const [countriesSelected, setCountriesSelected] = React.useState(
+    props.currentFilters ? props.currentFilters.countries : []
+  ); // countries filter
+  const [ratingsSelected, setRatingsSelected] = React.useState(
+    props.currentFilters ? props.currentFilters.ratings : []
+  );
+  const [priceRangesSelected, setPriceRangesSelected] = React.useState(
+    props.currentFilters ? props.currentFilters.priceRanges : []
+  );
+  const [monthsSelected, setMonthsSelected] = React.useState(
+    props.currentFilters ? props.currentFilters.months : []
+  );
 
   React.useEffect(() => {
     axios
@@ -123,6 +131,16 @@ export default function Filters() {
       }
       setRatingsSelected(newRatingsSelected);
     }
+  };
+
+  const applyFilters = () => {
+    props.refetchPlans(
+      countriesSelected,
+      ratingsSelected,
+      priceRangesSelected,
+      monthsSelected
+    );
+    props.closeFilters();
   };
 
   return (
@@ -469,7 +487,9 @@ export default function Filters() {
           {/* Actions */}
           <Actionsheet.Item>
             <HStack py="16px">
-              <Button w="70%">Apply</Button>
+              <Button w="70%" onPress={applyFilters}>
+                Apply
+              </Button>
               <Box w="30%" pl="2">
                 <Button
                   variant="outline"
