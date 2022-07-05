@@ -37,13 +37,12 @@ export type CreateUserInput = {
   email: Scalars['String'];
   profile_pic: Scalars['String'];
   password: Scalars['String'];
-  // prefs: Array<Maybe<PrefInput>>;
 };
 
 export type FilterInput = {
   countries?: Maybe<Array<Maybe<Scalars['String']>>>;
-  rating?: Maybe<Scalars['Int']>;
-  budget?: Maybe<Scalars['Int']>;
+  rating?: Maybe<Array<Maybe<Scalars['Int']>>>;
+  budget?: Maybe<Array<Maybe<Scalars['Int']>>>;
   months?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
@@ -142,7 +141,6 @@ export type User = {
   email: Scalars['String'];
   profile_pic: Scalars['String'];
   password: Scalars['String'];
-  // prefs?: Maybe<Array<Maybe<Preference>>>;
   savedPlans?: Maybe<Array<Maybe<Plan>>>;
 };
 
@@ -233,18 +231,18 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   User: ResolverTypeWrapper<User>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
-  Preference: ResolverTypeWrapper<Preference>;
-  Float: ResolverTypeWrapper<Scalars['Float']>;
   Plan: ResolverTypeWrapper<Plan>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   PlanBlock: ResolverTypeWrapper<PlanBlock>;
   FilterInput: FilterInput;
   Mutation: ResolverTypeWrapper<{}>;
   CreateUserInput: CreateUserInput;
-  PrefInput: PrefInput;
   CreatePlanInput: CreatePlanInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BlockType: BlockType;
+  PrefInput: PrefInput;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
+  Preference: ResolverTypeWrapper<Preference>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -253,17 +251,17 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   User: User;
   ID: Scalars['ID'];
-  Preference: Preference;
-  Float: Scalars['Float'];
   Plan: Plan;
   Int: Scalars['Int'];
   PlanBlock: PlanBlock;
   FilterInput: FilterInput;
   Mutation: {};
   CreateUserInput: CreateUserInput;
-  PrefInput: PrefInput;
   CreatePlanInput: CreatePlanInput;
   Boolean: Scalars['Boolean'];
+  PrefInput: PrefInput;
+  Float: Scalars['Float'];
+  Preference: Preference;
 };
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
@@ -322,7 +320,7 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   profile_pic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  // prefs?: Resolver<Maybe<Array<Maybe<ResolversTypes['Preference']>>>, ParentType, ContextType>;
+  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   savedPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

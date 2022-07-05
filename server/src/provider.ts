@@ -138,37 +138,30 @@ export class PlanProvider extends DataSource {
     const shouldApplyFilters = input.countries || input.rating || input.budget || input.months;
     let plans = (await PlanModel.find({}).exec()).map((obj, _) => castIPlantoPlan(obj));
 
-    console.log("countries: ", input.countries);
-    console.log("rating: ", input.rating);
-    console.log("budget: ", input.budget);
-    console.log("months: ", input.months);
-
     if (!shouldApplyFilters) {
       return plans;
     }
 
-    if (input.rating) {
-      console.log("rating filter applied");
-      plans = plans.filter((plan) => plan.rating === input.rating);
-    }
-    
-    if (input.budget) {
-      console.log("budget filter applied");
-      plans = plans.filter((plan) => plan.budget === input.budget);
-    }
-
     const countriesFilter = input.countries? input.countries: [];
+    const ratingFilter = input.rating? input.rating: [];
+    const budgetFilter = input.budget? input.budget: [];
     const monthsFilter = input.months? input.months: [];
     
     if (countriesFilter && countriesFilter.length) {
-      console.log("countries filter applied");
       plans = plans.filter(plan => {
         return plan.countries.some(country => countriesFilter.includes(country));
       })
     }
 
+    if (ratingFilter && ratingFilter.length) {
+      plans = plans.filter(plan =>  ratingFilter.includes(plan.rating))
+    }
+    
+    if (budgetFilter && budgetFilter.length) {
+      plans = plans.filter(plan => budgetFilter.includes(plan.budget))
+    }
+
     if (monthsFilter && monthsFilter.length) {
-      console.log("months filter applied");
       plans = plans.filter(plan => {
         return plan.months.some(month => monthsFilter.includes(month));
       })
