@@ -10,13 +10,27 @@ export const resolvers: Resolvers = {
     plan: (_, args, context) =>
       context.dataSources.planProvider.getPlan(args.id),
     plans: (_, __, context) => context.dataSources.planProvider.getAllPlans(),
-    filteredPlans: (_, args, context) => context.dataSources.planProvider.getFilteredPlans(args.input),
+    filteredPlans: (_, args, context) =>
+      context.dataSources.planProvider.getFilteredPlans(args.input),
+    authenticateUser: (_, args, context) =>
+      context.dataSources.userProvider.authenticateUser(
+        args.username,
+        args.password
+      ),
   },
   Mutation: {
     addUser: (_, args, context) =>
       context.dataSources.userProvider.createUser(args.input),
-    addPlan: (_, args, context) =>
-      context.dataSources.planProvider.createPlan(args.input),
+    addPlan: async (_, args, context) => {
+      console.log("The args", args);
+      const newPlan = await context.dataSources.planProvider.createPlan(
+        args.creatorId
+      );
+      console.log(newPlan);
+      return newPlan;
+    },
+    modifyPlan: (_, args, context) =>
+      context.dataSources.planProvider.updatePlan(args.input),
   },
   User: {
     // prefs: (parent, __, context) =>
@@ -27,7 +41,10 @@ export const resolvers: Resolvers = {
   Plan: {
     creator: (parent, __, context) =>
       context.dataSources.userProvider.getUser(parent.creatorId),
-    blocks: (parent, __, context) =>
-      context.dataSources.planBlockProvider.getPlanBlocksByPlan(parent.id),
+    blocks: (parent, args, context) =>
+      context.dataSources.planBlockProvider.getPlanBlocksByPlanAndDay(
+        parent.id,
+        args.day
+      ),
   },
 };

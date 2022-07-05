@@ -23,26 +23,26 @@ export const typeDefs = gql`
     rating: Int! # value between 1 and 5
     tags: [String!]!
     description: String!
-    blocks: [PlanBlock!]
+    blocks(day: Int!): [PlanBlock!]
     countries: [String!]!
     months: [String!]!
     assetLinks: [String]
   }
 
   type PlanBlock {
-    id: ID!
-    title: String!
-    description: String!
-    tags: [String!]
+    id: ID
+    title: String
+    description: String
     # type: BlockType!
-    images: [String!] # Link to image urls. string at images[0] is first one displayed
-    mapId: String! #Something to help render gmaps url. Maybe a google maps link
-    locationUrl: String # External link to the location
+    images: [String] # Link to image urls. string at images[0] is first one displayed
+    # mapId: String! #Something to help render gmaps url. Maybe a google maps link
+    # locationUrl: String # External link to the location
     # Store some links additional assets
-    audio: String!
-    video: String!
-    #
-    externalUrl: [String!]
+    # audio: String!
+    # video: String!
+    price: Int
+    day: Int
+    externalUrl: [String]
   }
 
   enum BlockType {
@@ -60,17 +60,20 @@ export const typeDefs = gql`
     plans: [Plan!]!
     planblocks: [PlanBlock!]!
     filteredPlans(input: FilterInput!): [Plan!]!
+    authenticateUser(username: String!, password: String!): User!
   }
 
   type Mutation {
     addUser(input: CreateUserInput!): User!
-    addPlan(input: CreatePlanInput!): Plan!
+    addPlan(creatorId: String!): Plan!
+    modifyPlan(input: UpdatePlanInput!): Plan
+    addPlanBlock(input: UpdatePlanBlockInput!): PlanBlock!
     #addPlanBlock(input: PlanBlockInput!)
     #modifyUser(input: UserInput!)
     #modifyPlan(input: modifyPlan!)
     #modifyPlanBlock(input: PlanBlockInput!)
   }
-  
+
   input FilterInput {
     countries: [String]
     rating: [Int]
@@ -90,13 +93,26 @@ export const typeDefs = gql`
     password: String!
   }
 
-  input CreatePlanInput {
-    name: String!
-    creatorId: String!
-    budget: Int! # Number between 1 and 4 representing num $ signs
-    rating: Int! # value between 1 and 5
-    tags: [String!]!
-    description: String!
-    imageLinks: [String!]
+  input UpdatePlanInput {
+    name: String
+    creatorId: String
+    id: String
+    budget: Int # Number between 1 and 4 representing num $ signs
+    rating: Int # value between 1 and 5
+    tags: [String]
+    description: String
+    assetLinks: [String]
+  }
+
+  input UpdatePlanBlockInput {
+    location: String
+    description: String
+    title: String
+    price: Int
+    links: [String]
+    day: Int
+    #audio: Int
+    #video: Int
+    images: [String]
   }
 `;

@@ -29,72 +29,79 @@ const GET_PLAN = gql`
   }
 `;
 
-const TravelPlanPage = ({}: //   route,
-//   navigation,
-{
-  //   route: any;
-  //   navigation: any;
-}) => {
+const TravelPlanPage = (route: any, navigation: any) => {
   //   const { planID } = route.params;
 
   const [activeTab, setActiveTab] = useState<number>(0);
 
   const [daysLabels, setDaysLabels] = useState(["Intro", "Day 1", "Day 2"]);
 
+  //   const { data, loading, error } = useQuery(GET_PLAN, {
+  //     variables: {
+  //       id: planID,
+  //     },
+  //   });
+
+  //   console.log("The data object", data);
+
   return (
-    <Stack space={3}>
-      <Stack marginLeft={"4"} marginRight={"4"} space={3}>
-        <Text fontSize="2xl" bold>
-          Name of Travel Plan
-        </Text>
-        <ScrollView horizontal={true}>
-          <HStack>
-            {daysLabels.map((label, index) =>
-              activeTab === index ? (
-                <Button
-                  marginRight="1"
-                  onPress={(_) => setActiveTab(index)}
-                  key={label}
-                  backgroundColor="#06B6D4"
-                >
-                  {label}
-                </Button>
-              ) : (
-                <Button
-                  marginRight="1"
-                  variant="outline"
-                  onPress={(_) => setActiveTab(index)}
-                  key={label}
-                >
-                  {label}
-                </Button>
-              )
-            )}
-          </HStack>
+    <ScrollView>
+      {/* {data && ( */}
+      <Stack space={3}>
+        <Stack marginLeft={"4"} marginRight={"4"} space={3}>
+          <Text fontSize="2xl" bold>
+            Name of Travel Plan
+          </Text>
+          <ScrollView horizontal={true}>
+            <HStack>
+              {daysLabels.map((label, index) =>
+                activeTab === index ? (
+                  <Button
+                    marginRight="1"
+                    onPress={(_) => setActiveTab(index)}
+                    key={label}
+                    backgroundColor="#06B6D4"
+                  >
+                    {label}
+                  </Button>
+                ) : (
+                  <Button
+                    marginRight="1"
+                    variant="outline"
+                    onPress={(_) => setActiveTab(index)}
+                    key={label}
+                  >
+                    {label}
+                  </Button>
+                )
+              )}
+            </HStack>
+          </ScrollView>
+        </Stack>
+        <ScrollView marginLeft={"4"} marginRight={"4"}>
+          {activeTab == 0 ? (
+            <Stack space={3}>
+              <Center>
+                <Image
+                  source={{
+                    uri: "https://wallpaperaccess.com/full/317501.jpg",
+                  }}
+                  alt="Alternate Text"
+                  size="2xl"
+                  width="100%"
+                />
+              </Center>
+              <HStack justifyContent="space-between">
+                <Text bold>Rating: 4/5</Text>
+                <Text bold>Last Updated: May 13th, 2021</Text>
+              </HStack>
+              <Text>Description</Text>
+            </Stack>
+          ) : null}
         </ScrollView>
       </Stack>
-      <ScrollView marginLeft={"4"} marginRight={"4"}>
-        {activeTab == 0 ? (
-          <Stack space={3}>
-            <Center>
-              <Image
-                source={{
-                  uri: "https://wallpaperaccess.com/full/317501.jpg",
-                }}
-                alt="Alternate Text"
-                size="2xl"
-                width="100%"
-              />
-            </Center>
-            <HStack justifyContent="space-between">
-              <Text bold>Rating: 4/5</Text>
-              <Text bold>Last Updated: May 13th, 2021</Text>
-            </HStack>
-            <Text>Description</Text>
-          </Stack>
-        ) : null}
-      </ScrollView>
-    </Stack>
+      {/* )} */}
+    </ScrollView>
   );
 };
 

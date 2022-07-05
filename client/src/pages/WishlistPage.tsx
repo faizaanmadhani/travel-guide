@@ -5,5 +5,5 @@ import { Button } from "native-base";
 import TravelPlanPage from "./PlanMain";
 
 export default function WishlistPage({ navigation }: { navigation: any }) {
-  return <Button>Open Sample Travel Plan</Button>;
+  return <Button onPres>Open Sample Travel Plan</Button>;
 }

@@ -5,6 +5,7 @@ import TravelPage from "../pages/TravelPage";
 import EditTravelPlan from "../pages/EditTravelPlan";
 import ImageBrowserScreen from "../components/assetselector";
 import { EditBlockForm } from "../pages/EditBlock";
+import TravelPlanPage from "../pages/PlanMain";
 
 const TravelStack = createNativeStackNavigator();
 

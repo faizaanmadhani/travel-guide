@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { render } from "react-dom";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, View } from "react-native";
@@ -24,8 +24,13 @@ import LoginPage from "./src/pages/LoginPage";
 import TravelStackScreen from "./src/navigation/TravelPageStack";
 import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
 
+export const UserContext = React.createContext({
+  userID: "",
+  setUserID: (id) => {},
+});
+
 export const client = new ApolloClient({
-  uri: "http://9d47-192-159-178-168.ngrok.io",
+  uri: "https://1fc0-104-156-64-158.ngrok.io",
   cache: new InMemoryCache(),
 });
 
@@ -36,75 +41,102 @@ const tabNavigationOptions = {
 const Tab = createBottomTabNavigator();
 
 export default function App() {
+  const [userID, setUserID] = useState("");
+
   return (
     <ApolloProvider client={client}>
-      <NativeBaseProvider>
-        <NavigationContainer>
-          <Tab.Navigator
-            screenOptions={({ route }) => ({
-              tabBarIcon: ({ focused, color, size }) => {
-                let iconName;
-                const iconColour = focused ? "black" : "gray";
+      <UserContext.Provider value={{ userID, setUserID }}>
+        <NativeBaseProvider>
+          <NavigationContainer>
+            <Tab.Navigator
+              screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                  let iconName;
+                  const iconColour = focused ? "black" : "gray";
 
-                // navigation icons
-                if (route.name === "Explore") {
-                  return (
-                    <Ionicons
-                      name={focused ? "search" : "search-outline"}
-                      size={24}
-                      color={iconColour}
-                    />
-                  );
-                } else if (route.name === "Travel") {
-                  return (
-                    <Ionicons
-                      name={focused ? "airplane" : "airplane-outline"}
-                      size={24}
-                      color={iconColour}
-                    />
-                  );
-                } else if (route.name === "Wishlist") {
-                  return (
-                    <MaterialIcons
-                      name={focused ? "star" : "star-border"}
-                      size={24}
-                      color={iconColour}
-                    />
-                  );
-                } else if (route.name === "Profile") {
-                  return (
-                    <MaterialIcons
-                      name={focused ? "person" : "person-outline"}
-                      size={24}
-                      color={iconColour}
-                    />
-                  );
-                }
-              },
-              tabBarActiveTintColor: "black",
-              tabBarInactiveTintColor: "gray",
-            })}
-          >
-            <Tab.Screen name="Wandr" component={LandingPage}
-                        options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
-            <Tab.Screen name="Register" component={RegisterPage}
-                        options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
-            <Tab.Screen name="Login" component={LoginPage}
-                        options={{ tabBarButton: () => null, tabBarVisible: false, tabBarStyle: {display: 'none'}}}/>
-            
-            <Tab.Screen name="Explore" component={ExplorePage} />
-            <Tab.Screen
-              name="Travel"
-              options={tabNavigationOptions}
-              component={EditTravelPlanStackScreen}
-            />
-            <Tab.Screen name="Wishlist" component={WishlistPage} />
-            <Tab.Screen name="Profile" component={ProfilePage} 
-                      initialParams={{ username : "" }}/>
-   
-          </Tab.Navigator>
-        </NavigationContainer>
-      </NativeBaseProvider>
+                  // navigation icons
+                  if (route.name === "Explore") {
+                    return (
+                      <Ionicons
+                        name={focused ? "search" : "search-outline"}
+                        size={24}
+                        color={iconColour}
+                      />
+                    );
+                  } else if (route.name === "Travel") {
+                    return (
+                      <Ionicons
+                        name={focused ? "airplane" : "airplane-outline"}
+                        size={24}
+                        color={iconColour}
+                      />
+                    );
+                  } else if (route.name === "Wishlist") {
+                    return (
+                      <MaterialIcons
+                        name={focused ? "star" : "star-border"}
+                        size={24}
+                        color={iconColour}
+                      />
+                    );
+                  } else if (route.name === "Profile") {
+                    return (
+                      <MaterialIcons
+                        name={focused ? "person" : "person-outline"}
+                        size={24}
+                        color={iconColour}
+                      />
+                    );
+                  }
+                },
+                tabBarActiveTintColor: "black",
+                tabBarInactiveTintColor: "gray",
+              })}
+            >
+              <Tab.Screen
+                name="Wandr"
+                component={LandingPage}
+                options={{
+                  tabBarButton: () => null,
+                  tabBarVisible: false,
+                  tabBarStyle: { display: "none" },
+                }}
+              />
+              <Tab.Screen
+                name="Register"
+                component={RegisterPage}
+                options={{
+                  tabBarButton: () => null,
+                  tabBarVisible: false,
+                  tabBarStyle: { display: "none" },
+                }}
+              />
+              <Tab.Screen
+                name="Login"
+                component={LoginPage}
+                options={{
+                  tabBarButton: () => null,
+                  tabBarVisible: false,
+                  tabBarStyle: { display: "none" },
+                }}
+              />
+
+              <Tab.Screen name="Explore" component={ExplorePage} />
+              <Tab.Screen
+                name="Travel"
+                options={tabNavigationOptions}
+                component={EditTravelPlanStackScreen}
+              />
+              <Tab.Screen name="Wishlist" component={WishlistPage} />
+              <Tab.Screen
+                name="Profile"
+                component={ProfilePage}
+                initialParams={{ username: "" }}
+              />
+            </Tab.Navigator>
+          </NavigationContainer>
+        </NativeBaseProvider>
+      </UserContext.Provider>
     </ApolloProvider>
   );
 }

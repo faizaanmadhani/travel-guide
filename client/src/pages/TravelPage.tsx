@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Box,
   AspectRatio,
@@ -12,12 +12,17 @@ import {
   ScrollView,
   Input,
   IconButton,
+  Button,
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
-import { gql } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import TravelPlanPage from "./PlanMain";
+import { UserContext } from "../../App";
+import Spinner from "react-native-loading-spinner-overlay";
+import PlanCardSmall from "../components/PlanCardSmall";
+import { Pressable } from "react-native";
 
 const styles = {
   screenLayout: {
@@ -28,99 +33,75 @@ const styles = {
   },
 };
 
-const travelPlan = (
-  <VStack marginBottom={"1"}>
-    <Box alignItems="center">
-      <Box
-        rounded="lg"
-        overflow="hidden"
-        borderColor="coolGray.200"
-        borderWidth="1"
-        _dark={{
-          borderColor: "coolGray.600",
-          backgroundColor: "gray.700",
-        }}
-        _web={{
-          shadow: 2,
-          borderWidth: 0,
-        }}
-        _light={{
-          backgroundColor: "gray.50",
-        }}
-      >
-        <Box>
-          <AspectRatio w="100%" ratio={16 / 9}>
-            <Image
-              source={{
-                uri: "https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg",
-              }}
-              alt="image"
-            />
-          </AspectRatio>
-          <Center
-            bg="violet.500"
-            _dark={{
-              bg: "violet.400",
-            }}
-            _text={{
-              color: "warmGray.50",
-              fontWeight: "700",
-              fontSize: "xs",
-            }}
-            position="absolute"
-            bottom="0"
-            px="3"
-            py="1.5"
-          >
-            3 WEEKS
-          </Center>
-        </Box>
-        <Stack p="4" space={3}>
-          <Stack space={2}>
-            <Heading size="md" ml="-1">
-              Toronto Tours for First-time Visitors
-            </Heading>
-            <Text
-              fontSize="xs"
-              _light={{
-                color: "violet.500",
-              }}
-              _dark={{
-                color: "violet.400",
-              }}
-              fontWeight="500"
-              ml="-0.5"
-              mt="-1"
-            >
-              Created by Emily
-            </Text>
-          </Stack>
-          <Text fontWeight="400">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.
-          </Text>
-          <HStack alignItems="center" space={4} justifyContent="space-between">
-            <HStack alignItems="center">
-              <Text
-                color="coolGray.600"
-                _dark={{
-                  color: "warmGray.200",
-                }}
-                fontWeight="400"
-              >
-                6 mins ago
-              </Text>
-            </HStack>
-          </HStack>
-        </Stack>
-      </Box>
-    </Box>
-  </VStack>
-);
+const CREATE_BLANK_PLAN = gql`
+  mutation createTravelPlan($creatorId: String!) {
+    addPlan(creatorId: $creatorId) {
+      id
+    }
+  }
+`;
+
+const GET_SAVED_PLANS = gql`
+  query ($userID: String!) {
+    user(id: $userID) {
+      savedPlans {
+        id
+        name
+        budget
+        rating
+        tags
+        description
+        countries
+        months
+        assetLinks
+      }
+    }
+  }
+`;
 
 export default function TravelPage({ navigation }: { navigation: any }) {
+  const { userID } = useContext(UserContext);
+
+  console.log("THE USER ID", userID);
+
+  const {
+    data: planData,
+    loading: planLoading,
+    error: planError,
+    refetch,
+  } = useQuery(GET_SAVED_PLANS);
+
+  const [createBlankPlan, { data, loading, error }] = useMutation(
+    CREATE_BLANK_PLAN,
+    {
+      onCompleted: (resultData) => {
+        console.log("The result data", resultData);
+        navigation.push("Create Travel Plan", {
+          planID: resultData.addPlan.id,
+        });
+      },
+    }
+  );
+
+  if (planLoading) return <Spinner />;
+
   return (
     <SafeAreaView>
+      <Button
+        marginBottom={2}
+        onPress={() => {
+          console.log("refetching...");
+          refetch({
+            userID: userID,
+          });
+        }}
+      >
+        Refetch
+      </Button>
+      <Spinner
+        //visibility of Overlay Loading Spinner
+        visible={loading}
+      />
       <VStack>
         <Box alignItems="flex-start">
           <HStack justifyContent="space-between">
@@ -130,18 +111,23 @@ export default function TravelPage({ navigation }: { navigation: any }) {
             />
             <IconButton
               icon={<AntDesign name="pluscircle" size={25} color="#06B6D4" />}
-              onPress={() =>
-                navigation.push("Create Travel Plan", {
-                  planID: undefined,
-                  new: true,
-                })
-              }
+              onPress={() => {
+                createBlankPlan({ variables: { creatorId: userID } });
+              }}
             />
           </HStack>
         </Box>
       </VStack>
       <VStack margin={"1"}></VStack>
-      <TravelPlanPage />
+      <ScrollView>
+        <Stack space={2} alignItems="center">
+          {planData &&
+            planData.user.savedPlans.map((plan) => {
+              console.log("obj plan", plan);
+              return <Box mr="1">{PlanCardSmall(plan, navigation)}</Box>;
+            })}
+        </Stack>
+      </ScrollView>
     </SafeAreaView>
   );
 }
