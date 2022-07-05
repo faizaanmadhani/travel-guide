@@ -76,8 +76,8 @@ export const typeDefs = gql`
 
   input FilterInput {
     countries: [String]
-    rating: Int
-    budget: Int
+    rating: [Int]
+    budget: [Int]
     months: [String]
   }
 

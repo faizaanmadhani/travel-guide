@@ -31,8 +31,8 @@ export type CreateUserInput = {
 
 export type FilterInput = {
   countries?: Maybe<Array<Maybe<Scalars['String']>>>;
-  rating?: Maybe<Scalars['Int']>;
-  budget?: Maybe<Scalars['Int']>;
+  rating?: Maybe<Array<Maybe<Scalars['Int']>>>;
+  budget?: Maybe<Array<Maybe<Scalars['Int']>>>;
   months?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
