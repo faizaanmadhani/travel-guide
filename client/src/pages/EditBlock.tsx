@@ -23,6 +23,7 @@ import SearchBarWithAutocomplete, {
 } from "../components/SearchBar";
 import axios from "axios";
 import { useDebounce } from "../hooks/useDebounce";
+import * as ImagePicker from "expo-image-picker";
 
 const GOOGLE_PLACES_API_BASE_URL = "https://maps.googleapis.com/maps/api/place";
 
@@ -34,6 +35,8 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
   const [predictions, setPredictions] = useState<PredictionType[]>([]);
   const [, updateState] = useState({});
   const forceUpdate = useCallback(() => updateState({}), []);
+
+  const [image, setImage] = useState(null);
 
   // Form States
   const [description, setDescription] = useState("");
@@ -128,6 +131,18 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
     }
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+    if (!result.cancelled) {
+      setImage(result["uri"]);
+    }
+  };
+
   return (
     <ScrollView>
       <Stack
@@ -152,22 +167,29 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
             onPredictionTapped={onPredictionTapped}
           />
         </FormControl>
-        <Pressable onPress={() => navigation.navigate("Select Images")}>
+        <Pressable onPress={() => pickImage()}>
           <Center>
-            <Center
-              _text={{
-                color: "#B0B0B0",
-                fontWeight: "bold",
-              }}
-              height={200}
-              width={{
-                base: 200,
-                lg: 250,
-              }}
-            >
-              <AntDesign name="plus" size={25} color="#B0B0B0" />
-              Add Picture or Video
-            </Center>
+            {!image ? (
+              <Center
+                _text={{
+                  color: "#B0B0B0",
+                  fontWeight: "bold",
+                }}
+                height={200}
+                width={{
+                  base: 200,
+                  lg: 250,
+                }}
+              >
+                <AntDesign name="plus" size={25} color="#B0B0B0" />
+                Add Picture or Video
+              </Center>
+            ) : (
+              <Image
+                source={{ uri: image }}
+                style={{ width: 400, height: 400 }}
+              />
+            )}
           </Center>
         </Pressable>
         <FormControl mb="1">

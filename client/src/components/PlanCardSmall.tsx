@@ -8,8 +8,10 @@ import {
   HStack,
   AspectRatio,
 } from "native-base";
+import { Pressable } from "react-native";
 
 export type PlanView_Data = {
+  id: String;
   name: String;
   budget: number;
   rating: number;
@@ -19,7 +21,7 @@ export type PlanView_Data = {
   months: String[];
 };
 
-export default function PlanCardSmall(plan: PlanView_Data) {
+export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
   const displayBudget = (budget: Number) => {
     let dollarSigns = "";
 

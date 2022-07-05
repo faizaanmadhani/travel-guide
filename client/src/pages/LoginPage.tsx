@@ -30,12 +30,12 @@ import StyledTagInput from "../components/taginput";
 import { gql, useMutation, useLazyQuery } from "@apollo/client";
 import { AntDesign } from "@expo/vector-icons";
 import { MutationAddUserArgs } from "../../../server/src/generated/graphql";
-import { GET_USERS } from "./ProfilePage";
 import { UserContext } from "../../App";
+import Spinner from "react-native-loading-spinner-overlay";
 
 const AUTH_USER = gql`
-  query authenticateUser {
-    authenticateUser(username: "Test1", password: "test123") {
+  query authenticateUser($username: String!, $password: String!) {
+    authenticateUser(username: $username, password: $password) {
       id
     }
   }
@@ -49,11 +49,6 @@ export function setUserLoggedIn(name: String) {
 export default function LoginPage({ navigation }: { navigation: any }) {
   // fetch pre-existing data
   // const { data, error, loading } = useQuery(GET_USERS, {fetchPolicy : 'cache-and-network'});
-
-  const [authenticateUser, { data, error, loading }] = useLazyQuery(GET_USERS);
-
-  if (loading) console.log("Loading...");
-  if (error) console.log(`Error! ${error.message}`);
 
   // set up for adding user
   // const [addUser, { data, loading, error }] = useMutation(CREATE_USER);
@@ -70,7 +65,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     navigation.navigate("Explore");
   }
 
-  function LoginUser() {
+  async function LoginUser(resultData: { authenticateUser: { id: string } }) {
     // check: has user name & password fields
     let passwordEntered = true,
       usernameEntered = true;
@@ -83,15 +78,6 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     // check: user name exists
     let userExists = false;
     let userIdx = -1;
-    // for (let i = 0; data.users[i] != undefined; i++)
-    // {
-    //     if (data.users[i].name == name)
-    //     {
-    //         userExists = true;
-    //         userIdx = i;
-    //         break;
-    //     }
-    // }
 
     if (!usernameEntered) {
       Alert.alert(
@@ -120,64 +106,65 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     }
 
     if (usernameEntered) {
-      authenticateUser({
-        variables: { username: name, password: password },
-      }).then(() => {
-        if (!loading && data) {
-          let passwordCorrect = false;
-          if (data.authenticateUser.id !== "") {
-            passwordCorrect = true;
-          } else {
-            passwordCorrect = false;
-          }
+      let passwordCorrect = false;
+      if (resultData.authenticateUser.id !== "") {
+        passwordCorrect = true;
+        userExists = true;
+      } else {
+        passwordCorrect = false;
+      }
 
-          if (!userExists) {
-            Alert.alert(
-              `User ${name} Not Found`,
-              "Please register or re-enter user name.",
-              [
-                {
-                  text: "Register",
-                  onPress: () => navigation.navigate("Register"),
-                },
-                {
-                  text: "Re-enter",
-                  onPress: () => console.log("Cancel Pressed"),
-                  style: "cancel",
-                },
-              ]
-            );
-          } else if (!passwordCorrect) {
-            Alert.alert(
-              `Incorrect Password`,
-              `Please re-enter password for User ${name}.`,
-              [
-                {
-                  text: "Re-enter",
-                  onPress: () => console.log("Cancel Pressed"),
-                  style: "cancel",
-                },
-              ]
-            );
-          } else {
-            userLoggedIn = name;
-            console.log(userLoggedIn);
-            setUserID(data.authenticateUser.id);
-            Alert.alert(
-              "Login Success",
-              `User ${name} successfully logged in!`,
-              [
-                {
-                  text: "Go to App",
-                  onPress: () => goToHome(),
-                },
-              ]
-            );
-          }
-        }
-      });
+      if (!userExists) {
+        Alert.alert(
+          `User ${name} Not Found`,
+          "Please register or re-enter user name.",
+          [
+            {
+              text: "Register",
+              onPress: () => navigation.navigate("Register"),
+            },
+            {
+              text: "Re-enter",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+          ]
+        );
+      } else if (!passwordCorrect) {
+        Alert.alert(
+          `Incorrect Password`,
+          `Please re-enter password for User ${name}.`,
+          [
+            {
+              text: "Re-enter",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+          ]
+        );
+      } else {
+        userLoggedIn = name;
+        console.log(userLoggedIn);
+        setUserID(resultData.authenticateUser.id);
+        Alert.alert("Login Success", `User ${name} successfully logged in!`, [
+          {
+            text: "Go to App",
+            onPress: () => goToHome(),
+          },
+        ]);
+      }
     }
   }
+
+  const [authenticateUser, { data, error, loading }] = useLazyQuery(AUTH_USER, {
+    onCompleted: (resultData) => {
+      console.log("The result data", resultData);
+      LoginUser(resultData);
+    },
+  });
+
+  if (loading) console.log(`Loading`);
+  if (error) console.log(`Error! ${error.message}`);
 
   return (
     <ImageBackground
@@ -220,9 +207,11 @@ export default function LoginPage({ navigation }: { navigation: any }) {
             <Button
               variant="solid"
               colorScheme="primary"
-              onPress={() => {
-                LoginUser();
-              }}
+              onPress={() =>
+                authenticateUser({
+                  variables: { username: name, password: password },
+                })
+              }
             >
               Done
             </Button>

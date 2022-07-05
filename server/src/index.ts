@@ -133,6 +133,7 @@ router.post(
   multer.single("image"),
   ImgUpload.uploadToGcs,
   function(request: any, response: any, _) {
+    console.log("right endpoint triggered", request);
     const data = request.body;
     if (request.file && request.file.cloudStoragePublicUrl) {
       data.imageUrl = request.file.cloudStoragePublicUrl;

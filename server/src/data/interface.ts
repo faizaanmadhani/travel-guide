@@ -25,17 +25,19 @@ export interface IPlan {
   blocks: Types.Array<Types.ObjectId>;
   countries: Types.Array<string>;
   months: Types.Array<string>;
-  imageLinks: Types.Array<string>;
+  assetLinks: Types.Array<string>;
 }
 
 export interface IPlanBlock {
   title: string;
   description: string;
-  tags: Types.Array<string>;
-  type: string;
   images?: Types.Array<string>;
-  map_id?: string;
-  location_url?: string;
-  audio?: string;
-  video?: string;
+  links: Types.Array<string>;
+  price: number;
+  location: string;
+  day: number;
+  // map_id?: string;
+  // location_url?: string;
+  // audio?: string;
+  // video?: string;
 }

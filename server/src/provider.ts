@@ -1,6 +1,6 @@
 import { DataSource } from "apollo-datasource";
 import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
-import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput } from "./generated/graphql";
+import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput } from "./generated/graphql";
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -35,10 +35,13 @@ const castIPlanBlocktoPlanBlock = (planBlock: any) => {
     id: !planBlock?.id ? "" : planBlock?.id,
     title: !planBlock?.title ? "" : planBlock?.title,
     description: !planBlock?.description ? "" : planBlock?.description,
-    mapId: !planBlock?.mapId ? "" : planBlock?.mapId,
-    audio: !planBlock?.audio ? "" : planBlock?.audio,
-    video: !planBlock?.video ? "" : planBlock?.video,
+    images: !planBlock?.images ? [] : planBlock?.images,
+    // mapId: !planBlock?.mapId ? "" : planBlock?.mapId,
+    // audio: !planBlock?.audio ? "" : planBlock?.audio,
+    // video: !planBlock?.video ? "" : planBlock?.video,
     price: !planBlock?.price ? 0 : planBlock?.price,
+    day: !planBlock?.day ? 1 : planBlock.day,
+    externalUrl: !planBlock?.links ? [] : planBlock.links
   }
   return gqlPlanBlock;
 }
@@ -53,6 +56,7 @@ export class UserProvider extends DataSource {
   }
 
   public async authenticateUser(username: String, password: String) {
+    console.log("reached", username, password);
     const user = await UserModel.findOne({name: username});
     if (user && user.password === password) {
       return castIUserToUser(user);
@@ -188,41 +192,58 @@ export class PlanProvider extends DataSource {
   }
 
   public async createPlan(creatorId: String) {
-
+    console.log("reached");
     const newPlan = new PlanModel({
       name: "",
-      creatorId: creatorId,
+      creator: creatorId,
       rating: "",
       budget: 0,
       tags: [],
       description: "",
-      blocks: []
+      blocks: [],
+      assetLinks: []
     });
 
     await newPlan.save();
     const id = newPlan._id.toString();
+
+    // Save ID to user file
+    const user = await UserModel.findById(creatorId).exec();
+    user?.saved_plans?.push(id);
+    await user?.save();
+    console.log(this.getPlan(id));
     return this.getPlan(id);
   }
 
   public async updatePlan(input: UpdatePlanInput) {
 
     const doc = await PlanModel.findById(input.id);
+    const creatorId = input.creatorId;
     if (doc) {
-      doc.name = input.name;
-      doc.budget = input.budget;
+      doc.overwrite({
+        name: "",
+        creator: creatorId,
+        rating: "",
+        budget: 0,
+        tags: [],
+        description: "",
+        blocks: [],
+        assetLinks: []
+      });
 
-      doc.tags.length = 0;
-      input.tags.forEach((tag, _) => {
+      doc.name = !input.name ? "" : input.name;
+      doc.budget = !input.budget ? 1 : input.budget;
+
+      input.tags?.forEach((tag, _) => {
         doc.tags.push(tag);
       })
-      doc.description = input.description;
-      doc.imageLinks.length = 0;
-      input.imageLinks.forEach((link, _) => {
-        doc.tags.push(link);
+      doc.description = !input.description ? "" : input.description;
+      input.assetLinks?.forEach((link, _) => {
+        doc.assetLinks.push(link);
       })
 
       await doc.save();
-      return this.getPlan(input.id);
+      return this.getPlan(input?.id || "");
     }
 
     return null;
@@ -235,11 +256,13 @@ export class PlanBlockProvider extends DataSource {
     return castIPlanBlocktoPlanBlock(planBlock);
   }
 
-  public async getPlanBlocksByPlan(planId: string) {
-    const planBlocksArray = (await PlanModel.findById(planId).select("blocks").populate({
+  public async getPlanBlocksByPlanAndDay(planId: string, day: number) {
+    let planBlocksArray: any = (await PlanModel.findById(planId).select("blocks").populate({
       path: "blocks",
       model: "PlanBlock"
     }).exec())?.blocks;
+
+    planBlocksArray = planBlocksArray.filter((obj: any) => obj.day === day);
 
     if (planBlocksArray) {
       const blocks: PlanBlock[] = planBlocksArray?.map((block, _) => {
@@ -250,5 +273,24 @@ export class PlanBlockProvider extends DataSource {
       const blocks: PlanBlock[] = [];
       return blocks;
     }
+  }
+
+  public async createBlock(planID: string, input: UpdatePlanBlockInput) {
+    const newPlanBlock = new PlanBlockModel({
+      title: input.title,
+      description: input.description,
+      images: input.images,
+      links: input.links,
+      location: input.location,
+      day: input.day,
+    })
+
+    await newPlanBlock.save();
+    const id = newPlanBlock._id.toString();
+    const plan = (await PlanModel.findById(planID).exec());
+    plan?.blocks.push(id);
+    await plan?.save();
+
+    return castIPlanBlocktoPlanBlock(this.getPlanBlock(id));
   }
 }

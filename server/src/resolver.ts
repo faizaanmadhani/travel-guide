@@ -21,8 +21,14 @@ export const resolvers: Resolvers = {
   Mutation: {
     addUser: (_, args, context) =>
       context.dataSources.userProvider.createUser(args.input),
-    addPlan: (_, args, context) =>
-      context.dataSources.planProvider.createPlan(args.creatorId),
+    addPlan: async (_, args, context) => {
+      console.log("The args", args);
+      const newPlan = await context.dataSources.planProvider.createPlan(
+        args.creatorId
+      );
+      console.log(newPlan);
+      return newPlan;
+    },
     modifyPlan: (_, args, context) =>
       context.dataSources.planProvider.updatePlan(args.input),
   },
@@ -35,7 +41,10 @@ export const resolvers: Resolvers = {
   Plan: {
     creator: (parent, __, context) =>
       context.dataSources.userProvider.getUser(parent.creatorId),
-    blocks: (parent, __, context) =>
-      context.dataSources.planBlockProvider.getPlanBlocksByPlan(parent.id),
+    blocks: (parent, args, context) =>
+      context.dataSources.planBlockProvider.getPlanBlocksByPlanAndDay(
+        parent.id,
+        args.day
+      ),
   },
 };

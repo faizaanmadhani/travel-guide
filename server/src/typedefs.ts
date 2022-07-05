@@ -23,26 +23,26 @@ export const typeDefs = gql`
     rating: Int! # value between 1 and 5
     tags: [String!]!
     description: String!
-    blocks: [PlanBlock!]
+    blocks(day: Int!): [PlanBlock!]
     countries: [String!]!
     months: [String!]!
     assetLinks: [String]
   }
 
   type PlanBlock {
-    id: ID!
-    title: String!
-    description: String!
+    id: ID
+    title: String
+    description: String
     # type: BlockType!
-    images: [String!] # Link to image urls. string at images[0] is first one displayed
-    mapId: String! #Something to help render gmaps url. Maybe a google maps link
-    locationUrl: String # External link to the location
+    images: [String] # Link to image urls. string at images[0] is first one displayed
+    # mapId: String! #Something to help render gmaps url. Maybe a google maps link
+    # locationUrl: String # External link to the location
     # Store some links additional assets
-    audio: String!
-    video: String!
-    price: Int!
-    #
-    externalUrl: [String!]
+    # audio: String!
+    # video: String!
+    price: Int
+    day: Int
+    externalUrl: [String]
   }
 
   enum BlockType {
@@ -94,14 +94,14 @@ export const typeDefs = gql`
   }
 
   input UpdatePlanInput {
-    name: String!
-    creatorId: String!
-    id: String!
-    budget: Int! # Number between 1 and 4 representing num $ signs
-    rating: Int! # value between 1 and 5
-    tags: [String!]!
-    description: String!
-    imageLinks: [String!]!
+    name: String
+    creatorId: String
+    id: String
+    budget: Int # Number between 1 and 4 representing num $ signs
+    rating: Int # value between 1 and 5
+    tags: [String]
+    description: String
+    assetLinks: [String]
   }
 
   input UpdatePlanBlockInput {
@@ -110,8 +110,9 @@ export const typeDefs = gql`
     title: String
     price: Int
     links: [String]
-    audio: Int
-    video: Int
+    day: Int
+    #audio: Int
+    #video: Int
     images: [String]
   }
 `;
