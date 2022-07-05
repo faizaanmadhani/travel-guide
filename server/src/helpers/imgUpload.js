@@ -1,13 +1,13 @@
 "use strict";
-import storage from "@google-cloud/storage";
-import fs from "fs";
+const { Storage } = require("@google-cloud/storage");
+const fs = require("fs");
 
-const gcs = storage({
-  projectId: "your-project-id",
-  keyFilename: "/path/to/keyfile.json",
+const gcs = new Storage({
+  projectId: "travel-plan",
+  keyFilename: "google-cloud-keys.json",
 });
 
-const bucketName = "bucket-name-for-upload";
+const bucketName = "plan_images";
 const bucket = gcs.bucket(bucketName);
 
 function getPublicUrl(filename) {
@@ -43,4 +43,4 @@ ImgUpload.uploadToGcs = (req, res, next) => {
   stream.end(req.file.buffer);
 };
 
-export default ImgUpload;
+module.exports = ImgUpload;

@@ -60,6 +60,7 @@ export const typeDefs = gql`
     plans: [Plan!]!
     planblocks: [PlanBlock!]!
     filteredPlans(input: FilterInput!): [Plan!]!
+    authenticateUser(username: String!, password: String!): User!
   }
 
   type Mutation {

@@ -12,6 +12,11 @@ export const resolvers: Resolvers = {
     plans: (_, __, context) => context.dataSources.planProvider.getAllPlans(),
     filteredPlans: (_, args, context) =>
       context.dataSources.planProvider.getFilteredPlans(args.input),
+    authenticateUser: (_, args, context) =>
+      context.dataSources.userProvider.authenticateUser(
+        args.username,
+        args.password
+      ),
   },
   Mutation: {
     addUser: (_, args, context) =>

@@ -114,6 +114,7 @@ export type Query = {
   plans: Array<Plan>;
   planblocks: Array<PlanBlock>;
   filteredPlans: Array<Plan>;
+  authenticateUser: User;
 };
 
 
@@ -134,6 +135,12 @@ export type QueryPlanBlockArgs = {
 
 export type QueryFilteredPlansArgs = {
   input: FilterInput;
+};
+
+
+export type QueryAuthenticateUserArgs = {
+  username: Scalars['String'];
+  password: Scalars['String'];
 };
 
 export type UpdatePlanBlockInput = {
@@ -341,6 +348,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   plans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType>;
   planblocks?: Resolver<Array<ResolversTypes['PlanBlock']>, ParentType, ContextType>;
   filteredPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryFilteredPlansArgs, 'input'>>;
+  authenticateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthenticateUserArgs, 'username' | 'password'>>;
 };
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
