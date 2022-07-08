@@ -18,27 +18,30 @@ export const userSchema = new Schema<IUser>({
 });
 
 export const planSchema = new Schema<IPlan>({
-  name: { type: String, required: true },
-  creator: { type: Schema.Types.ObjectId, required: true, ref: "User" },
-  rating: { type: Number, required: true },
-  budget: { type: Number, required: true },
-  tags: { type: [String], required: true },
-  description: { type: String, required: true },
-  blocks: { type: [Types.ObjectId], required: true, ref: "PlanBlock" },
-  countries: { type: [String], required: true },
-  months: { type: [String], required: true },
+  name: { type: String, required: false },
+  creator: { type: Schema.Types.ObjectId, required: false, ref: "User" },
+  rating: { type: Number, required: false },
+  budget: { type: Number, required: false },
+  tags: { type: [String], required: false },
+  description: { type: String, required: false },
+  blocks: { type: [Types.ObjectId], required: false, ref: "PlanBlock" },
+  countries: { type: [String], required: false },
+  months: { type: [String], required: false },
+  assetLinks: { type: [String], required: false },
 });
 
 export const planBlockSchema = new Schema<IPlanBlock>({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  tags: { type: [String], required: true },
-  type: { type: String, required: true },
+  location: { type: String, required: true },
+  // tags: { type: [String], required: true },
+  // type: { type: String, required: true },
   images: { type: String, required: false },
-  map_id: { type: String, required: false },
-  location_url: { type: String, required: false },
-  audio: { type: String, required: false },
-  video: { type: String, required: false },
+  day: { type: Number, required: true },
+  // map_id: { type: String, required: false },
+  // location_url: { type: String, required: false },
+  // audio: { type: String, required: false },
+  // video: { type: String, required: false },
 });
 
 // const run = async () => {

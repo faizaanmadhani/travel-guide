@@ -22,16 +22,6 @@ export enum BlockType {
   Sight = 'SIGHT'
 }
 
-export type CreatePlanInput = {
-  name: Scalars['String'];
-  creatorId: Scalars['String'];
-  budget: Scalars['Int'];
-  rating: Scalars['Int'];
-  tags: Array<Scalars['String']>;
-  description: Scalars['String'];
-  imageLinks?: Maybe<Array<Scalars['String']>>;
-};
-
 export type CreateUserInput = {
   name: Scalars['String'];
   email: Scalars['String'];
@@ -50,6 +40,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   addUser: User;
   addPlan: Plan;
+  modifyPlan?: Maybe<Plan>;
+  addPlanBlock: PlanBlock;
 };
 
 
@@ -59,7 +51,17 @@ export type MutationAddUserArgs = {
 
 
 export type MutationAddPlanArgs = {
-  input: CreatePlanInput;
+  creatorId: Scalars['String'];
+};
+
+
+export type MutationModifyPlanArgs = {
+  input: UpdatePlanInput;
+};
+
+
+export type MutationAddPlanBlockArgs = {
+  input: UpdatePlanBlockInput;
 };
 
 export type Plan = {
@@ -78,18 +80,20 @@ export type Plan = {
   assetLinks?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
+
+export type PlanBlocksArgs = {
+  day: Scalars['Int'];
+};
+
 export type PlanBlock = {
   __typename?: 'PlanBlock';
-  id: Scalars['ID'];
-  title: Scalars['String'];
-  description: Scalars['String'];
-  tags?: Maybe<Array<Scalars['String']>>;
-  images?: Maybe<Array<Scalars['String']>>;
-  mapId: Scalars['String'];
-  locationUrl?: Maybe<Scalars['String']>;
-  audio: Scalars['String'];
-  video: Scalars['String'];
-  externalUrl?: Maybe<Array<Scalars['String']>>;
+  id?: Maybe<Scalars['ID']>;
+  title?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  images?: Maybe<Array<Maybe<Scalars['String']>>>;
+  price?: Maybe<Scalars['Int']>;
+  day?: Maybe<Scalars['Int']>;
+  externalUrl?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type Preference = {
@@ -112,6 +116,7 @@ export type Query = {
   plans: Array<Plan>;
   planblocks: Array<PlanBlock>;
   filteredPlans: Array<Plan>;
+  authenticateUser: User;
 };
 
 
@@ -132,6 +137,33 @@ export type QueryPlanBlockArgs = {
 
 export type QueryFilteredPlansArgs = {
   input: FilterInput;
+};
+
+
+export type QueryAuthenticateUserArgs = {
+  username: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type UpdatePlanBlockInput = {
+  location?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Int']>;
+  links?: Maybe<Array<Maybe<Scalars['String']>>>;
+  day?: Maybe<Scalars['Int']>;
+  images?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type UpdatePlanInput = {
+  name?: Maybe<Scalars['String']>;
+  creatorId?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  budget?: Maybe<Scalars['Int']>;
+  rating?: Maybe<Scalars['Int']>;
+  tags?: Maybe<Array<Maybe<Scalars['String']>>>;
+  description?: Maybe<Scalars['String']>;
+  assetLinks?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type User = {
@@ -237,7 +269,12 @@ export type ResolversTypes = {
   FilterInput: FilterInput;
   Mutation: ResolverTypeWrapper<{}>;
   CreateUserInput: CreateUserInput;
+<<<<<<< HEAD
   CreatePlanInput: CreatePlanInput;
+=======
+  UpdatePlanInput: UpdatePlanInput;
+  UpdatePlanBlockInput: UpdatePlanBlockInput;
+>>>>>>> master
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BlockType: BlockType;
   PrefInput: PrefInput;
@@ -257,7 +294,12 @@ export type ResolversParentTypes = {
   FilterInput: FilterInput;
   Mutation: {};
   CreateUserInput: CreateUserInput;
+<<<<<<< HEAD
   CreatePlanInput: CreatePlanInput;
+=======
+  UpdatePlanInput: UpdatePlanInput;
+  UpdatePlanBlockInput: UpdatePlanBlockInput;
+>>>>>>> master
   Boolean: Scalars['Boolean'];
   PrefInput: PrefInput;
   Float: Scalars['Float'];
@@ -266,7 +308,9 @@ export type ResolversParentTypes = {
 
 export type MutationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddUserArgs, 'input'>>;
-  addPlan?: Resolver<ResolversTypes['Plan'], ParentType, ContextType, RequireFields<MutationAddPlanArgs, 'input'>>;
+  addPlan?: Resolver<ResolversTypes['Plan'], ParentType, ContextType, RequireFields<MutationAddPlanArgs, 'creatorId'>>;
+  modifyPlan?: Resolver<Maybe<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<MutationModifyPlanArgs, 'input'>>;
+  addPlanBlock?: Resolver<ResolversTypes['PlanBlock'], ParentType, ContextType, RequireFields<MutationAddPlanBlockArgs, 'input'>>;
 };
 
 export type PlanResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Plan'] = ResolversParentTypes['Plan']> = {
@@ -278,7 +322,7 @@ export type PlanResolvers<ContextType = Context, ParentType extends ResolversPar
   rating?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   tags?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  blocks?: Resolver<Maybe<Array<ResolversTypes['PlanBlock']>>, ParentType, ContextType>;
+  blocks?: Resolver<Maybe<Array<ResolversTypes['PlanBlock']>>, ParentType, ContextType, RequireFields<PlanBlocksArgs, 'day'>>;
   countries?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   months?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   assetLinks?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
@@ -286,16 +330,13 @@ export type PlanResolvers<ContextType = Context, ParentType extends ResolversPar
 };
 
 export type PlanBlockResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PlanBlock'] = ResolversParentTypes['PlanBlock']> = {
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  tags?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
-  images?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
-  mapId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  locationUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  audio?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  video?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  externalUrl?: Resolver<Maybe<Array<ResolversTypes['String']>>, ParentType, ContextType>;
+  id?: Resolver<Maybe<ResolversTypes['ID']>, ParentType, ContextType>;
+  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  images?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  price?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  day?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  externalUrl?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -313,6 +354,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   plans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType>;
   planblocks?: Resolver<Array<ResolversTypes['PlanBlock']>, ParentType, ContextType>;
   filteredPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryFilteredPlansArgs, 'input'>>;
+  authenticateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthenticateUserArgs, 'username' | 'password'>>;
 };
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {

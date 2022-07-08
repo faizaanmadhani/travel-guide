@@ -6,15 +6,14 @@ import { gql, useQuery } from "@apollo/client";
 import BlockView, { IBlockProps } from "../components/BlockView";
 
 const GET_BLOCKS = gql`
-  query GetPlan($id: String!) {
+  query ($id: String!, $day: Int!) {
     plan(id: $id) {
-      name
-      id
-      rating
-      description
-      blocks {
-        id
+      blocks(day: $day) {
         title
+        images
+        description
+        price
+        externalUrl
       }
     }
   }
@@ -32,37 +31,46 @@ export default function BlockPage({
     skip: !planID,
   });
 
-  if (loading) return <Spinner accessibilityLabel="Loading blocks" />;
-  if (error) return <Text>Error! ${error}</Text>;
+  //   if (loading)
+  //     return (
+  //       <Box>
+  //         <Spinner accessibilityLabel="Loading blocks" />
+  //       </Box>
+  //     );
+  //   if (error)
+  //     return (
+  //       <Box>
+  //         <Text>Error! ${error}</Text>
+  //       </Box>
+  //     );
 
   return (
     <Box>
-      {!data || data?.blocks.length == 0 ? (
-        <Pressable onPress={() => navigation.navigate("Edit Block")}>
-          <Center>
-            <Center
-              _text={{
-                color: "#B0B0B0",
-                fontWeight: "bold",
-              }}
-              height={200}
-              width={{
-                base: 200,
-                lg: 250,
-              }}
-            >
-              <AntDesign name="plus" size={25} color="#B0B0B0" />
-              Add Block
-            </Center>
+      {/* {data !== undefined || (data && data?.blocks.length == 0) ? ( */}
+      <Pressable onPress={() => navigation.navigate("Edit Block")}>
+        <Center>
+          <Center
+            _text={{
+              color: "#B0B0B0",
+              fontWeight: "bold",
+            }}
+            height={200}
+            width={{
+              base: 200,
+              lg: 250,
+            }}
+          >
+            <AntDesign name="plus" size={25} color="#B0B0B0" />
+            Add Block
           </Center>
-        </Pressable>
-      ) : (
-        <ScrollView>
-          {data?.blocks.map((obj: IBlockProps, index: number) => (
-            <BlockView props={obj} key={index} />
-          ))}
-        </ScrollView>
-      )}
+        </Center>
+      </Pressable>
+      {/* ) : // <ScrollView>
+      //   {data?.blocks.map((obj: IBlockProps, index: number) => (
+      //     <BlockView props={obj} key={index} />
+      //   ))}
+      // </ScrollView>
+      null} */}
     </Box>
   );
 }
