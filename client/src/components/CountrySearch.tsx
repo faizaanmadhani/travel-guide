@@ -38,7 +38,7 @@ export default function CountrySearch(props) {
         <Menu.Item
           key={index}
           onPress={() => {
-            props.handleSelect(country.country);
+            props.handleSelect("countries", country.country);
             props.handleClose();
           }}
         >

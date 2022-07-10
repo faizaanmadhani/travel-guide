@@ -43,61 +43,6 @@ const CURRENT_LOCATION = "Canada";
 export default function ExplorePlans() {
   const [filtersApplied, setFiltersApplied] = React.useState(null);
 
-  React.useEffect(() => {
-    if (filtersApplied) {
-      let filtersInput = {};
-
-      if (filtersApplied.countries && filtersApplied.countries.length) {
-        filtersInput["countries"] = filtersApplied.countries;
-      }
-
-      if (filtersApplied.ratings && filtersApplied.ratings.length) {
-        let ratingsInput = filtersApplied.ratings.map((rating) => {
-          if (rating === "oneRating") {
-            return 1;
-          }
-          if (rating === "twoRating") {
-            return 2;
-          }
-          if (rating === "threeRating") {
-            return 3;
-          }
-          if (rating === "fourRating") {
-            return 4;
-          }
-        });
-
-        filtersInput["rating"] = ratingsInput;
-      }
-
-      if (filtersApplied.priceRanges && filtersApplied.priceRanges.length) {
-        let priceRangesInput = filtersApplied.priceRanges.map((priceRange) => {
-          if (priceRange === "onePriceRange") {
-            return 1;
-          }
-          if (priceRange === "twoPriceRange") {
-            return 2;
-          }
-          if (priceRange === "threePriceRange") {
-            return 3;
-          }
-          if (priceRange === "fourPriceRange") {
-            return 4;
-          }
-        });
-        filtersInput["budget"] = priceRangesInput;
-      }
-
-      if (filtersApplied.months && filtersApplied.months.length) {
-        filtersInput["months"] = filtersApplied.months;
-      }
-
-      refetch({
-        input: filtersInput,
-      });
-    }
-  }, [filtersApplied]);
-
   const { loading, error, data, refetch, networkStatus } = useQuery(
     GET_FILTERED_PLANS,
     {
@@ -140,15 +85,11 @@ export default function ExplorePlans() {
     });
   };
 
-  const refetchPlans = (countries, ratings, priceRanges, months) => {
-    if (countries && ratings && priceRanges && months) {
-      setFiltersApplied({
-        countries: countries,
-        ratings: ratings,
-        priceRanges: priceRanges,
-        months: months,
-      });
-    }
+  const refetchPlans = (filtersSelected) => {
+    setFiltersApplied(filtersSelected);
+    refetch({
+      input: filtersSelected,
+    });
   };
 
   return (
