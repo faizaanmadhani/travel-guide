@@ -10,7 +10,6 @@ import {
 } from "native-base";
 import axios from "axios";
 import CountrySearch from "./CountrySearch";
-import TravelStackScreen from "../navigation/TravelPageStack";
 
 export default function Filters(props) {
   const [isCountrySearchOpen, setIsCountrySearchOpen] =
@@ -91,7 +90,6 @@ export default function Filters(props) {
       {isCountrySearchOpen ? (
         <CountrySearch
           handleClose={closeCountrySearch}
-          // handleSelect={selectCountry}
           handleSelect={updateFiltersSelected}
           countriesList={countriesList}
         />
