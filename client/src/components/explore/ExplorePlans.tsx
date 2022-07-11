@@ -21,49 +21,48 @@ import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import PlanCardSmall from "../PlanCardSmall";
 import Filters from "../Filters";
 
-export const GET_FILTERED_PLANS = gql`
-  query getFilteredPlans($input: FilterInput!) {
-    filteredPlans(input: $input) {
-      id
-      name
-      budget
-      rating
-      tags
-      description
-      countries
-      months
-      assetLinks
-    }
-  }
-`;
+// export const GET_FILTERED_PLANS = gql`
+//   query getFilteredPlans($input: FilterInput!) {
+//     filteredPlans(input: $input) {
+//       id
+//       name
+//       budget
+//       rating
+//       tags
+//       description
+//       countries
+//       months
+//       assetLinks
+//     }
+//   }
+// `;
 
 const CURRENT_LOCATION = "Canada";
 
 // card view of travel plan, used on home page etc.
-export default function ExplorePlans() {
-  const [filtersApplied, setFiltersApplied] = React.useState(null);
+export default function ExplorePlans(props) {
+  const data = props.data;
+  // const [filtersApplied, setFiltersApplied] = React.useState(null);
 
-  const { loading, error, data, refetch, networkStatus } = useQuery(
-    GET_FILTERED_PLANS,
-    {
-      variables: { input: {} },
-      notifyOnNetworkStatusChange: true,
-    }
-  );
+  // const { loading, error, data, refetch, networkStatus } = useQuery(
+  //   GET_FILTERED_PLANS,
+  //   {
+  //     variables: { input: {} },
+  //     notifyOnNetworkStatusChange: true,
+  //   }
+  // );
 
-  const { isOpen, onOpen, onClose } = useDisclose();
-
-  if (networkStatus === NetworkStatus.refetch) return "Refetching!";
-  if (loading)
-    return (
-      <HStack mt="6" space={2} justifyContent="center">
-        <Spinner accessibilityLabel="Loading posts" />
-        <Heading color="primary.500" fontSize="md">
-          Loading
-        </Heading>
-      </HStack>
-    );
-  if (error) return `Error! ${error}`;
+  // if (networkStatus === NetworkStatus.refetch) return "Refetching!";
+  // if (loading)
+  //   return (
+  //     <HStack mt="6" space={2} justifyContent="center">
+  //       <Spinner accessibilityLabel="Loading posts" />
+  //       <Heading color="primary.500" fontSize="md">
+  //         Loading
+  //       </Heading>
+  //     </HStack>
+  //   );
+  // if (error) return `Error! ${error}`;
 
   const popularPlans = data.filteredPlans.filter((plan) => plan.rating >= 4);
   const nationalPlans = data.filteredPlans.filter((plan) =>
@@ -85,17 +84,17 @@ export default function ExplorePlans() {
     });
   };
 
-  const refetchPlans = (filtersSelected) => {
-    setFiltersApplied(filtersSelected);
-    refetch({
-      input: filtersSelected,
-    });
-  };
+  // const refetchPlans = (filtersSelected) => {
+  //   setFiltersApplied(filtersSelected);
+  //   refetch({
+  //     input: filtersSelected,
+  //   });
+  // };
 
   return (
     <Box mb="200">
       <Box>
-        <Center>
+        {/* <Center>
           <Actionsheet isOpen={isOpen} onClose={onClose}>
             <Actionsheet.Content>
               <Filters
@@ -105,10 +104,10 @@ export default function ExplorePlans() {
               />
             </Actionsheet.Content>
           </Actionsheet>
-        </Center>
+        </Center> */}
         {/* <SafeAreaView> */}
         <VStack w="90%" alignSelf="center">
-          <Flex direction="row" mb="2">
+          {/* <Flex direction="row" mb="2">
             <Input
               InputLeftElement={
                 <Icon
@@ -138,7 +137,7 @@ export default function ExplorePlans() {
                 }
               />
             </VStack>
-          </Flex>
+          </Flex> */}
 
           <ScrollView _contentContainerStyle={{ paddingBottom: 160 }}>
             {popularPlans.length ? (
