@@ -40,7 +40,7 @@ export default function ExploreView(props) {
 
   if (networkStatus === NetworkStatus.refetch || loading) {
     return (
-      <Box pt="4">
+      <Box pt="6">
         <Spinner color="indigo.500" />
       </Box>
     );
@@ -48,7 +48,7 @@ export default function ExploreView(props) {
 
   if (error) {
     return (
-      <Box pt="4">
+      <Box pt="6">
         <Text color="red.800">Error! {error}</Text>
       </Box>
     );
@@ -84,10 +84,10 @@ export default function ExploreView(props) {
   return (
     <Box>
       <ScrollView>
-        {allCategories.map((category) =>
+        {allCategories.map((category, index) =>
           category.plans.length ? (
-            <Box>
-              <Heading size="sm" pt="4" pl="1">
+            <Box key={index}>
+              <Heading size="sm" pt="6" pl="1">
                 {category.title}
               </Heading>
               <ScrollView horizontal={true} my="2">

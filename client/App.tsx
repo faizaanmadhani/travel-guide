@@ -33,7 +33,7 @@ export const UserContext = React.createContext({
 });
 
 export const client = new ApolloClient({
-  uri: "http://106d-192-159-178-168.ngrok.io",
+  uri: "http://1b0c-2620-101-f000-700-abe6-da88-8c62-a758.ngrok.io",
   cache: new InMemoryCache(),
 });
 
@@ -103,6 +103,7 @@ export default function App() {
                   tabBarButton: () => null,
                   // tabBarVisible: false,
                   tabBarStyle: { display: "none" },
+                  headerShown: false,
                 }}
               />
               <Tab.Screen
@@ -112,6 +113,7 @@ export default function App() {
                   tabBarButton: () => null,
                   // tabBarVisible: false,
                   tabBarStyle: { display: "none" },
+                  headerShown: false,
                 }}
               />
               <Tab.Screen
@@ -121,6 +123,7 @@ export default function App() {
                   tabBarButton: () => null,
                   // tabBarVisible: false,
                   tabBarStyle: { display: "none" },
+                  headerShown: false,
                 }}
               />
 
@@ -136,11 +139,20 @@ export default function App() {
                 options={tabNavigationOptions}
                 component={EditTravelPlanStackScreen}
               />
-              <Tab.Screen name="Wishlist" component={WishlistPage} />
+              <Tab.Screen
+                name="Wishlist"
+                component={WishlistPage}
+                options={{
+                  headerShown: false,
+                }}
+              />
               <Tab.Screen
                 name="Profile"
                 component={ProfilePage}
                 initialParams={{ username: "" }}
+                options={{
+                  headerShown: false,
+                }}
               />
             </Tab.Navigator>
           </NavigationContainer>
