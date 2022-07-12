@@ -9,6 +9,7 @@ import {
   IconButton,
   Input,
   Icon,
+  Text,
 } from "native-base";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import ExploreView from "../views/ExploreView";
@@ -20,7 +21,7 @@ export default function ExplorePage() {
   const [filtersApplied, setFiltersApplied] = React.useState(null);
 
   return (
-    <PageView>
+    <Box>
       <Actionsheet isOpen={isOpen} onClose={onClose}>
         <Actionsheet.Content>
           <Filters
@@ -30,45 +31,47 @@ export default function ExplorePage() {
           />
         </Actionsheet.Content>
       </Actionsheet>
-
-      <Box w="100%" mb="2">
-        <Flex direction="row">
-          {/* search bar */}
-          <Input
-            InputLeftElement={
-              <Icon
-                as={
-                  <Ionicons
-                    name="search-outline"
+      <PageView>
+        <Box w="100%" mb="2">
+          <Flex direction="row">
+            {/* search bar */}
+            <Input
+              InputLeftElement={
+                <Icon
+                  as={
+                    <Ionicons
+                      name="search-outline"
+                      color="gray"
+                      style={{ marginLeft: 12 }}
+                    />
+                  }
+                />
+              }
+              flexGrow={1}
+              size="lg"
+              placeholder="Search"
+            />
+            {/* filter icon */}
+            <VStack alignSelf="center" ml="1">
+              <IconButton
+                variant="ghost"
+                onPress={onOpen}
+                icon={
+                  <MaterialCommunityIcons
+                    name="filter-outline"
+                    size={24}
                     color="gray"
-                    style={{ marginLeft: 12 }}
                   />
                 }
               />
-            }
-            flexGrow={1}
-            size="lg"
-            placeholder="Search by name or #tag"
-          />
-          {/* filter icon */}
-          <VStack alignSelf="center" ml="1">
-            <IconButton
-              variant="ghost"
-              onPress={onOpen}
-              icon={
-                <MaterialCommunityIcons
-                  name="filter-outline"
-                  size={24}
-                  color="gray"
-                />
-              }
-            />
-          </VStack>
-        </Flex>
-      </Box>
-      <ScrollView>
-        <ExploreView filtersApplied={filtersApplied} />
-      </ScrollView>
-    </PageView>
+            </VStack>
+          </Flex>
+        </Box>
+        {/* plans list */}
+        <ScrollView w="100%">
+          <ExploreView filtersApplied={filtersApplied} />
+        </ScrollView>
+      </PageView>
+    </Box>
   );
 }
