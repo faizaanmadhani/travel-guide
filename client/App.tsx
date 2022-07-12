@@ -11,7 +11,10 @@ import {
   gql,
 } from "@apollo/client";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  createBottomTabNavigator,
+  BottomTabBarHeightContext,
+} from "@react-navigation/bottom-tabs";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import TravelPage from "./src/pages/TravelPage";
 import WishlistPage from "./src/pages/WishlistPage";
@@ -30,7 +33,7 @@ export const UserContext = React.createContext({
 });
 
 export const client = new ApolloClient({
-  uri: "http://bf74-192-159-178-168.ngrok.io",
+  uri: "http://106d-192-159-178-168.ngrok.io",
   cache: new InMemoryCache(),
 });
 
@@ -98,7 +101,7 @@ export default function App() {
                 component={LandingPage}
                 options={{
                   tabBarButton: () => null,
-                  tabBarVisible: false,
+                  // tabBarVisible: false,
                   tabBarStyle: { display: "none" },
                 }}
               />
@@ -107,7 +110,7 @@ export default function App() {
                 component={RegisterPage}
                 options={{
                   tabBarButton: () => null,
-                  tabBarVisible: false,
+                  // tabBarVisible: false,
                   tabBarStyle: { display: "none" },
                 }}
               />
@@ -116,12 +119,18 @@ export default function App() {
                 component={LoginPage}
                 options={{
                   tabBarButton: () => null,
-                  tabBarVisible: false,
+                  // tabBarVisible: false,
                   tabBarStyle: { display: "none" },
                 }}
               />
 
-              <Tab.Screen name="Explore" component={ExplorePage} />
+              <Tab.Screen
+                name="Explore"
+                component={ExplorePage}
+                options={{
+                  headerShown: false,
+                }}
+              />
               <Tab.Screen
                 name="Travel"
                 options={tabNavigationOptions}
