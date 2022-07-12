@@ -15,20 +15,20 @@ export default function Filters(props) {
   const [isCountrySearchOpen, setIsCountrySearchOpen] =
     React.useState<boolean>(false);
   const [countriesList, setCountriesList] = React.useState(null);
-  const [countriesSelected, setCountriesSelected] = React.useState(
-    props.currentFilters ? props.currentFilters.countries : []
-  ); // countries filter
-  const [ratingsSelected, setRatingsSelected] = React.useState(
-    props.currentFilters ? props.currentFilters.ratings : []
-  );
-  const [priceRangesSelected, setPriceRangesSelected] = React.useState(
-    props.currentFilters ? props.currentFilters.priceRanges : []
-  );
-  const [monthsSelected, setMonthsSelected] = React.useState(
-    props.currentFilters ? props.currentFilters.months : []
+
+  const [filtersSelected, setFiltersSelected] = React.useState(
+    props.currentFilters
+      ? props.currentFilters
+      : {
+          countries: [],
+          rating: [],
+          budget: [],
+          months: [],
+        }
   );
 
   React.useEffect(() => {
+    console.log("fetching countries hook");
     axios
       .get("https://countriesnow.space/api/v0.1/countries")
       .then(function (response) {
@@ -44,35 +44,18 @@ export default function Filters(props) {
       });
   }, []);
 
-  const selectCountry = (country: String) => {
-    if (!countriesSelected.includes(country)) {
-      let newCountriesSelected = countriesSelected;
-      newCountriesSelected.push(country);
-      setCountriesSelected(newCountriesSelected);
-    }
-  };
-
-  const removeCountry = (country: String) => {
-    if (countriesSelected.includes(country)) {
-      const newCountriesSelected = countriesSelected.filter(
-        (countrySelected) => countrySelected !== country
-      );
-      setCountriesSelected(newCountriesSelected);
-    }
-  };
-
   const closeCountrySearch = () => {
     setIsCountrySearchOpen(false);
   };
 
   const displayCountries = () => {
-    return countriesSelected.map((countrySelected, index) => {
+    return filtersSelected.countries.map((countrySelected, index) => {
       return (
         <Box key={index} mb="1">
           <Button
             key="sm"
             size="sm"
-            onPress={() => removeCountry(countrySelected)}
+            onPress={() => updateFiltersSelected("countries", countrySelected)}
           >
             {countrySelected}
           </Button>
@@ -81,65 +64,24 @@ export default function Filters(props) {
     });
   };
 
-  const updateMonthsSelected = (monthOption: string) => {
-    let newMonthsSelected = [];
+  const updateFiltersSelected = (filterName: string, option: any) => {
+    let newFiltersSelected = { ...filtersSelected };
 
-    const index = monthsSelected.indexOf(monthOption);
-
-    monthsSelected.map((month) => newMonthsSelected.push(month));
-    if (index > -1) {
-      newMonthsSelected.splice(index, 1);
+    if (option === 0) {
+      newFiltersSelected[filterName] = [];
     } else {
-      newMonthsSelected.push(monthOption);
-    }
-    setMonthsSelected(newMonthsSelected);
-  };
-
-  const updatePriceRangesSelected = (priceRangeOption: string) => {
-    let newPriceRangesSelected = [];
-
-    if (priceRangeOption === "allPriceRanges") {
-      setPriceRangesSelected([]);
-    } else {
-      const index = priceRangesSelected.indexOf(priceRangeOption);
-
-      priceRangesSelected.map((priceRange) =>
-        newPriceRangesSelected.push(priceRange)
-      );
+      const index = filtersSelected[filterName].indexOf(option);
       if (index > -1) {
-        newPriceRangesSelected.splice(index, 1);
+        newFiltersSelected[filterName].splice(index, 1);
       } else {
-        newPriceRangesSelected.push(priceRangeOption);
+        newFiltersSelected[filterName].push(option);
       }
-      setPriceRangesSelected(newPriceRangesSelected);
     }
-  };
-
-  const updateRatingsSelected = (ratingOption: string) => {
-    let newRatingsSelected = [];
-
-    if (ratingOption === "allRatings") {
-      setRatingsSelected([]);
-    } else {
-      const index = ratingsSelected.indexOf(ratingOption);
-
-      ratingsSelected.map((rating) => newRatingsSelected.push(rating));
-      if (index > -1) {
-        newRatingsSelected.splice(index, 1);
-      } else {
-        newRatingsSelected.push(ratingOption);
-      }
-      setRatingsSelected(newRatingsSelected);
-    }
+    setFiltersSelected(newFiltersSelected);
   };
 
   const applyFilters = () => {
-    props.refetchPlans(
-      countriesSelected,
-      ratingsSelected,
-      priceRangesSelected,
-      monthsSelected
-    );
+    props.refetchPlans(filtersSelected);
     props.closeFilters();
   };
 
@@ -148,7 +90,7 @@ export default function Filters(props) {
       {isCountrySearchOpen ? (
         <CountrySearch
           handleClose={closeCountrySearch}
-          handleSelect={selectCountry}
+          handleSelect={updateFiltersSelected}
           countriesList={countriesList}
         />
       ) : (
@@ -160,7 +102,7 @@ export default function Filters(props) {
                 COUNTRIES
               </Text>
 
-              {countriesSelected ? (
+              {filtersSelected.countries ? (
                 <Stack
                   mt="4"
                   direction="row"
@@ -206,8 +148,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={ratingsSelected.length === 0}
-                    onPress={() => updateRatingsSelected("allRatings")}
+                    isPressed={filtersSelected.rating.length === 0}
+                    onPress={() => updateFiltersSelected("rating", 0)}
                   >
                     All
                   </Button>
@@ -217,8 +159,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={ratingsSelected.includes("oneRating")}
-                    onPress={() => updateRatingsSelected("oneRating")}
+                    isPressed={filtersSelected.rating.includes(1)}
+                    onPress={() => updateFiltersSelected("rating", 1)}
                   >
                     1 Star
                   </Button>
@@ -228,8 +170,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={ratingsSelected.includes("twoRating")}
-                    onPress={() => updateRatingsSelected("twoRating")}
+                    isPressed={filtersSelected.rating.includes(2)}
+                    onPress={() => updateFiltersSelected("rating", 2)}
                   >
                     2 Stars
                   </Button>
@@ -239,8 +181,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={ratingsSelected.includes("threeRating")}
-                    onPress={() => updateRatingsSelected("threeRating")}
+                    isPressed={filtersSelected.rating.includes(3)}
+                    onPress={() => updateFiltersSelected("rating", 3)}
                   >
                     3 Stars
                   </Button>
@@ -250,8 +192,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={ratingsSelected.includes("fourRating")}
-                    onPress={() => updateRatingsSelected("fourRating")}
+                    isPressed={filtersSelected.rating.includes(4)}
+                    onPress={() => updateFiltersSelected("rating", 4)}
                   >
                     4 Stars
                   </Button>
@@ -279,8 +221,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={priceRangesSelected.length === 0}
-                    onPress={() => updatePriceRangesSelected("allPriceRanges")}
+                    isPressed={filtersSelected.budget.length === 0}
+                    onPress={() => updateFiltersSelected("budget", 0)}
                   >
                     All
                   </Button>
@@ -290,8 +232,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={priceRangesSelected.includes("onePriceRange")}
-                    onPress={() => updatePriceRangesSelected("onePriceRange")}
+                    isPressed={filtersSelected.budget.includes(1)}
+                    onPress={() => updateFiltersSelected("budget", 1)}
                   >
                     $ (1)
                   </Button>
@@ -301,8 +243,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={priceRangesSelected.includes("twoPriceRange")}
-                    onPress={() => updatePriceRangesSelected("twoPriceRange")}
+                    isPressed={filtersSelected.budget.includes(2)}
+                    onPress={() => updateFiltersSelected("budget", 2)}
                   >
                     $$ (2)
                   </Button>
@@ -312,8 +254,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={priceRangesSelected.includes("threePriceRange")}
-                    onPress={() => updatePriceRangesSelected("threePriceRange")}
+                    isPressed={filtersSelected.budget.includes(3)}
+                    onPress={() => updateFiltersSelected("budget", 3)}
                   >
                     $$$ (3)
                   </Button>
@@ -323,8 +265,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={priceRangesSelected.includes("fourPriceRange")}
-                    onPress={() => updatePriceRangesSelected("fourPriceRange")}
+                    isPressed={filtersSelected.budget.includes(4)}
+                    onPress={() => updateFiltersSelected("budget", 4)}
                   >
                     $$$$ (4)
                   </Button>
@@ -353,8 +295,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("Jan")}
-                    onPress={() => updateMonthsSelected("Jan")}
+                    isPressed={filtersSelected.months.includes("Jan")}
+                    onPress={() => updateFiltersSelected("months", "Jan")}
                   >
                     Jan
                   </Button>
@@ -364,8 +306,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("Feb")}
-                    onPress={() => updateMonthsSelected("Feb")}
+                    isPressed={filtersSelected.months.includes("Feb")}
+                    onPress={() => updateFiltersSelected("months", "Feb")}
                   >
                     Feb
                   </Button>
@@ -375,8 +317,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("Mar")}
-                    onPress={() => updateMonthsSelected("Mar")}
+                    isPressed={filtersSelected.months.includes("Mar")}
+                    onPress={() => updateFiltersSelected("months", "Mar")}
                   >
                     Mar
                   </Button>
@@ -386,8 +328,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("Apr")}
-                    onPress={() => updateMonthsSelected("Apr")}
+                    isPressed={filtersSelected.months.includes("Apr")}
+                    onPress={() => updateFiltersSelected("months", "Apr")}
                   >
                     Apr
                   </Button>
@@ -397,8 +339,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("May")}
-                    onPress={() => updateMonthsSelected("May")}
+                    isPressed={filtersSelected.months.includes("May")}
+                    onPress={() => updateFiltersSelected("months", "May")}
                   >
                     May
                   </Button>
@@ -408,8 +350,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("Jun")}
-                    onPress={() => updateMonthsSelected("Jun")}
+                    isPressed={filtersSelected.months.includes("Jun")}
+                    onPress={() => updateFiltersSelected("months", "Jun")}
                   >
                     Jun
                   </Button>
@@ -419,8 +361,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("Jul")}
-                    onPress={() => updateMonthsSelected("Jul")}
+                    isPressed={filtersSelected.months.includes("Jul")}
+                    onPress={() => updateFiltersSelected("months", "Jul")}
                   >
                     Jul
                   </Button>
@@ -430,8 +372,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("Aug")}
-                    onPress={() => updateMonthsSelected("Aug")}
+                    isPressed={filtersSelected.months.includes("Aug")}
+                    onPress={() => updateFiltersSelected("months", "Aug")}
                   >
                     Aug
                   </Button>
@@ -441,8 +383,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("Sep")}
-                    onPress={() => updateMonthsSelected("Sep")}
+                    isPressed={filtersSelected.months.includes("Sep")}
+                    onPress={() => updateFiltersSelected("months", "Sep")}
                   >
                     Sep
                   </Button>
@@ -452,8 +394,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("Oct")}
-                    onPress={() => updateMonthsSelected("Oct")}
+                    isPressed={filtersSelected.months.includes("Oct")}
+                    onPress={() => updateFiltersSelected("months", "Oct")}
                   >
                     Oct
                   </Button>
@@ -463,8 +405,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("Nov")}
-                    onPress={() => updateMonthsSelected("Nov")}
+                    isPressed={filtersSelected.months.includes("Nov")}
+                    onPress={() => updateFiltersSelected("months", "Nov")}
                   >
                     Nov
                   </Button>
@@ -474,8 +416,8 @@ export default function Filters(props) {
                     key="sm"
                     size="sm"
                     variant="outline"
-                    isPressed={monthsSelected.includes("Dec")}
-                    onPress={() => updateMonthsSelected("Dec")}
+                    isPressed={filtersSelected.months.includes("Dec")}
+                    onPress={() => updateFiltersSelected("months", "Dec")}
                   >
                     Dec
                   </Button>
@@ -494,10 +436,12 @@ export default function Filters(props) {
                 <Button
                   variant="outline"
                   onPress={() => {
-                    setCountriesSelected([]);
-                    setRatingsSelected([]);
-                    setPriceRangesSelected([]);
-                    setMonthsSelected([]);
+                    setFiltersSelected({
+                      countries: [],
+                      rating: [],
+                      budget: [],
+                      months: [],
+                    });
                   }}
                 >
                   Clear

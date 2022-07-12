@@ -269,8 +269,12 @@ export type ResolversTypes = {
   FilterInput: FilterInput;
   Mutation: ResolverTypeWrapper<{}>;
   CreateUserInput: CreateUserInput;
+<<<<<<< HEAD
+  CreatePlanInput: CreatePlanInput;
+=======
   UpdatePlanInput: UpdatePlanInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
+>>>>>>> master
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BlockType: BlockType;
   PrefInput: PrefInput;
@@ -290,8 +294,12 @@ export type ResolversParentTypes = {
   FilterInput: FilterInput;
   Mutation: {};
   CreateUserInput: CreateUserInput;
+<<<<<<< HEAD
+  CreatePlanInput: CreatePlanInput;
+=======
   UpdatePlanInput: UpdatePlanInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
+>>>>>>> master
   Boolean: Scalars['Boolean'];
   PrefInput: PrefInput;
   Float: Scalars['Float'];

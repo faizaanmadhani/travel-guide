@@ -11,7 +11,10 @@ import {
   gql,
 } from "@apollo/client";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  createBottomTabNavigator,
+  BottomTabBarHeightContext,
+} from "@react-navigation/bottom-tabs";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import TravelPage from "./src/pages/TravelPage";
 import WishlistPage from "./src/pages/WishlistPage";
@@ -30,7 +33,7 @@ export const UserContext = React.createContext({
 });
 
 export const client = new ApolloClient({
-  uri: "https://1fc0-104-156-64-158.ngrok.io",
+  uri: "http://1b0c-2620-101-f000-700-abe6-da88-8c62-a758.ngrok.io",
   cache: new InMemoryCache(),
 });
 
@@ -98,8 +101,9 @@ export default function App() {
                 component={LandingPage}
                 options={{
                   tabBarButton: () => null,
-                  tabBarVisible: false,
+                  // tabBarVisible: false,
                   tabBarStyle: { display: "none" },
+                  headerShown: false,
                 }}
               />
               <Tab.Screen
@@ -107,8 +111,9 @@ export default function App() {
                 component={RegisterPage}
                 options={{
                   tabBarButton: () => null,
-                  tabBarVisible: false,
+                  // tabBarVisible: false,
                   tabBarStyle: { display: "none" },
+                  headerShown: false,
                 }}
               />
               <Tab.Screen
@@ -116,22 +121,38 @@ export default function App() {
                 component={LoginPage}
                 options={{
                   tabBarButton: () => null,
-                  tabBarVisible: false,
+                  // tabBarVisible: false,
                   tabBarStyle: { display: "none" },
+                  headerShown: false,
                 }}
               />
 
-              <Tab.Screen name="Explore" component={ExplorePage} />
+              <Tab.Screen
+                name="Explore"
+                component={ExplorePage}
+                options={{
+                  headerShown: false,
+                }}
+              />
               <Tab.Screen
                 name="Travel"
                 options={tabNavigationOptions}
                 component={EditTravelPlanStackScreen}
               />
-              <Tab.Screen name="Wishlist" component={WishlistPage} />
+              <Tab.Screen
+                name="Wishlist"
+                component={WishlistPage}
+                options={{
+                  headerShown: false,
+                }}
+              />
               <Tab.Screen
                 name="Profile"
                 component={ProfilePage}
                 initialParams={{ username: "" }}
+                options={{
+                  headerShown: false,
+                }}
               />
             </Tab.Navigator>
           </NavigationContainer>
