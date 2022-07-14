@@ -17,6 +17,10 @@ export const resolvers: Resolvers = {
         args.username,
         args.password
       ),
+    getUserID: (_, args, context) =>
+      context.dataSources.userProvider.getUserID(
+        args.username
+      ),
   },
   Mutation: {
     addUser: (_, args, context) =>

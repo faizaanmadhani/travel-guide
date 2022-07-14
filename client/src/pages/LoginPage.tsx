@@ -33,7 +33,7 @@ import { MutationAddUserArgs } from "../../../server/src/generated/graphql";
 import { UserContext } from "../../App";
 import Spinner from "react-native-loading-spinner-overlay";
 
-const AUTH_USER = gql`
+export const AUTH_USER = gql`
   query authenticateUser($username: String!, $password: String!) {
     authenticateUser(username: $username, password: $password) {
       id
@@ -47,17 +47,11 @@ export function setUserLoggedIn(name: String) {
 }
 
 export default function LoginPage({ navigation }: { navigation: any }) {
-  // fetch pre-existing data
-  // const { data, error, loading } = useQuery(GET_USERS, {fetchPolicy : 'cache-and-network'});
-
-  // set up for adding user
-  // const [addUser, { data, loading, error }] = useMutation(CREATE_USER);
-
-  // if (loading) console.log("Loading...");;
-  // if (error) console.log(`Error! ${error.message}`);
-
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [errors, setErrors] = useState({});
+
 
   const { userID, setUserID } = useContext(UserContext);
 
@@ -65,102 +59,73 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     navigation.navigate("Explore");
   }
 
-  async function LoginUser(resultData: { authenticateUser: { id: string } }) {
+  function validate(resultData: { authenticateUser: { id: string } }) {
     // check: has user name & password fields
-    let passwordEntered = true,
-      usernameEntered = true;
-    if (password == "") {
-      passwordEntered = false;
-    }
+    let passwordValid = validatePassword() as boolean;
+        let nameValid = validateName() as boolean;
+        let id = resultData.authenticateUser.id;
+
+        console.log(errors.name, errors.password);
+
+        if (!nameValid || !passwordValid)
+        {
+        }
+        else
+        {
+            console.log("validation", id);
+            if (id == "")
+            {
+                console.log("Invalid Credentials");
+                setErrors({ ...errors,
+                    name: 'Invalid Credentials',
+                    password: 'Invalid Credentials'
+                });
+            }
+            else
+            {
+              userLoggedIn = name;
+              setUserID(resultData.authenticateUser.id);
+              goToHome();
+            }
+        }
+      };
+
+  function validateName() {
     if (name == "") {
-      usernameEntered = false;
+      setErrors({ ...errors,
+        name: 'Name is required'
+      });
+      return false;
     }
-    // check: user name exists
-    let userExists = false;
-    let userIdx = -1;
+    return true;
+  };
 
-    if (!usernameEntered) {
-      Alert.alert(
-        "No User Name",
-        "User Name is a required field, please enter an user name.",
-        [
-          {
-            text: "OK",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-        ]
-      );
-    } else if (!passwordEntered) {
-      Alert.alert(
-        "No Password",
-        "Password is a required field, please enter a password.",
-        [
-          {
-            text: "OK",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-        ]
-      );
+  function validateEmail() {
+    if (email == "") {
+      setErrors({ ...errors,
+        email: 'Email is required'
+      });
+      return false;
     }
+    return true;
+  };
 
-    if (usernameEntered) {
-      let passwordCorrect = false;
-      if (resultData.authenticateUser.id !== "") {
-        passwordCorrect = true;
-        userExists = true;
-      } else {
-        passwordCorrect = false;
+  function validatePassword() {
+      if (password == "") {
+        setErrors({ ...errors,
+          password: 'Password is required'
+        });
+        return false;
       }
-
-      if (!userExists) {
-        Alert.alert(
-          `User ${name} Not Found`,
-          "Please register or re-enter user name.",
-          [
-            {
-              text: "Register",
-              onPress: () => navigation.navigate("Register"),
-            },
-            {
-              text: "Re-enter",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-          ]
-        );
-      } else if (!passwordCorrect) {
-        Alert.alert(
-          `Incorrect Password`,
-          `Please re-enter password for User ${name}.`,
-          [
-            {
-              text: "Re-enter",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-          ]
-        );
-      } else {
-        userLoggedIn = name;
-        console.log(userLoggedIn);
-        setUserID(resultData.authenticateUser.id);
-        Alert.alert("Login Success", `User ${name} successfully logged in!`, [
-          {
-            text: "Go to App",
-            onPress: () => goToHome(),
-          },
-        ]);
-      }
-    }
-  }
+      return true;
+  };
 
   const [authenticateUser, { data, error, loading }] = useLazyQuery(AUTH_USER, {
     onCompleted: (resultData) => {
       console.log("The result data", resultData);
-      LoginUser(resultData);
+      validate(resultData);
     },
+    fetchPolicy : 'cache-and-network'
   });
 
   if (loading) console.log(`Loading`);
@@ -173,34 +138,33 @@ export default function LoginPage({ navigation }: { navigation: any }) {
       }}
       imageStyle={{ opacity: 0.1 }}
     >
-      <VStack h={useWindowDimensions().height} w={useWindowDimensions().width}>
+      <VStack h={1.1 * useWindowDimensions().height} w={useWindowDimensions().width}>
         <Box h={0.25 * useWindowDimensions().height}></Box>
-        <FormControl isRequired>
-          <Stack mx="4">
-            <FormControl.Label>User Name</FormControl.Label>
-            <Input
-              placeholder="User Name"
-              onChangeText={(name) => setName(name)}
-            />
-          </Stack>
-        </FormControl>
+        <FormControl isRequired isInvalid={(('name' in errors) && (errors.name != ""))}>
+            <Stack mx="4">
+                <FormControl.Label>User Name</FormControl.Label>
+                <Input placeholder="User Name"
+                    onChangeText={(name) => {setName(name)}}
+                    onKeyPress={() => {setErrors({ ...errors,
+                        name: ""
+                      })}}
+                    onBlur={() => validateName()}/>
+            {('name' in errors) && <FormControl.ErrorMessage> {errors.name} </FormControl.ErrorMessage>}
+            </Stack>
+            </FormControl>
 
-        <FormControl isRequired>
-          <Stack mx="4">
-            <FormControl.Label> Password </FormControl.Label>
-            <Input
-              type="password"
-              placeholder="password"
-              onChangeText={(password) => setPassword(password)}
-            />
-            {/* <FormControl.HelperText>
-                Must be at least 6 characters.
-                </FormControl.HelperText>
-                <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                At least 6 characters are required.
-                </FormControl.ErrorMessage> */}
-          </Stack>
-        </FormControl>
+            <FormControl isRequired isInvalid={('password' in errors) && (errors.password != "")}>
+            <Stack mx="4">
+                <FormControl.Label> Password </FormControl.Label>
+                <Input type="password" placeholder="Password"
+                        onChangeText={(password) => {setPassword(password)}}
+                        onKeyPress={() => {setErrors({ ...errors,
+                            password: ''
+                          })}}
+                        onBlur={() => validatePassword()}/>
+                {('password' in errors) && <FormControl.ErrorMessage> {errors.password} </FormControl.ErrorMessage>}
+            </Stack>
+            </FormControl>
 
         <Center>
           <Box mt={"2"} w="92%">

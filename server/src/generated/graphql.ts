@@ -117,6 +117,7 @@ export type Query = {
   planblocks: Array<PlanBlock>;
   filteredPlans: Array<Plan>;
   authenticateUser: User;
+  getUserID: User;
 };
 
 
@@ -143,6 +144,10 @@ export type QueryFilteredPlansArgs = {
 export type QueryAuthenticateUserArgs = {
   username: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type QueryGetUserIDArgs = {
+  username: Scalars['String'];
 };
 
 export type UpdatePlanBlockInput = {
@@ -269,12 +274,8 @@ export type ResolversTypes = {
   FilterInput: FilterInput;
   Mutation: ResolverTypeWrapper<{}>;
   CreateUserInput: CreateUserInput;
-<<<<<<< HEAD
-  CreatePlanInput: CreatePlanInput;
-=======
   UpdatePlanInput: UpdatePlanInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
->>>>>>> master
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BlockType: BlockType;
   PrefInput: PrefInput;
@@ -294,12 +295,8 @@ export type ResolversParentTypes = {
   FilterInput: FilterInput;
   Mutation: {};
   CreateUserInput: CreateUserInput;
-<<<<<<< HEAD
-  CreatePlanInput: CreatePlanInput;
-=======
   UpdatePlanInput: UpdatePlanInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
->>>>>>> master
   Boolean: Scalars['Boolean'];
   PrefInput: PrefInput;
   Float: Scalars['Float'];
@@ -355,6 +352,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   planblocks?: Resolver<Array<ResolversTypes['PlanBlock']>, ParentType, ContextType>;
   filteredPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryFilteredPlansArgs, 'input'>>;
   authenticateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthenticateUserArgs, 'username' | 'password'>>;
+  getUserID?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserIDArgs, 'username'>>;
 };
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {

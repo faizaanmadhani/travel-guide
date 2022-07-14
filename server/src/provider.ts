@@ -65,6 +65,16 @@ export class UserProvider extends DataSource {
     }
   }
 
+  public async getUserID(username: String) {
+    console.log("reached", username);
+    const user = await UserModel.findOne({name: username});
+    if (user) {
+      return castIUserToUser(user);
+    } else {
+      return castIUserToUser(null);
+    }
+  }
+
   public async getUsers() {
     const users = (await UserModel.find({}).exec());
     const formattedUsers = users.map((obj, _) => castIUserToUser(obj));
