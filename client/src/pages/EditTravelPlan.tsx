@@ -140,7 +140,7 @@ export default function EditTravelPlan({
         "https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2014/01/scenery.jpg", // HARDCODED asset right now
       ],
     };
-    updatePlan({ variables: { input: inputData } }).catch((e) => {
+    updatePlan({ variables: { input: inputData } }).catch((error) => {
       console.log(JSON.stringify(error, null, 2));
     });
   };
@@ -286,20 +286,18 @@ export default function EditTravelPlan({
               {budgets.map((item, index) =>
                 activeBudgetIndicator === index ? (
                   <Button
-                    marginRight="1"
                     onPress={(_) => setActiveBudgetIndicator(index)}
                     key={item}
                     backgroundColor="#06B6D4"
-                    width={60}
+                    width={70}
                   >
                     {item}
                   </Button>
                 ) : (
                   <Button
-                    marginRight="1"
                     variant="outline"
                     onPress={(_) => setActiveBudgetIndicator(index)}
-                    width={60}
+                    width={70}
                     key={item}
                   >
                     {item}
@@ -327,7 +325,7 @@ export default function EditTravelPlan({
             </Box>
           </Stack>
         ) : (
-          <BlockPage navigation={navigation} planID={planID} />
+          <BlockPage navigation={navigation} planID={planID} day={activeTab} />
         ) /* Create a Block Component to Render here */
       }
     </ScrollView>

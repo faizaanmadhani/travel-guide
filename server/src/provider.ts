@@ -268,7 +268,7 @@ export class PlanBlockProvider extends DataSource {
     }
   }
 
-  public async createBlock(planID: string, input: UpdatePlanBlockInput) {
+  public async createBlock(input: UpdatePlanBlockInput) {
     const newPlanBlock = new PlanBlockModel({
       title: input.title,
       description: input.description,
@@ -280,7 +280,7 @@ export class PlanBlockProvider extends DataSource {
 
     await newPlanBlock.save();
     const id = newPlanBlock._id.toString();
-    const plan = (await PlanModel.findById(planID).exec());
+    const plan = (await PlanModel.findById(input.planID).exec());
     plan?.blocks.push(id);
     await plan?.save();
 

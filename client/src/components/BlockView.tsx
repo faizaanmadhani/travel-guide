@@ -1,7 +1,18 @@
 import React from "react";
-import { Box, HStack, Text, Stack, Image, IconButton } from "native-base";
+import {
+  Box,
+  HStack,
+  Text,
+  Stack,
+  Image,
+  IconButton,
+  Center,
+  AspectRatio,
+  Heading,
+} from "native-base";
 import OptionsMenu from "react-native-option-menu";
 import { Feather } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 export type IBlockProps = {
   location: string;
@@ -13,12 +24,12 @@ export type IBlockProps = {
   navigation: any;
 };
 
-export default function BlockView({ props }: { props: IBlockProps }) {
-  const EditBlock = () => {
-    props.navigation.navigate("Edit Block", {
-      fields: props,
-    });
-  };
+export default function BlockView() {
+  // const EditBlock = () => {
+  //   props.navigation.navigate("Edit Block", {
+  //     fields: props,
+  //   });
+  // };
 
   const convertBudgetToString = (val: number) => {
     let dollarSign = "$";
@@ -26,35 +37,63 @@ export default function BlockView({ props }: { props: IBlockProps }) {
     return multiDollarSign;
   };
   return (
-    <Box bg="tertiary.300" borderWidth="1">
-      <Stack>
+    <Box
+      maxW="400"
+      rounded="lg"
+      overflow="hidden"
+      borderColor="coolGray.200"
+      borderWidth="1"
+      _dark={{
+        borderColor: "coolGray.600",
+        backgroundColor: "gray.700",
+      }}
+      _web={{
+        shadow: 2,
+        borderWidth: 0,
+      }}
+      _light={{
+        backgroundColor: "gray.50",
+      }}
+    >
+      <Stack p="5" space="2">
         <HStack justifyContent="space-between">
-          <Text bold fontSize="14px" width="70%">
+          <Heading size="lg" ml="-1">
             props.title
-          </Text>
-          <OptionsMenu
-            button={<Feather name="more-vertical" size={24} color="black" />}
-            buttonStyle={{
-              width: 32,
-              height: 8,
-              margin: 7.5,
-              resizeMode: "contain",
-            }}
-            destructiveIndex={1}
-            options={["Edit", "Cancel"]}
-            actions={[EditBlock]}
-            width="10%"
+          </Heading>
+          <IconButton
+            mr="0"
+            variant="ghost"
+            size={6}
+            backgroundColor="blue"
+            icon={<AntDesign name="edit" />}
           />
         </HStack>
-        <Image
-          source={{
-            uri: props.assets[0],
+        <Heading size="sm" ml="-1">
+          props.location
+        </Heading>
+        <AspectRatio w="100%" ratio={16 / 9}>
+          <Image
+            source={{
+              uri: "https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg",
+            }}
+            alt="image"
+          />
+        </AspectRatio>
+        <Text
+          fontSize="sm"
+          _light={{
+            color: "gray.800",
           }}
-          alt="Alternate Text"
-          size="md"
-        />
-        <Text>{convertBudgetToString(props.budget)}</Text>
-        <Text>{props.description}</Text>
+          _dark={{
+            color: "gray.800",
+          }}
+          fontWeight="500"
+          ml="-0.5"
+          mt="-1"
+        >
+          $$
+        </Text>
+        <Text>Lorem Ipsum</Text>
       </Stack>
     </Box>
   );

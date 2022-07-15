@@ -24,17 +24,39 @@ import SearchBarWithAutocomplete, {
 import axios from "axios";
 import { useDebounce } from "../hooks/useDebounce";
 import * as ImagePicker from "expo-image-picker";
+import { gql, useMutation } from "@apollo/client";
 
 const GOOGLE_PLACES_API_BASE_URL = "https://maps.googleapis.com/maps/api/place";
 
 // Search Bar Citation: https://medium.com/nerd-for-tech/react-native-custom-search-bar-with-google-places-autocomplete-api-69b1c98de6a0
 
-export const EditBlockForm = ({ navigation }: { navigation: any }) => {
+const CREATE_BLOCK = gql`
+  mutation addPlanBlock($input: UpdatePlanBlockInput) {
+    addPlanBlock(input: $input) {
+      id
+      name
+    }
+  }
+`;
+
+export const EditBlockForm = ({
+  navigation,
+  route,
+}: {
+  navigation: any;
+  route: any;
+}) => {
+  const { planID, day } = route.params;
+  console.log("planID and day", planID, day);
+
   const [search, setSearch] = useState({ term: "", fetchPredictions: false });
   const [showPredictions, setShowPredictions] = useState(false);
   const [predictions, setPredictions] = useState<PredictionType[]>([]);
   const [, updateState] = useState({});
   const forceUpdate = useCallback(() => updateState({}), []);
+  const [title, setTitle] = useState("");
+
+  const [createBlock, { data, loading, error }] = useMutation(CREATE_BLOCK);
 
   const [image, setImage] = useState(null);
 
@@ -143,6 +165,23 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
     }
   };
 
+  const triggerCreate = () => {
+    console.log("create triggered");
+    const inputData: any = {
+      planID: planID,
+      location: search.term,
+      description: description,
+      title: title,
+      price: activeBudgetIndicator + 1,
+      day: day,
+      images: [image],
+    };
+    console.log("the input data", inputData);
+    createBlock({ variables: { input: inputData } }).catch((error) => {
+      console.log(JSON.stringify(error, null, 2));
+    });
+  };
+
   return (
     <ScrollView>
       <Stack
@@ -215,7 +254,7 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
         </FormControl>
         <FormControl mb="1">
           <FormControl.Label>Title</FormControl.Label>
-          <Input />
+          <Input value={title} onChangeText={(text) => setTitle(text)} />
         </FormControl>
         <FormControl mb="1">
           <FormControl.Label>Estimated Price</FormControl.Label>
@@ -232,7 +271,7 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
                   onPress={(_) => setActiveBudgetIndicator(index)}
                   key={item}
                   backgroundColor="#06B6D4"
-                  width={60}
+                  width={70}
                 >
                   {item}
                 </Button>
@@ -241,7 +280,7 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
                   marginRight="1"
                   variant="outline"
                   onPress={(_) => setActiveBudgetIndicator(index)}
-                  width={60}
+                  width={70}
                   key={item}
                 >
                   {item}
@@ -305,12 +344,20 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
         </FormControl>
         <Box>
           <FormControl mb="1">
-            <Button backgroundColor="#06B6D4">Done</Button>
+            <Button
+              backgroundColor="#3CB371"
+              onPress={() => {
+                triggerCreate();
+                navigation.goBack();
+              }}
+            >
+              Done
+            </Button>
           </FormControl>
         </Box>
         <Box>
           <FormControl mb="1">
-            <Button backgroundColor="#AF2C43">Delete Block</Button>
+            <Button backgroundColor="#AF2C43">Cancel</Button>
           </FormControl>
         </Box>
       </Stack>

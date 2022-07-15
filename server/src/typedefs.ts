@@ -105,6 +105,7 @@ export const typeDefs = gql`
   }
 
   input UpdatePlanBlockInput {
+    planID: String
     location: String
     description: String
     title: String

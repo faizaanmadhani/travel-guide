@@ -30,6 +30,8 @@ import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
 export const UserContext = React.createContext({
   userID: "",
   setUserID: (id) => {},
+  userSessionToken: "",
+  setUserSessionToken: (token) => {},
 });
 
 export const client = new ApolloClient({
@@ -45,10 +47,13 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [userID, setUserID] = useState("");
+  const [userSessionToken, setUserSessionToken] = useState("");
 
   return (
     <ApolloProvider client={client}>
-      <UserContext.Provider value={{ userID, setUserID }}>
+      <UserContext.Provider
+        value={{ userID, setUserID, userSessionToken, setUserSessionToken }}
+      >
         <NativeBaseProvider>
           <NavigationContainer>
             <Tab.Navigator

@@ -146,6 +146,7 @@ export type QueryAuthenticateUserArgs = {
 };
 
 export type UpdatePlanBlockInput = {
+  planID?: Maybe<Scalars['String']>;
   location?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
