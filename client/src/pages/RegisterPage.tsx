@@ -25,7 +25,6 @@ import StyledTagInput from "../components/taginput";
 import { gql, useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import { AntDesign } from "@expo/vector-icons";
 import { MutationAddUserArgs } from "../../../server/src/generated/graphql";
-import { GET_USERS } from "./ProfilePage";
 import { AUTH_USER } from "./LoginPage";
 
 export const CREATE_USER = gql`

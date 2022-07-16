@@ -51,7 +51,7 @@ export class UserProvider extends DataSource {
   public async getUser(id: String) {
 
     const user = await UserModel.findById(id).exec();
-
+    console.log("getUser reached", id);
     return castIUserToUser(user);
   }
 
