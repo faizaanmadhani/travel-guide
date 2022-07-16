@@ -39,12 +39,15 @@ export const CREATE_USER = gql`
 `;
 
 export const GET_USER_ID = gql`
-  query getUserID($username: String!) {
-    getUserID(username: $username) {
+  query getUserID($username: String!, $email: String!) {
+    getUserID(username: $username, email: $email) {
       id
+      name
+      email
     }
   }
 `;
+
 
 export default function RegisterPage({ navigation }: { navigation: any }) {
     // fetch pre-existing data
@@ -91,9 +94,15 @@ export default function RegisterPage({ navigation }: { navigation: any }) {
     function validateName() {
         if (name == "") {
           setErrors({ ...errors,
-            name: 'Name is required'
+            name: 'Username is required'
           });
           return false;
+        }
+        else if (name.indexOf("@") > -1) {
+            setErrors({ ...errors,
+                name: 'Username cannot contain symbol "@"'
+              });
+            return false;
         }
         return true;
     };
@@ -104,6 +113,13 @@ export default function RegisterPage({ navigation }: { navigation: any }) {
             email: 'Email is required'
           });
           return false;
+        }
+        else if (email.indexOf("@") == -1)
+        {
+            setErrors({ ...errors,
+                email: 'Invalid email address'
+              });
+              return false;
         }
         return true;
     };
@@ -118,7 +134,7 @@ export default function RegisterPage({ navigation }: { navigation: any }) {
         return true;
     };
 
-    function validate(resultData: { getUserID: { id: string } }) {
+    function validate(resultData: { getUserID: { id: string, name: String, email: String } }) {
         let passwordValid = validatePassword() as boolean;
         let emailValid = validateEmail() as boolean;
         let nameValid = validateName() as boolean;
@@ -134,10 +150,21 @@ export default function RegisterPage({ navigation }: { navigation: any }) {
             console.log("validation", id);
             if (id != "")
             {
-                console.log("User Name Already Exists");
-                setErrors({ ...errors,
-                    name: 'User Name Already Exists'
-                });
+                if (name == resultData.getUserID.name)
+                {
+                    console.log("User Name Already Exists");
+                    setErrors({ ...errors,
+                        name: 'User Name Already Exists'
+                    });
+                }
+                
+                if (email == resultData.getUserID.email)
+                {
+                    console.log("Email Already Exists");
+                    setErrors({ ...errors,
+                        email: 'Email Already Exists'
+                    });
+                }
             }
             else
             {
@@ -149,7 +176,7 @@ export default function RegisterPage({ navigation }: { navigation: any }) {
 
     function onSubmit() {
         getUserID({
-            variables: { username: name },
+            variables: { username: name, email: email },
         });
     };
 

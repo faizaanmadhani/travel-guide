@@ -117,6 +117,7 @@ export type Query = {
   planblocks: Array<PlanBlock>;
   filteredPlans: Array<Plan>;
   authenticateUser: User;
+  authUserEmail: User;
   getUserID: User;
 };
 
@@ -146,8 +147,15 @@ export type QueryAuthenticateUserArgs = {
   password: Scalars['String'];
 };
 
+export type QueryAuthUserEmailArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+
 export type QueryGetUserIDArgs = {
   username: Scalars['String'];
+  email: Scalars['String'];
 };
 
 export type UpdatePlanBlockInput = {
@@ -352,7 +360,8 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   planblocks?: Resolver<Array<ResolversTypes['PlanBlock']>, ParentType, ContextType>;
   filteredPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryFilteredPlansArgs, 'input'>>;
   authenticateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthenticateUserArgs, 'username' | 'password'>>;
-  getUserID?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserIDArgs, 'username'>>;
+  authUserEmail?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthUserEmailArgs, 'email' | 'password'>>;
+  getUserID?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserIDArgs, 'username' | "email">>;
 };
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {

@@ -41,17 +41,23 @@ export const AUTH_USER = gql`
   }
 `;
 
+export const AUTH_EMAIL = gql`
+  query authUserEmail($email: String!, $password: String!) {
+    authUserEmail(email: $email, password: $password) {
+      id
+    }
+  }
+`;
+
 export let userLoggedIn = "" as String;
-export function setUserLoggedIn(name: String) {
-  userLoggedIn = name;
+export function setUserLoggedIn(input: String) {
+  userLoggedIn = input;
 }
 
 export default function LoginPage({ navigation }: { navigation: any }) {
-  const [name, setName] = useState("");
+  const [input, setInput] = useState("");
   const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
   const [errors, setErrors] = useState({});
-
 
   const { userID, setUserID } = useContext(UserContext);
 
@@ -59,15 +65,15 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     navigation.navigate("Explore");
   }
 
-  function validate(resultData: { authenticateUser: { id: string } }) {
+  function validate1(resultData: { authenticateUser: { id: string } }) {
     // check: has user name & password fields
     let passwordValid = validatePassword() as boolean;
-        let nameValid = validateName() as boolean;
+        let inputValid = validateInput() as boolean;
         let id = resultData.authenticateUser.id;
 
-        console.log(errors.name, errors.password);
+        console.log(errors.input, errors.password);
 
-        if (!nameValid || !passwordValid)
+        if (!inputValid || !passwordValid)
         {
         }
         else
@@ -77,38 +83,71 @@ export default function LoginPage({ navigation }: { navigation: any }) {
             {
                 console.log("Invalid Credentials");
                 setErrors({ ...errors,
-                    name: 'Invalid Credentials',
+                    input: 'Invalid Credentials',
                     password: 'Invalid Credentials'
                 });
             }
             else
             {
-              userLoggedIn = name;
+              userLoggedIn = input;
               setUserID(resultData.authenticateUser.id);
               goToHome();
             }
         }
       };
 
-  function validateName() {
-    if (name == "") {
+      function validate2(resultData: { authUserEmail: { id: string } }) {
+        // check: has user name & password fields
+        let passwordValid = validatePassword() as boolean;
+            let inputValid = validateInput() as boolean;
+            let id = resultData.authUserEmail.id;
+    
+            console.log(errors.input, errors.password);
+    
+            if (!inputValid || !passwordValid)
+            {
+            }
+            else
+            {
+                console.log("validation", id);
+                if (id == "")
+                {
+                    console.log("Invalid Credentials");
+                    setErrors({ ...errors,
+                        input: 'Invalid Credentials',
+                        password: 'Invalid Credentials'
+                    });
+                }
+                else
+                {
+                  userLoggedIn = input;
+                  setUserID(resultData.authUserEmail.id);
+                  goToHome();
+                }
+            }
+          };
+
+  function validateInput() {
+    if (input == "") {
       setErrors({ ...errors,
-        name: 'Name is required'
+        input: 'Username or email is required'
       });
       return false;
     }
     return true;
   };
 
-  function validateEmail() {
-    if (email == "") {
-      setErrors({ ...errors,
-        email: 'Email is required'
-      });
+  function isEmail(str : String)
+  {
+    if (str.indexOf("@") == -1)
+    {
       return false;
     }
-    return true;
-  };
+    else
+    {
+      return true;
+    }
+  }
 
   function validatePassword() {
       if (password == "") {
@@ -123,13 +162,24 @@ export default function LoginPage({ navigation }: { navigation: any }) {
   const [authenticateUser, { data, error, loading }] = useLazyQuery(AUTH_USER, {
     onCompleted: (resultData) => {
       console.log("The result data", resultData);
-      validate(resultData);
+      validate1(resultData);
     },
     fetchPolicy : 'cache-and-network'
   });
 
   if (loading) console.log(`Loading`);
   if (error) console.log(`Error! ${error.message}`);
+
+  const [authUserEmail, { data : data1, error : error1, loading : loading1 }] = useLazyQuery(AUTH_EMAIL, {
+    onCompleted: (resultData) => {
+      console.log("The result data", resultData);
+      validate2(resultData);
+    },
+    fetchPolicy : 'cache-and-network'
+  });
+
+  if (loading1) console.log(`Loading`);
+  if (error1) console.log(`Error! ${error1.message}`);
 
   return (
     <ImageBackground
@@ -140,16 +190,16 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     >
       <VStack h={1.1 * useWindowDimensions().height} w={useWindowDimensions().width}>
         <Box h={0.25 * useWindowDimensions().height}></Box>
-        <FormControl isRequired isInvalid={(('name' in errors) && (errors.name != ""))}>
+        <FormControl isRequired isInvalid={(('input' in errors) && (errors.input != ""))}>
             <Stack mx="4">
-                <FormControl.Label>User Name</FormControl.Label>
+                <FormControl.Label>Username/Email</FormControl.Label>
                 <Input placeholder="User Name"
-                    onChangeText={(name) => {setName(name)}}
+                    onChangeText={(input) => {setInput(input)}}
                     onKeyPress={() => {setErrors({ ...errors,
                         name: ""
                       })}}
-                    onBlur={() => validateName()}/>
-            {('name' in errors) && <FormControl.ErrorMessage> {errors.name} </FormControl.ErrorMessage>}
+                    onBlur={() => validateInput()}/>
+            {('input' in errors) && <FormControl.ErrorMessage> {errors.input} </FormControl.ErrorMessage>}
             </Stack>
             </FormControl>
 
@@ -172,9 +222,21 @@ export default function LoginPage({ navigation }: { navigation: any }) {
               variant="solid"
               colorScheme="primary"
               onPress={() =>
-                authenticateUser({
-                  variables: { username: name, password: password },
-                })
+                { if (!isEmail(input)) {
+                    console.log("login - username");
+                    authenticateUser({
+                      variables: { username: input, password: password },
+                    });
+                  }
+                  else {
+                    console.log("login - email");
+                    authUserEmail(
+                      {
+                        variables: { email: input, password: password },
+                      }
+                    );
+                  }
+                }
               }
             >
               Done

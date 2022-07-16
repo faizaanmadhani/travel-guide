@@ -65,12 +65,30 @@ export class UserProvider extends DataSource {
     }
   }
 
-  public async getUserID(username: String) {
-    console.log("reached", username);
-    const user = await UserModel.findOne({name: username});
-    if (user) {
+  public async authUserEmail(email: String, password: String) {
+    console.log("reached", email, password);
+    const user = await UserModel.findOne({email: email});
+    if (user && user.password === password) {
       return castIUserToUser(user);
     } else {
+      return castIUserToUser(null);
+    }
+  }
+
+  public async getUserID(username: String, email: String) {
+    console.log("reached", username, email);
+    const user1 = await UserModel.findOne({name: username});
+    const user2 = await UserModel.findOne({email: email});
+    if (user1) {
+      console.log("username found");
+      return castIUserToUser(user1);
+    }
+    else if (user2)
+    {
+      console.log("email found");
+      return castIUserToUser(user2);
+    }
+    else {
       return castIUserToUser(null);
     }
   }
