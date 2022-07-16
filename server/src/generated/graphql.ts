@@ -116,6 +116,7 @@ export type Query = {
   plans: Array<Plan>;
   planblocks: Array<PlanBlock>;
   filteredPlans: Array<Plan>;
+  filteredTags: Array<Tag>;
   authenticateUser: User;
 };
 
@@ -140,9 +141,23 @@ export type QueryFilteredPlansArgs = {
 };
 
 
+export type QueryFilteredTagsArgs = {
+  input: TagInput;
+};
+
+
 export type QueryAuthenticateUserArgs = {
   username: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type Tag = {
+  __typename?: 'Tag';
+  name: Scalars['String'];
+};
+
+export type TagInput = {
+  tags?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type UpdatePlanBlockInput = {
@@ -267,14 +282,12 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   PlanBlock: ResolverTypeWrapper<PlanBlock>;
   FilterInput: FilterInput;
+  TagInput: TagInput;
+  Tag: ResolverTypeWrapper<Tag>;
   Mutation: ResolverTypeWrapper<{}>;
   CreateUserInput: CreateUserInput;
-<<<<<<< HEAD
-  CreatePlanInput: CreatePlanInput;
-=======
   UpdatePlanInput: UpdatePlanInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
->>>>>>> master
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BlockType: BlockType;
   PrefInput: PrefInput;
@@ -292,14 +305,12 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'];
   PlanBlock: PlanBlock;
   FilterInput: FilterInput;
+  TagInput: TagInput;
+  Tag: Tag;
   Mutation: {};
   CreateUserInput: CreateUserInput;
-<<<<<<< HEAD
-  CreatePlanInput: CreatePlanInput;
-=======
   UpdatePlanInput: UpdatePlanInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
->>>>>>> master
   Boolean: Scalars['Boolean'];
   PrefInput: PrefInput;
   Float: Scalars['Float'];
@@ -354,7 +365,13 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   plans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType>;
   planblocks?: Resolver<Array<ResolversTypes['PlanBlock']>, ParentType, ContextType>;
   filteredPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryFilteredPlansArgs, 'input'>>;
+  filteredTags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryFilteredTagsArgs, 'input'>>;
   authenticateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthenticateUserArgs, 'username' | 'password'>>;
+};
+
+export type TagResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Tag'] = ResolversParentTypes['Tag']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -373,6 +390,7 @@ export type Resolvers<ContextType = Context> = {
   PlanBlock?: PlanBlockResolvers<ContextType>;
   Preference?: PreferenceResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Tag?: TagResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };
 

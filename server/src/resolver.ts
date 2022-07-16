@@ -12,6 +12,8 @@ export const resolvers: Resolvers = {
     plans: (_, __, context) => context.dataSources.planProvider.getAllPlans(),
     filteredPlans: (_, args, context) =>
       context.dataSources.planProvider.getFilteredPlans(args.input),
+    filteredTags: (_, args, context) =>
+      context.dataSources.tagProvider.getFilteredTags(args.input),
     authenticateUser: (_, args, context) =>
       context.dataSources.userProvider.authenticateUser(
         args.username,

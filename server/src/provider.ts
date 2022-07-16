@@ -1,6 +1,6 @@
 import { DataSource } from "apollo-datasource";
-import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
-import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput } from "./generated/graphql";
+import { PlanBlockModel, PlanModel, UserModel, TagModel } from "./data/model";
+import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, Tag, TagInput } from "./generated/graphql";
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -44,6 +44,13 @@ const castIPlanBlocktoPlanBlock = (planBlock: any) => {
     externalUrl: !planBlock?.links ? [] : planBlock.links
   }
   return gqlPlanBlock;
+}
+
+const castITagtoTag = (tag: any) => {
+  const gqlTag: Tag = {
+    name: !tag?.name ? "" : tag?.name,
+  }
+  return gqlTag;
 }
 
 export class UserProvider extends DataSource {
@@ -285,5 +292,50 @@ export class PlanBlockProvider extends DataSource {
     await plan?.save();
 
     return castIPlanBlocktoPlanBlock(this.getPlanBlock(id));
+  }
+}
+
+export class TagProvider extends DataSource {
+  public async getFilteredTags(input: TagInput) {
+    console.log("input - ", input.tags);
+
+    const tags = (await TagModel.find({}).exec());
+    return tags.map((obj, _) => castITagtoTag(obj));
+    // filtering logic: rating AND budget AND (country 1 OR country 2 OR ...) AND (month 1 OR month 2 OR ...)
+
+
+    // const shouldApplyFilters = input.countries || input.rating || input.budget || input.months;
+    // let plans = (await PlanModel.find({}).exec()).map((obj, _) => castIPlantoPlan(obj));
+
+    // if (!shouldApplyFilters) {
+    //   return plans;
+    // }
+
+    // const countriesFilter = input.countries? input.countries: [];
+    // const ratingFilter = input.rating? input.rating: [];
+    // const budgetFilter = input.budget? input.budget: [];
+    // const monthsFilter = input.months? input.months: [];
+    
+    // if (countriesFilter && countriesFilter.length) {
+    //   plans = plans.filter(plan => {
+    //     return plan.countries.some(country => countriesFilter.includes(country));
+    //   })
+    // }
+
+    // if (ratingFilter && ratingFilter.length) {
+    //   plans = plans.filter(plan =>  ratingFilter.includes(plan.rating))
+    // }
+    
+    // if (budgetFilter && budgetFilter.length) {
+    //   plans = plans.filter(plan => budgetFilter.includes(plan.budget))
+    // }
+
+    // if (monthsFilter && monthsFilter.length) {
+    //   plans = plans.filter(plan => {
+    //     return plan.months.some(month => monthsFilter.includes(month));
+    //   })
+    // }
+    
+    // return plans.map((obj, _) => castIPlantoPlan(obj));
   }
 }

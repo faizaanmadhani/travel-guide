@@ -1,5 +1,5 @@
 import { Schema, Types } from "mongoose";
-import { IUser, IPlan, IPlanBlock } from "./interface";
+import { IUser, IPlan, IPlanBlock, ITag } from "./interface";
 
 export const userSchema = new Schema<IUser>({
   name: { type: String, required: true },
@@ -42,6 +42,10 @@ export const planBlockSchema = new Schema<IPlanBlock>({
   // location_url: { type: String, required: false },
   // audio: { type: String, required: false },
   // video: { type: String, required: false },
+});
+
+export const tagSchema = new Schema<ITag>({
+  name: { type: String, required: false },
 });
 
 // const run = async () => {

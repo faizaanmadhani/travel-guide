@@ -49,7 +49,7 @@ export default function ExplorePage() {
               }
               flexGrow={1}
               size="lg"
-              placeholder="Search"
+              placeholder="Search Plans"
             />
             {/* filter icon */}
             <VStack alignSelf="center" ml="1">

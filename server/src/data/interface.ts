@@ -41,3 +41,7 @@ export interface IPlanBlock {
   // audio?: string;
   // video?: string;
 }
+
+export interface ITag {
+  name: string;
+}
