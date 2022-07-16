@@ -24,6 +24,7 @@ import {
   IconButton,
   Center,
   VStack,
+  useToast
 } from "native-base";
 import { Dimensions, Pressable } from "react-native";
 import StyledTagInput from "../components/taginput";
@@ -58,6 +59,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
   const [input, setInput] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const toast = useToast();
 
   const { userID, setUserID } = useContext(UserContext);
 
@@ -91,6 +93,10 @@ export default function LoginPage({ navigation }: { navigation: any }) {
             {
               userLoggedIn = input;
               setUserID(resultData.authenticateUser.id);
+              toast.show({
+                description: "Login Successful",
+                duration: 3000
+              });
               goToHome();
             }
         }
@@ -122,6 +128,10 @@ export default function LoginPage({ navigation }: { navigation: any }) {
                 {
                   userLoggedIn = input;
                   setUserID(resultData.authUserEmail.id);
+                  toast.show({
+                    description: "Login Successful",
+                    duration: 3000
+                  });
                   goToHome();
                 }
             }

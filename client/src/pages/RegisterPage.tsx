@@ -17,7 +17,8 @@ import {
   HStack,
   IconButton,
   Center,
-  VStack
+  VStack,
+  useToast
 } from "native-base";
 import { Dimensions, Pressable } from "react-native";
 import StyledTagInput from "../components/taginput";
@@ -50,6 +51,8 @@ export const GET_USER_ID = gql`
 
 
 export default function RegisterPage({ navigation }: { navigation: any }) {
+    const toast = useToast();
+
     // fetch pre-existing data
     const [getUserID, { error : error1, loading : loading1, data : data1 }] = useLazyQuery(GET_USER_ID, {
         onCompleted: (resultData) => {
@@ -169,6 +172,10 @@ export default function RegisterPage({ navigation }: { navigation: any }) {
             else
             {
                 submitInfo();
+                toast.show({
+                    description: "Registeration Success",
+                    duration: 3000
+                });
                 goToLogin();
             }
         }
