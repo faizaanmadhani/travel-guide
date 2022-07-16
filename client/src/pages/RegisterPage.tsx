@@ -174,7 +174,8 @@ export default function RegisterPage({ navigation }: { navigation: any }) {
                 submitInfo();
                 toast.show({
                     description: "Registeration Success",
-                    duration: 3000
+                    duration: 3000,
+                    backgroundColor: "success.400"
                 });
                 goToLogin();
             }

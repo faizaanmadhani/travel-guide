@@ -94,8 +94,9 @@ export default function LoginPage({ navigation }: { navigation: any }) {
               userLoggedIn = input;
               setUserID(resultData.authenticateUser.id);
               toast.show({
-                description: "Login Successful",
-                duration: 3000
+                description: "Login Success",
+                duration: 3000,
+                backgroundColor: "success.400"
               });
               goToHome();
             }
@@ -129,8 +130,9 @@ export default function LoginPage({ navigation }: { navigation: any }) {
                   userLoggedIn = input;
                   setUserID(resultData.authUserEmail.id);
                   toast.show({
-                    description: "Login Successful",
-                    duration: 3000
+                    description: "Login Success",
+                    duration: 3000,
+                    backgroundColor: "success.400"
                   });
                   goToHome();
                 }
