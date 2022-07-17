@@ -9,6 +9,8 @@ const castIUserToUser = (user: any) => {
     email: !user?.email ? "" : user?.email,
     profile_pic: !user?.profile_pic ? "" : user?.profile_pic,
     password: !user?.password ? "" : user?.password,
+    emailValid: !user?.emailValid ? 0 : user?.emailValid,
+    randStr: !user?.randStr ? "" : user?.randStr,
   }
   return gqlUser
 }
@@ -138,19 +140,24 @@ export class UserProvider extends DataSource {
   }
 
   public async createUser(input: CreateUserInput) {
+    function randString() {
+      const codeLen = 6;
+      let code = '';
+      let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let alphabetLen = alphabet.length;
+      for ( var i = 0; i < codeLen; i++ ) {
+        code += alphabet.charAt(Math.floor(Math.random() * alphabetLen));
+      }
+      return code;
+    }
 
     const newUser = new UserModel({
       name: input.name,
       email: input.email,
       profile_pic: input.profile_pic,
       password: input.password,
-      // prefs: input.prefs.map((obj, _) => {
-      //   const modelPref = {
-      //     pref_tag: obj?.prefTag,
-      //     user_rating: obj?.userRating
-      //   }
-      //   return modelPref
-      // }),
+      randStr: randString(),
+      emailValid: 0,
       saved_plans: []
     });
 

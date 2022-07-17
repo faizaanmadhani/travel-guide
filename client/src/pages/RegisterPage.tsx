@@ -25,6 +25,7 @@ import StyledTagInput from "../components/taginput";
 import { gql, useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import { AntDesign } from "@expo/vector-icons";
 import { MutationAddUserArgs } from "../../../server/src/generated/graphql";
+import { GET_USERS } from "./ProfilePage";
 import { AUTH_USER } from "./LoginPage";
 
 export const CREATE_USER = gql`
@@ -91,6 +92,10 @@ export default function RegisterPage({ navigation }: { navigation: any }) {
     
     function goToLogin() {
         navigation.navigate("Login");
+    };
+
+    function goToEmailVer() {
+        navigation.navigate("Verify");
     };
 
     function validateName() {
@@ -176,7 +181,7 @@ export default function RegisterPage({ navigation }: { navigation: any }) {
                     duration: 3000,
                     backgroundColor: "success.400"
                 });
-                goToLogin();
+                goToEmailVer();
             }
         }
     };

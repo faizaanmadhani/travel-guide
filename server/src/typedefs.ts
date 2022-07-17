@@ -6,6 +6,8 @@ export const typeDefs = gql`
     email: String!
     profile_pic: String!
     password: String!
+    randStr: String!
+    emailValid: Int!
     savedPlans: [Plan]
   }
 

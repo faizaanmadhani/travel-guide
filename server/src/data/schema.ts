@@ -6,6 +6,8 @@ export const userSchema = new Schema<IUser>({
   email: { type: String, required: true },
   profile_pic: { type: String, required: true },
   password: { type: String, required: true },
+  randStr: {type: String, required: true},
+  emailValid: {type: Number, required: true},
   // prefs: [
   //   {
   //     pref_tag: { type: String, required: true },

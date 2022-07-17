@@ -26,6 +26,7 @@ import RegisterPage from "./src/pages/RegisterPage";
 import LoginPage from "./src/pages/LoginPage";
 import TravelStackScreen from "./src/navigation/TravelPageStack";
 import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
+import EmailVerificationPage from "./src/pages/EmailVerificationPage";
 
 export const UserContext = React.createContext({
   userID: "",
@@ -119,6 +120,16 @@ export default function App() {
               <Tab.Screen
                 name="Login"
                 component={LoginPage}
+                options={{
+                  tabBarButton: () => null,
+                  // tabBarVisible: false,
+                  tabBarStyle: { display: "none" },
+                  headerShown: false,
+                }}
+              />
+              <Tab.Screen
+                name="Verify"
+                component={EmailVerificationPage}
                 options={{
                   tabBarButton: () => null,
                   // tabBarVisible: false,
