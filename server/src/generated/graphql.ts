@@ -41,6 +41,7 @@ export type Mutation = {
   addUser: User;
   addPlan: Plan;
   modifyPlan?: Maybe<Plan>;
+  modifyUser?: Maybe<User>;
   addPlanBlock: PlanBlock;
 };
 
@@ -49,6 +50,9 @@ export type MutationAddUserArgs = {
   input: CreateUserInput;
 };
 
+export type MutationModifyUserArgs = {
+  input: UpdateUserInput;
+};
 
 export type MutationAddPlanArgs = {
   creatorId: Scalars['String'];
@@ -58,7 +62,6 @@ export type MutationAddPlanArgs = {
 export type MutationModifyPlanArgs = {
   input: UpdatePlanInput;
 };
-
 
 export type MutationAddPlanBlockArgs = {
   input: UpdatePlanBlockInput;
@@ -191,7 +194,15 @@ export type User = {
   savedPlans?: Maybe<Array<Maybe<Plan>>>;
 };
 
-
+export type UpdateUserInput = {
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  profile_pic?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+  randStr?: Maybe<Scalars['String']>;
+  emailValid?: Maybe<Scalars['Int']>;
+};
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -285,6 +296,7 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   CreateUserInput: CreateUserInput;
   UpdatePlanInput: UpdatePlanInput;
+  UpdateUserInput: UpdateUserInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BlockType: BlockType;
@@ -306,6 +318,7 @@ export type ResolversParentTypes = {
   Mutation: {};
   CreateUserInput: CreateUserInput;
   UpdatePlanInput: UpdatePlanInput;
+  UpdateUserInput: UpdateUserInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
   Boolean: Scalars['Boolean'];
   PrefInput: PrefInput;
@@ -317,6 +330,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   addUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddUserArgs, 'input'>>;
   addPlan?: Resolver<ResolversTypes['Plan'], ParentType, ContextType, RequireFields<MutationAddPlanArgs, 'creatorId'>>;
   modifyPlan?: Resolver<Maybe<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<MutationModifyPlanArgs, 'input'>>;
+  modifyUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationModifyUserArgs, 'input'>>;
   addPlanBlock?: Resolver<ResolversTypes['PlanBlock'], ParentType, ContextType, RequireFields<MutationAddPlanBlockArgs, 'input'>>;
 };
 

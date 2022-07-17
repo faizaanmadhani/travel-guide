@@ -41,6 +41,8 @@ export const resolvers: Resolvers = {
     },
     modifyPlan: (_, args, context) =>
       context.dataSources.planProvider.updatePlan(args.input),
+    modifyUser: (_, args, context) =>
+      context.dataSources.userProvider.updateUser(args.input),
   },
   User: {
     // prefs: (parent, __, context) =>

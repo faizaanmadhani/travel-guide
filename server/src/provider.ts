@@ -1,6 +1,6 @@
 import { DataSource } from "apollo-datasource";
 import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
-import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput } from "./generated/graphql";
+import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, UpdateUserInput } from "./generated/graphql";
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -139,16 +139,6 @@ export class UserProvider extends DataSource {
   }
 
   public async createUser(input: CreateUserInput) {
-    function randString() {
-      const codeLen = 6;
-      let code = '';
-      let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let alphabetLen = alphabet.length;
-      for ( var i = 0; i < codeLen; i++ ) {
-        code += alphabet.charAt(Math.floor(Math.random() * alphabetLen));
-      }
-      return code;
-    }
 
     const newUser = new UserModel({
       name: input.name,
@@ -166,6 +156,42 @@ export class UserProvider extends DataSource {
     const gqlUser: User = await this.getUser(id);
 
     return gqlUser;
+  }
+
+  public async updateUser(input: UpdateUserInput) {
+    const user = await UserModel.findById(input.id);
+    if (user) {
+      // user.overwrite({
+      //   name: "",
+      //   email: "",
+      //   password: "",
+      //   profile_pic: "",
+      //   randStr: "",
+      //   emailValid: 0
+      // });
+
+      const name = user?.name;
+      const email = user?.email;
+      const password = user?.password;
+      const profile_pic = user?.profile_pic;
+      const randStr = user?.randStr;
+      const emailValid = user?.emailValid;
+
+      user.name = input.name ? input.name : name;
+      user.email = input.email ? input.email : email;
+      user.password = input.password ? input.password : password;
+      user.profile_pic = input.profile_pic ? input.profile_pic : profile_pic;
+      user.randStr = input.randStr ? input.randStr : randStr;
+      if (input.emailValid != undefined)
+      {
+        user.emailValid = (input.emailValid == 0 || input.emailValid == 1) ? input.emailValid : emailValid;
+      }
+      
+      await user.save();
+      return this.getUser(input?.id || "");
+    }
+
+    return null;
   }
 }
 
@@ -320,4 +346,15 @@ export class PlanBlockProvider extends DataSource {
 
     return castIPlanBlocktoPlanBlock(this.getPlanBlock(id));
   }
+}
+
+function randString() {
+  const codeLen = 6;
+  let code = '';
+  let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let alphabetLen = alphabet.length;
+  for ( var i = 0; i < codeLen; i++ ) {
+    code += alphabet.charAt(Math.floor(Math.random() * alphabetLen));
+  }
+  return code;
 }

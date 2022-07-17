@@ -71,6 +71,7 @@ export const typeDefs = gql`
     addUser(input: CreateUserInput!): User!
     addPlan(creatorId: String!): Plan!
     modifyPlan(input: UpdatePlanInput!): Plan
+    modifyUser(input: UpdateUserInput!): User
     addPlanBlock(input: UpdatePlanBlockInput!): PlanBlock!
     #addPlanBlock(input: PlanBlockInput!)
     #modifyUser(input: UserInput!)
@@ -95,6 +96,16 @@ export const typeDefs = gql`
     email: String!
     profile_pic: String!
     password: String!
+  }
+
+  input UpdateUserInput {
+    id: String
+    name: String
+    email: String
+    profile_pic: String
+    password: String
+    randStr: String
+    emailValid: Int
   }
 
   input UpdatePlanInput {
