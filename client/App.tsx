@@ -33,6 +33,11 @@ export const UserContext = React.createContext({
   setUserID: (id) => {},
 });
 
+export const RegisterContext = React.createContext({
+  regEmail: "",
+  setRegEmail: (email) => {},
+});  
+
 export const client = new ApolloClient({
   uri: "https://feb0-207-107-159-98.ngrok.io/",
   cache: new InMemoryCache(),
@@ -46,10 +51,12 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [userID, setUserID] = useState("");
+  const [regEmail, setRegEmail] = useState("");
 
   return (
     <ApolloProvider client={client}>
       <UserContext.Provider value={{ userID, setUserID }}>
+      <RegisterContext.Provider value={{ regEmail, setRegEmail }}>
         <NativeBaseProvider>
           <NavigationContainer>
             <Tab.Navigator
@@ -168,6 +175,7 @@ export default function App() {
             </Tab.Navigator>
           </NavigationContainer>
         </NativeBaseProvider>
+      </RegisterContext.Provider>
       </UserContext.Provider>
     </ApolloProvider>
   );

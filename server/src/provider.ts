@@ -85,14 +85,13 @@ export class UserProvider extends DataSource {
       console.log("username found");
       return castIUserToUser(user1);
     }
-    else if (user2)
+    if (user2)
     {
       console.log("email found");
       return castIUserToUser(user2);
     }
-    else {
-      return castIUserToUser(null);
-    }
+    // else
+    return castIUserToUser(null);
   }
 
   public async getUsers() {
@@ -143,7 +142,7 @@ export class UserProvider extends DataSource {
     function randString() {
       const codeLen = 6;
       let code = '';
-      let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       let alphabetLen = alphabet.length;
       for ( var i = 0; i < codeLen; i++ ) {
         code += alphabet.charAt(Math.floor(Math.random() * alphabetLen));

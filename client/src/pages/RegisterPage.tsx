@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
+import React, { useEffect, useLayoutEffect, useState, useRef, useContext } from "react";
 import { Alert, useWindowDimensions, ImageBackground } from "react-native";
 import {
   Input,
@@ -25,8 +25,17 @@ import StyledTagInput from "../components/taginput";
 import { gql, useMutation, useQuery, useLazyQuery } from "@apollo/client";
 import { AntDesign } from "@expo/vector-icons";
 import { MutationAddUserArgs } from "../../../server/src/generated/graphql";
-import { GET_USERS } from "./ProfilePage";
-import { AUTH_USER } from "./LoginPage";
+import { AUTH_EMAIL, AUTH_USER } from "./LoginPage";
+import { RegisterContext } from "../../App";
+
+export const GET_USERS = gql`query GetUsers {
+    users {
+      name
+      password
+      email
+      profile_pic
+    }
+  }`;
 
 export const CREATE_USER = gql`
   mutation CreateUser($input: CreateUserInput!) {
@@ -45,13 +54,14 @@ export const GET_USER_ID = gql`
       id
       name
       email
+      randStr
     }
   }
 `;
 
-
 export default function RegisterPage({ navigation }: { navigation: any }) {
     const toast = useToast();
+    const { regEmail, setRegEmail } = useContext(RegisterContext);
 
     // fetch pre-existing data
     const [getUserID, { error : error1, loading : loading1, data : data1 }] = useLazyQuery(GET_USER_ID, {
@@ -66,7 +76,8 @@ export default function RegisterPage({ navigation }: { navigation: any }) {
     if (error1) console.log(`Error! ${error1.message}`);
 
     // set up for adding user
-    const [addUser, { data, loading, error }] = useMutation(CREATE_USER, {refetchQueries: [{query: GET_USERS}]});
+    const [addUser, { data, loading, error }] = useMutation(CREATE_USER,
+            {refetchQueries: [{query: GET_USERS}, {query: AUTH_USER}, {query: AUTH_EMAIL}, {query: GET_USER_ID}]});
 
     if (loading) console.log("Loading...");;
     if (error) console.log(`Error! ${error.message}`);
@@ -176,6 +187,8 @@ export default function RegisterPage({ navigation }: { navigation: any }) {
             else
             {
                 submitInfo();
+                setRegEmail(email);
+                console.log(regEmail);
                 toast.show({
                     description: "Registeration Success",
                     duration: 3000,
