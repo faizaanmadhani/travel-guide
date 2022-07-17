@@ -27,6 +27,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { MutationAddUserArgs } from "../../../server/src/generated/graphql";
 import { AUTH_USER } from "./LoginPage";
 import { RegisterContext } from "../../App";
+import { GET_USER_ID } from "./RegisterPage";
 
 export const GET_USER_V = gql`
   query getUserID($username: String!, $email: String!) {
@@ -35,6 +36,17 @@ export const GET_USER_V = gql`
       name
       email
       randStr
+    }
+  }
+`;
+
+export const MODIFY_USER = gql`
+  mutation modifyUser($input: UpdateUserInput!) {
+    modifyUser(input: $input) {
+        id
+        name
+        email
+        emailValid
     }
   }
 `;
@@ -53,6 +65,7 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
         variables: { username : "", email : regEmail },
         onCompleted: (resultData) => {
             console.log("The result data", resultData);
+            sendCode(resultData)
           },
         fetchPolicy : 'cache-and-network'
     });
@@ -67,6 +80,34 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
     {
         console.log(`Error! ${error.message}`);
         // return `Error! ${error.message}`;
+    };
+
+    function sendCode(resultData: { getUserID: { email: String } })
+    {
+        console.log(resultData.getUserID.email);
+    }
+
+    // update user
+    const [modifyUser, { data : data1, loading : loading1, error : error1 }] = useMutation(MODIFY_USER,
+        {refetchQueries: [{query: GET_USER_ID}]});
+
+    if (loading1) console.log("Loading...");;
+    if (error1) console.log(`Error! ${error.message}`);
+
+    function updateEmailValid(valid : Number) {
+        modifyUser({
+          variables: {
+            input: {
+                id: data.getUserID.id,
+                name: "",
+                email: "",
+                profile_pic: "",
+                password: "",
+                randStr: "",
+                emailValid: valid
+            },
+          },
+        });
     };
 
     function goToLogin() {
@@ -102,13 +143,14 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
                 code: 'Incorrect Code'
               });
         }
-        else
+        else // valid code
         {
             toast.show({
                 description: "Email Verified",
                 duration: 3000,
                 backgroundColor: "success.400"
             });
+            updateEmailValid(1);
             goToLogin();
         }
     }
@@ -117,8 +159,12 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
             <ImageBackground source={{uri:"https://prod-virtuoso.dotcmscloud.com/dA/188da7ea-f44f-4b9c-92f9-6a65064021c1/heroImage1/PowerfulReasons_hero.jpg"}}
         imageStyle={{opacity:0.1}}>
 
+
         <VStack h={1.1 * useWindowDimensions().height} w={useWindowDimensions().width}>
             <Box h={0.25 * useWindowDimensions().height}></Box>
+         
+            <Text fontSize={"lg"}> Verify Email: {data && data.getUserID.email}</Text>
+            
             <FormControl isRequired isInvalid={(('code' in errors) && (errors.code != ""))}>
             <Stack mx="4">
                 <FormControl.Label>Verification Code</FormControl.Label>

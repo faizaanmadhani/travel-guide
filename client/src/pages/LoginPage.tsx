@@ -33,6 +33,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { MutationAddUserArgs } from "../../../server/src/generated/graphql";
 import { UserContext } from "../../App";
 import Spinner from "react-native-loading-spinner-overlay";
+import { RegisterContext } from "../../App";
 
 export const AUTH_USER = gql`
   query authenticateUser($username: String!, $password: String!) {
@@ -46,6 +47,7 @@ export const AUTH_EMAIL = gql`
   query authUserEmail($email: String!, $password: String!) {
     authUserEmail(email: $email, password: $password) {
       id
+      emailValid
     }
   }
 `;
@@ -60,6 +62,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const toast = useToast();
+  const { regEmail, setRegEmail } = useContext(RegisterContext);
 
   const { userID, setUserID } = useContext(UserContext);
 
@@ -103,7 +106,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
         }
       };
 
-      function validate2(resultData: { authUserEmail: { id: string } }) {
+      function validate2(resultData: { authUserEmail: { id: string, emailValid: Number } }) {
         // check: has user name & password fields
         let passwordValid = validatePassword() as boolean;
             let inputValid = validateInput() as boolean;
@@ -124,6 +127,19 @@ export default function LoginPage({ navigation }: { navigation: any }) {
                         input: 'Invalid Credentials',
                         password: 'Invalid Credentials'
                     });
+                }
+                else if (resultData.authUserEmail.emailValid == 0)
+                {
+                  setErrors({ ...errors,
+                    input: 'Email Not Verified',
+                  });
+                  setRegEmail(input);
+                  toast.show({
+                    description: "Email not verified",
+                    duration: 3000,
+                    backgroundColor: "error.400"
+                  });
+                  navigation.navigate("Verify");
                 }
                 else
                 {
@@ -208,7 +224,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
                 <Input placeholder="User Name"
                     onChangeText={(input) => {setInput(input)}}
                     onKeyPress={() => {setErrors({ ...errors,
-                        name: ""
+                        input: ''
                       })}}
                     onBlur={() => validateInput()}/>
             {('input' in errors) && <FormControl.ErrorMessage> {errors.input} </FormControl.ErrorMessage>}
