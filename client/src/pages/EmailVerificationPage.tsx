@@ -29,6 +29,16 @@ import { AUTH_USER } from "./LoginPage";
 import { RegisterContext } from "../../App";
 import { GET_USER_ID } from "./RegisterPage";
 
+var nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'wandr497@gmail.com',
+    pass: 'hepvigybygnzmutg'
+  }
+});
+
 export const GET_USER_V = gql`
   query getUserID($username: String!, $email: String!) {
     getUserID(username: $username, email: $email) {
@@ -56,7 +66,6 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
     const toast = useToast();
     const [code, setCode] = useState("");
     const [errors, setErrors] = useState({});
-    let codeCorrect = "" as String;
 
     const { regEmail, setRegEmail } = useContext(RegisterContext);
     // console.log("verify:", regEmail);
@@ -82,9 +91,24 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
         // return `Error! ${error.message}`;
     };
 
-    function sendCode(resultData: { getUserID: { email: String } })
+    function sendCode(resultData: { getUserID: { email: String, randStr: String } })
     {
         console.log(resultData.getUserID.email);
+        // var mailOptions = {
+        //     from: 'wandr497@gmail.com',
+        //     to: 'wandr497@gmail.com',
+        //     subject: 'Wandr: Confirm Email',
+        //     text: `You sent a email`
+        //   };
+
+        //   transporter.sendMail(mailOptions, function(error, info){
+        //     if (error) {
+        //       console.log(error);
+        //     } else {
+        //       console.log('Email sent: ' + info.response);
+        //     }
+        //     });
+          
     }
 
     // update user
@@ -95,6 +119,7 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
     if (error1) console.log(`Error! ${error.message}`);
 
     function updateEmailValid(valid : Number) {
+        // new code after current one is used
         modifyUser({
           variables: {
             input: {
@@ -103,7 +128,7 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
                 email: "",
                 profile_pic: "",
                 password: "",
-                randStr: "",
+                randStr: randString(),
                 emailValid: valid
             },
           },
@@ -191,3 +216,15 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
         
     );
 }
+
+
+function randString() {
+    const codeLen = 6;
+    let code = '';
+    let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let alphabetLen = alphabet.length;
+    for ( var i = 0; i < codeLen; i++ ) {
+      code += alphabet.charAt(Math.floor(Math.random() * alphabetLen));
+    }
+    return code;
+  }
