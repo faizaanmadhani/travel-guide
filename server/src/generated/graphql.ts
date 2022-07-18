@@ -121,6 +121,7 @@ export type Query = {
   filteredPlans: Array<Plan>;
   authenticateUser: User;
   authUserEmail: User;
+  verifyEmail: User;
   getUserID: User;
 };
 
@@ -153,6 +154,10 @@ export type QueryAuthenticateUserArgs = {
 export type QueryAuthUserEmailArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type QueryVerifyEmailArgs = {
+  email: Scalars['String'];
 };
 
 
@@ -377,6 +382,7 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   filteredPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryFilteredPlansArgs, 'input'>>;
   authenticateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthenticateUserArgs, 'username' | 'password'>>;
   authUserEmail?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthUserEmailArgs, 'email' | 'password'>>;
+  verifyEmail?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryVerifyEmailArgs, 'email'>>;
   getUserID?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserIDArgs, 'username' | "email">>;
 };
 

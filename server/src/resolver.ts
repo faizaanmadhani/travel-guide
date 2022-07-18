@@ -22,6 +22,10 @@ export const resolvers: Resolvers = {
         args.email,
         args.password
       ),
+    verifyEmail: (_, args, context) =>
+      context.dataSources.userProvider.verifyEmail(
+        args.email
+      ),
     getUserID: (_, args, context) =>
       context.dataSources.userProvider.getUserID(
         args.username,

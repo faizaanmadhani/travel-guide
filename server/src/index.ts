@@ -88,3 +88,13 @@ router.post(
     response.send(data);
   }
 );
+
+var nodemailer = require('nodemailer');
+
+export var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'wandr497@gmail.com',
+    pass: 'hepvigybygnzmutg'
+  }
+});

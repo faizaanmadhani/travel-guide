@@ -64,6 +64,7 @@ export const typeDefs = gql`
     filteredPlans(input: FilterInput!): [Plan!]!
     authenticateUser(username: String!, password: String!): User!
     authUserEmail(email: String!, password: String!): User!
+    verifyEmail(email: String!): User!
     getUserID(username: String!, email: String!): User!
   }
 

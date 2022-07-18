@@ -29,23 +29,14 @@ import { AUTH_USER } from "./LoginPage";
 import { RegisterContext } from "../../App";
 import { GET_USER_ID } from "./RegisterPage";
 
-var nodemailer = require('nodemailer');
-
-var transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'wandr497@gmail.com',
-    pass: 'hepvigybygnzmutg'
-  }
-});
-
-export const GET_USER_V = gql`
-  query getUserID($username: String!, $email: String!) {
-    getUserID(username: $username, email: $email) {
+export const VERIFY_EMAIL = gql`
+  query verifyEmail($email: String!) {
+    verifyEmail(email: $email) {
       id
       name
       email
       randStr
+      emailValid
     }
   }
 `;
@@ -70,11 +61,10 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
     const { regEmail, setRegEmail } = useContext(RegisterContext);
     // console.log("verify:", regEmail);
 
-    const { data, error, loading } = useQuery(GET_USER_V, {
-        variables: { username : "", email : regEmail },
+    const { data, error, loading } = useQuery(VERIFY_EMAIL, {
+        variables: { email : regEmail },
         onCompleted: (resultData) => {
             console.log("The result data", resultData);
-            sendCode(resultData)
           },
         fetchPolicy : 'cache-and-network'
     });
@@ -91,26 +81,6 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
         // return `Error! ${error.message}`;
     };
 
-    function sendCode(resultData: { getUserID: { email: String, randStr: String } })
-    {
-        console.log(resultData.getUserID.email);
-        // var mailOptions = {
-        //     from: 'wandr497@gmail.com',
-        //     to: 'wandr497@gmail.com',
-        //     subject: 'Wandr: Confirm Email',
-        //     text: `You sent a email`
-        //   };
-
-        //   transporter.sendMail(mailOptions, function(error, info){
-        //     if (error) {
-        //       console.log(error);
-        //     } else {
-        //       console.log('Email sent: ' + info.response);
-        //     }
-        //     });
-          
-    }
-
     // update user
     const [modifyUser, { data : data1, loading : loading1, error : error1 }] = useMutation(MODIFY_USER,
         {refetchQueries: [{query: GET_USER_ID}]});
@@ -123,7 +93,7 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
         modifyUser({
           variables: {
             input: {
-                id: data.getUserID.id,
+                id: data.verifyEmail.id,
                 name: "",
                 email: "",
                 profile_pic: "",
@@ -161,9 +131,9 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
         {
 
         }
-        else if ((code !== data.getUserID.randStr))
+        else if ((code !== data.verifyEmail.randStr))
         {
-            console.log(code, " | ", data.getUserID.randStr, code === data.getUserID.randStr);
+            console.log(code, " | ", data.verifyEmail.randStr, code === data.verifyEmail.randStr);
             setErrors({ ...errors,
                 code: 'Incorrect Code'
               });
@@ -188,7 +158,7 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
         <VStack h={1.1 * useWindowDimensions().height} w={useWindowDimensions().width}>
             <Box h={0.25 * useWindowDimensions().height}></Box>
          
-            <Text fontSize={"lg"}> Verify Email: {data && data.getUserID.email}</Text>
+            <Text fontSize={"lg"}> Verify Email: {data && data.verifyEmail.email}</Text>
             
             <FormControl isRequired isInvalid={(('code' in errors) && (errors.code != ""))}>
             <Stack mx="4">
@@ -196,7 +166,7 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
                 <Input placeholder="Code"
                     onChangeText={(code) => {setCode(code)}}
                     onKeyPress={() => {setErrors({ ...errors,
-                        code: ""
+                        code: ''
                       })}}
                     onBlur={() => validateCode()}/>
             {('code' in errors) && <FormControl.ErrorMessage> {errors.code} </FormControl.ErrorMessage>}

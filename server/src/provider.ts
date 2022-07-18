@@ -1,6 +1,7 @@
 import { DataSource } from "apollo-datasource";
 import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
 import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, UpdateUserInput } from "./generated/graphql";
+import { transporter } from ".";
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -71,6 +72,32 @@ export class UserProvider extends DataSource {
     console.log("reached", email, password);
     const user = await UserModel.findOne({email: email});
     if (user && user.password === password) {
+      return castIUserToUser(user);
+    } else {
+      return castIUserToUser(null);
+    }
+  }
+
+  public async verifyEmail(email: String) {
+    console.log("reached", email);
+    const user = await UserModel.findOne({email: email});
+    if (user) {
+      
+      var mailOptions = {
+        from: 'wandr497@gmail.com',
+        to: email,
+        subject: 'Wandr: Confirm Email',
+        text: `Your code is ${user.randStr}.`
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
       return castIUserToUser(user);
     } else {
       return castIUserToUser(null);
