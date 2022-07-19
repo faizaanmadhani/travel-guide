@@ -7,6 +7,7 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
+  createHttpLink,
   useQuery,
   gql,
 } from "@apollo/client";
@@ -27,6 +28,24 @@ import LoginPage from "./src/pages/LoginPage";
 import TravelStackScreen from "./src/navigation/TravelPageStack";
 import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
 import EmailVerificationPage from "./src/pages/EmailVerificationPage";
+import { setContext } from '@apollo/client/link/context';
+
+const httpLink = createHttpLink({
+  uri: "https://feb0-207-107-159-98.ngrok.io/",
+  credentials: 'same-origin'
+});
+
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZDYzMWQ4NzkxMjVmZjYyMDM1ZTA4NCIsIm5hbWUiOiJKIiwiZW1haWwiOiJ3YW5kcjQ5N0BnbWFpbC5jb20iLCJwcm9maWxlX3BpYyI6InBpYyIsInBhc3N3b3JkIjoiMTIzIiwidG9rZW4iOiIiLCJlbWFpbFZhbGlkIjowLCJyYW5kU3RyIjoiNlJGVVgwIiwiaWF0IjoxNjU4MjA0NjMyfQ.FJa5-d2iMr-f5mkSGBOJtMxhemlp6CdN07u3t2bcbiU";
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    }
+  }
+});
 
 export const UserContext = React.createContext({
   userID: "",
@@ -39,7 +58,7 @@ export const RegisterContext = React.createContext({
 });  
 
 export const client = new ApolloClient({
-  uri: "https://feb0-207-107-159-98.ngrok.io/",
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 

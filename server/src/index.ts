@@ -11,6 +11,7 @@ import { DB_URL } from "./config";
 // import { PlanModel } from "./data/model";
 import Multer from "multer";
 import ImgUpload from "./helpers/imgUpload";
+import { getPayload } from "./util";
 
 export interface Context {
   dataSources: {
@@ -18,6 +19,8 @@ export interface Context {
     planProvider: PlanProvider;
     planBlockProvider: PlanBlockProvider;
   };
+  loggedIn: boolean;
+  user: String;
 }
 
 async function startApolloServer() {
@@ -45,6 +48,27 @@ async function startApolloServer() {
     // @ts-ignore (FIXME: should be casted to default Resolvers type?)
     resolvers,
     dataSources,
+    context: ({ req }) => {
+      // Note: This example uses the `req` argument to access headers,
+      // but the arguments received by `context` vary by integration.
+      // This means they vary for Express, Koa, Lambda, etc.
+      //
+      // To find out the correct arguments for a specific integration,
+      // see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#middleware-specific-context-fields
+   
+      // Get the user token from the headers.
+      let token = req.headers.authorization || '';
+      if (token) token = token.split(' ')[1];
+      console.log("token HERE", req.headers.authorization);
+      // Try to retrieve a user with the token
+      // const user = "token_placeholder";
+      const { payload: user, loggedIn } = getPayload(token);
+      //const user = getPayload(token);
+      console.log(user);
+   
+      // Add the user to the context
+      return { loggedIn:loggedIn, user:user.id };
+    },
   });
 
   const initDb = async () => {
@@ -59,6 +83,7 @@ async function startApolloServer() {
   server.applyMiddleware({
     app,
     path: "/",
+    cors: corsConfig
   });
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: 4000 }, resolve)
@@ -98,3 +123,9 @@ export var transporter = nodemailer.createTransport({
     pass: 'hepvigybygnzmutg'
   }
 });
+
+const corsConfig = {
+  credentials: true,
+  allowedHeaders: ['Authorization'],
+  exposedHeaders: ['Authorization'],
+};

@@ -194,6 +194,7 @@ export type User = {
   email: Scalars['String'];
   profile_pic: Scalars['String'];
   password: Scalars['String'];
+  token: Scalars['String'];
   randStr: Scalars['String'];
   emailValid: Scalars['Int'];
   savedPlans?: Maybe<Array<Maybe<Plan>>>;
@@ -205,6 +206,7 @@ export type UpdateUserInput = {
   email?: Maybe<Scalars['String']>;
   profile_pic?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
+  token?: Maybe<Scalars['String']>;
   randStr?: Maybe<Scalars['String']>;
   emailValid?: Maybe<Scalars['Int']>;
 };
@@ -392,6 +394,7 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   profile_pic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   randStr?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   emailValid?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   savedPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;

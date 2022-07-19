@@ -2,6 +2,7 @@ import { DataSource } from "apollo-datasource";
 import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
 import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, UpdateUserInput } from "./generated/graphql";
 import { transporter } from ".";
+import { getToken } from "./util";
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -10,6 +11,7 @@ const castIUserToUser = (user: any) => {
     email: !user?.email ? "" : user?.email,
     profile_pic: !user?.profile_pic ? "" : user?.profile_pic,
     password: !user?.password ? "" : user?.password,
+    token: !user?.token ? "" : user?.token,
     emailValid: !user?.emailValid ? 0 : user?.emailValid,
     randStr: !user?.randStr ? "" : user?.randStr,
   }
@@ -62,6 +64,7 @@ export class UserProvider extends DataSource {
     console.log("reached", username, password);
     const user = await UserModel.findOne({name: username});
     if (user && user.password === password) {
+      console.log(castIUserToUser(user));
       return castIUserToUser(user);
     } else {
       return castIUserToUser(null);
@@ -166,12 +169,12 @@ export class UserProvider extends DataSource {
   }
 
   public async createUser(input: CreateUserInput) {
-
     const newUser = new UserModel({
       name: input.name,
       email: input.email,
       profile_pic: input.profile_pic,
       password: input.password,
+      token: "",
       randStr: randString(),
       emailValid: 0,
       saved_plans: []
@@ -181,6 +184,24 @@ export class UserProvider extends DataSource {
     const id = newUser._id.toString();
 
     const gqlUser: User = await this.getUser(id);
+
+    // Creating a Token from User Payload obtained.
+    const token = getToken(gqlUser);
+    gqlUser.token = token; // Adding token to user object
+    console.log("token is", token);
+    console.log(gqlUser);
+
+    newUser.overwrite(({
+      name: input.name,
+      email: input.email,
+      profile_pic: input.profile_pic,
+      password: input.password,
+      token: token,
+      randStr: randString(),
+      emailValid: 0,
+      saved_plans: []
+    }))
+    await newUser.save();
 
     return gqlUser;
   }
