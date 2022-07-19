@@ -24,12 +24,12 @@ export type IBlockProps = {
   navigation: any;
 };
 
-export default function BlockView() {
-  // const EditBlock = () => {
-  //   props.navigation.navigate("Edit Block", {
-  //     fields: props,
-  //   });
-  // };
+export default function BlockView(props: IBlockProps) {
+  const EditBlock = () => {
+    props.navigation.navigate("Edit Block", {
+      fields: props,
+    });
+  };
 
   const convertBudgetToString = (val: number) => {
     let dollarSign = "$";
@@ -58,7 +58,7 @@ export default function BlockView() {
       <Stack p="5" space="2">
         <HStack justifyContent="space-between">
           <Heading size="lg" ml="-1">
-            props.title
+            {props.title}
           </Heading>
           <IconButton
             mr="0"
@@ -66,10 +66,11 @@ export default function BlockView() {
             size={6}
             backgroundColor="blue"
             icon={<AntDesign name="edit" />}
+            onPress={EditBlock}
           />
         </HStack>
         <Heading size="sm" ml="-1">
-          props.location
+          {props.location}
         </Heading>
         <AspectRatio w="100%" ratio={16 / 9}>
           <Image
@@ -91,9 +92,9 @@ export default function BlockView() {
           ml="-0.5"
           mt="-1"
         >
-          $$
+          {convertBudgetToString(props.budget)}
         </Text>
-        <Text>Lorem Ipsum</Text>
+        <Text>{props.description}</Text>
       </Stack>
     </Box>
   );

@@ -54,7 +54,7 @@ export default function BlockPage({
 
   return (
     <Box paddingLeft="5" paddingRight="5">
-      <Button onPress={() => refetch()}>Fetch Blocks</Button>
+      <Button onPress={() => refetch()}>Refresh Blocks</Button>
       {data === undefined || (data && data?.plan?.blocks.length === 0) ? (
         <Pressable
           onPress={() =>
@@ -84,7 +84,7 @@ export default function BlockPage({
       ) : (
         <ScrollView>
           {data?.plan?.blocks.map((obj: IBlockProps, index: number) => (
-            <BlockView key={index} />
+            <BlockView key={index} {...obj} />
           ))}
         </ScrollView>
       )}

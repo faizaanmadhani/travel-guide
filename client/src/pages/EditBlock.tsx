@@ -31,10 +31,9 @@ const GOOGLE_PLACES_API_BASE_URL = "https://maps.googleapis.com/maps/api/place";
 // Search Bar Citation: https://medium.com/nerd-for-tech/react-native-custom-search-bar-with-google-places-autocomplete-api-69b1c98de6a0
 
 const CREATE_BLOCK = gql`
-  mutation addPlanBlock($input: UpdatePlanBlockInput) {
+  mutation addPlanBlock($input: UpdatePlanBlockInput!) {
     addPlanBlock(input: $input) {
       id
-      name
     }
   }
 `;
@@ -174,7 +173,7 @@ export const EditBlockForm = ({
       title: title,
       price: activeBudgetIndicator + 1,
       day: day,
-      images: [image],
+      images: image === null ? [""] : [image],
     };
     console.log("the input data", inputData);
     createBlock({ variables: { input: inputData } }).catch((error) => {
