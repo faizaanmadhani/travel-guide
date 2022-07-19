@@ -34,11 +34,13 @@ import { MutationAddUserArgs } from "../../../server/src/generated/graphql";
 import { UserContext } from "../../App";
 import Spinner from "react-native-loading-spinner-overlay";
 import { RegisterContext } from "../../App";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const AUTH_USER = gql`
   query authenticateUser($username: String!, $password: String!) {
     authenticateUser(username: $username, password: $password) {
       id
+      token
     }
   }
 `;
@@ -48,6 +50,7 @@ export const AUTH_EMAIL = gql`
     authUserEmail(email: $email, password: $password) {
       id
       emailValid
+      token
     }
   }
 `;
@@ -70,7 +73,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     navigation.navigate("Explore");
   }
 
-  function validate1(resultData: { authenticateUser: { id: string } }) {
+  function validate1(resultData: { authenticateUser: { id: string, token: string } }) {
     // check: has user name & password fields
     let passwordValid = validatePassword() as boolean;
         let inputValid = validateInput() as boolean;
@@ -96,6 +99,8 @@ export default function LoginPage({ navigation }: { navigation: any }) {
             {
               userLoggedIn = input;
               setUserID(resultData.authenticateUser.id);
+              AsyncStorage.setItem("curUser", resultData.authenticateUser.token);
+              console.log(AsyncStorage.getItem('curUser'));
               toast.show({
                 description: "Login Success",
                 duration: 3000,
@@ -106,7 +111,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
         }
       };
 
-      function validate2(resultData: { authUserEmail: { id: string, emailValid: Number } }) {
+      function validate2(resultData: { authUserEmail: { id: string, emailValid: Number, token:string } }) {
         // check: has user name & password fields
         let passwordValid = validatePassword() as boolean;
             let inputValid = validateInput() as boolean;
@@ -145,6 +150,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
                 {
                   userLoggedIn = input;
                   setUserID(resultData.authUserEmail.id);
+                  AsyncStorage.setItem("curUser", resultData.authUserEmail.token);
                   toast.show({
                     description: "Login Success",
                     duration: 3000,
