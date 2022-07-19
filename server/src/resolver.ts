@@ -6,14 +6,7 @@ export const resolvers: Resolvers = {
   Query: {
     user: (_, args, context) =>
       {
-        // const userFound = context.dataSources.userProvider.getUser(args.id);
-        // console.log(context);
-        // if (context.loggedIn)
-        // {
-        //   return userFound;
-        // }
-        // console.log("user not found");
-        // return userFound;
+        console.log("query: user", context.loggedIn, context.user);
         return context.dataSources.userProvider.getUser(args.id);
       },
     users: (_, __, context) => context.dataSources.userProvider.getUsers(),

@@ -73,7 +73,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     navigation.navigate("Explore");
   }
 
-  function validate1(resultData: { authenticateUser: { id: string, token: string } }) {
+  async function validate1(resultData: { authenticateUser: { id: string, token: string } }) {
     // check: has user name & password fields
     let passwordValid = validatePassword() as boolean;
         let inputValid = validateInput() as boolean;
@@ -99,8 +99,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
             {
               userLoggedIn = input;
               setUserID(resultData.authenticateUser.id);
-              AsyncStorage.setItem("curUser", resultData.authenticateUser.token);
-              console.log(AsyncStorage.getItem('curUser'));
+              await AsyncStorage.setItem("curUser", resultData.authenticateUser.token);
               toast.show({
                 description: "Login Success",
                 duration: 3000,
@@ -111,7 +110,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
         }
       };
 
-      function validate2(resultData: { authUserEmail: { id: string, emailValid: Number, token:string } }) {
+      async function validate2(resultData: { authUserEmail: { id: string, emailValid: Number, token:string } }) {
         // check: has user name & password fields
         let passwordValid = validatePassword() as boolean;
             let inputValid = validateInput() as boolean;
@@ -150,7 +149,7 @@ export default function LoginPage({ navigation }: { navigation: any }) {
                 {
                   userLoggedIn = input;
                   setUserID(resultData.authUserEmail.id);
-                  AsyncStorage.setItem("curUser", resultData.authUserEmail.token);
+                  await AsyncStorage.setItem("curUser", resultData.authUserEmail.token);
                   toast.show({
                     description: "Login Success",
                     duration: 3000,

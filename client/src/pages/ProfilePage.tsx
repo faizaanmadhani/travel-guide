@@ -11,6 +11,7 @@ import { setUserLoggedIn, userLoggedIn } from "./LoginPage";
 import { CREATE_USER } from "./RegisterPage";
 import { UserContext } from "../../App";
 import PageView from "../components/PageView";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const GET_USER = gql`
   query user($id: String!) {
@@ -86,18 +87,17 @@ function displayUser()
 
 export default function ProfilePage({ navigation, route } : { navigation: any, route : any }) {
   const { userID, setUserID } = useContext(UserContext);
-  console.log("logged in:", userID);
+  // console.log("logged in:", userID);
 
   const toast = useToast();
 
-  function Logout() {
+  async function Logout() {
     toast.show({
       description: "Logout Success",
       duration: 3000,
       backgroundColor: "success.400",
       placement: "top"
     });
-    // setUserID("");
     navigation.navigate("Wandr");
   }
 

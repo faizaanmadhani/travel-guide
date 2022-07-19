@@ -61,10 +61,8 @@ async function startApolloServer() {
       if (token) token = token.split(' ')[1];
       console.log("token HERE", req.headers.authorization);
       // Try to retrieve a user with the token
-      // const user = "token_placeholder";
       const { payload: user, loggedIn } = getPayload(token);
-      //const user = getPayload(token);
-      console.log(user);
+      console.log("user HERE", user);
    
       // Add the user to the context
       return { loggedIn:loggedIn, user:user.id };
