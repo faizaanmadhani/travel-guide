@@ -14,6 +14,8 @@ const castIUserToUser = (user: any) => {
     token: !user?.token ? "" : user?.token,
     emailValid: !user?.emailValid ? 0 : user?.emailValid,
     randStr: !user?.randStr ? "" : user?.randStr,
+    savedPlans: !user?.saved_plans ? [] : user?.saved_plans,
+    wishlistPlans: !user?.wishlist_plans ? [] : user?.wishlist_plans,
   }
   return gqlUser
 }
@@ -54,8 +56,8 @@ const castIPlanBlocktoPlanBlock = (planBlock: any) => {
 export class UserProvider extends DataSource {
 
   public async getUser(id: String) {
-
     const user = await UserModel.findById(id).exec();
+    console.log("AHHHH USER", user);
     console.log("getUser reached", id);
     return castIUserToUser(user);
   }
@@ -177,7 +179,8 @@ export class UserProvider extends DataSource {
       token: "",
       randStr: randString(),
       emailValid: 0,
-      saved_plans: []
+      saved_plans: [],
+      wishlist_plans: []
     });
 
     await newUser.save();
@@ -199,7 +202,8 @@ export class UserProvider extends DataSource {
       token: token,
       randStr: randString(),
       emailValid: 0,
-      saved_plans: []
+      saved_plans: [],
+      wishlist_plans: []
     }))
     await newUser.save();
 

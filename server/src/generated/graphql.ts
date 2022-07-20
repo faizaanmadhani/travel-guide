@@ -197,7 +197,8 @@ export type User = {
   token: Scalars['String'];
   randStr: Scalars['String'];
   emailValid: Scalars['Int'];
-  savedPlans?: Maybe<Array<Maybe<Plan>>>;
+  savedPlans?: Maybe<Array<Maybe<Scalars['String']>>>;
+  wishlistPlans?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type UpdateUserInput = {
@@ -397,7 +398,8 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   randStr?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   emailValid?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  savedPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
+  savedPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  wishlistPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

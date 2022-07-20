@@ -16,6 +16,7 @@ export interface IUser {
   emailValid: number;
   prefs: Types.DocumentArray<IPrefs>;
   saved_plans?: Types.Array<Types.ObjectId>;
+  wishlist_plans: Types.Array<Types.ObjectId>;
 }
 
 export interface IPlan {
