@@ -12,7 +12,8 @@ import {
   IconButton,
   FavouriteIcon
 } from "native-base";
-import { Pressable, useWindowDimensions } from "react-native"; 
+import { Pressable, useWindowDimensions } from "react-native";
+import { UserContext } from "../../App"; 
 
 export type PlanView_Data = {
   id: String;
@@ -26,6 +27,8 @@ export type PlanView_Data = {
 };
 
 export default function PlanCardWishlist(plan: PlanView_Data, navigation?: any) {
+    const { userID, setUserID } = useContext(UserContext);
+
   const displayBudget = (budget: Number) => {
     let dollarSigns = "";
 
@@ -80,11 +83,11 @@ export default function PlanCardWishlist(plan: PlanView_Data, navigation?: any) 
     >
       <Stack p="5" space={3}>
         {/* <Stack space={2}> */}
-        <HStack>
+        <HStack justifyContent={"space-between"} alignItems={"center"}>
             <Heading size="sm" ml="-1">
                 {plan.name}
             </Heading>
-            <Box w={50}></Box>
+            
             <IconButton
                 icon={<FavouriteIcon/>}
                 borderRadius="full"
