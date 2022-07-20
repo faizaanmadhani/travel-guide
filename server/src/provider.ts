@@ -1,8 +1,9 @@
 import { DataSource } from "apollo-datasource";
 import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
-import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, UpdateUserInput } from "./generated/graphql";
+import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, UpdateUserInput, AddWishlistPlanInput } from "./generated/graphql";
 import { transporter } from ".";
 import { getToken } from "./util";
+const ObjectId = require('mongodb').ObjectID
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -266,6 +267,24 @@ export class UserProvider extends DataSource {
     }
 
     return null;
+  }
+
+  public async addWishlistPlan(input: AddWishlistPlanInput) {
+    console.log("add", input.planID, "to", input.userID);
+    const user = await UserModel.findById(input.userID);
+    if (user) {
+      if (!user.wishlist_plans.includes(ObjectId(input.planID)))
+      {
+        user.wishlist_plans.push(input.planID);
+        await user.save();
+      }
+      else
+      {
+        console.log("plan already wishlisted", Object(input.planID));
+      }
+    }
+
+    return castIUserToUser(user);
   }
 }
 

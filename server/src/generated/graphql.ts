@@ -43,6 +43,7 @@ export type Mutation = {
   modifyPlan?: Maybe<Plan>;
   modifyUser?: Maybe<User>;
   addPlanBlock: PlanBlock;
+  addWishlistPlan: Maybe<User>;
 };
 
 
@@ -58,6 +59,14 @@ export type MutationAddPlanArgs = {
   creatorId: Scalars['String'];
 };
 
+export type AddWishlistPlanInput = {
+  userID: Scalars['String'];
+  planID: Scalars['String'];
+};
+
+export type MutationAddWishlistPlanArgs = {
+  input: AddWishlistPlanInput
+}
 
 export type MutationModifyPlanArgs = {
   input: UpdatePlanInput;
@@ -342,6 +351,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   modifyPlan?: Resolver<Maybe<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<MutationModifyPlanArgs, 'input'>>;
   modifyUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationModifyUserArgs, 'input'>>;
   addPlanBlock?: Resolver<ResolversTypes['PlanBlock'], ParentType, ContextType, RequireFields<MutationAddPlanBlockArgs, 'input'>>;
+  addWishlistPlan?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddWishlistPlanArgs, 'input'>>
 };
 
 export type PlanResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Plan'] = ResolversParentTypes['Plan']> = {
