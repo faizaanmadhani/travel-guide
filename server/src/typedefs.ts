@@ -79,6 +79,7 @@ export const typeDefs = gql`
     modifyUser(input: UpdateUserInput!): User
     addPlanBlock(input: UpdatePlanBlockInput!): PlanBlock!
     addWishlistPlan(input: AddWishlistPlanInput!): User
+    removeWishlistPlan(input: AddWishlistPlanInput!): User
     #addPlanBlock(input: PlanBlockInput!)
     #modifyUser(input: UserInput!)
     #modifyPlan(input: modifyPlan!)

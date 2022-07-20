@@ -286,6 +286,25 @@ export class UserProvider extends DataSource {
 
     return castIUserToUser(user);
   }
+
+  public async removeWishlistPlan(input: AddWishlistPlanInput) {
+    console.log("remove", input.planID, "from", input.userID);
+    const user = await UserModel.findById(input.userID);
+    if (user) {
+      if (user.wishlist_plans.includes(ObjectId(input.planID)))
+      {
+        const loc = user.wishlist_plans.indexOf(ObjectId(input.planID));
+        user.wishlist_plans.splice(loc, 1);
+        await user.save();
+      }
+      else
+      {
+        console.log("plan not in wishlist", Object(input.planID));
+      }
+    }
+
+    return castIUserToUser(user);
+  }
 }
 
 export class PlanProvider extends DataSource {

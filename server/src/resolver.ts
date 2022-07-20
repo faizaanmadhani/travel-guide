@@ -39,12 +39,12 @@ export const resolvers: Resolvers = {
     getUserPlans: (_, args, context) =>
       {
         console.log("!!!!!!!", args);
-        return context.dataSources.userProvider.getUserPlans(context.user);
+        return context.dataSources.userProvider.getUserPlans(args.id);
       },
     getWishlistPlans: (_, args, context) =>
       {
         console.log("!!!!!!!", args);
-        return context.dataSources.userProvider.getWishlistPlans(context.user);
+        return context.dataSources.userProvider.getWishlistPlans(args.id);
       },
   },
   Mutation: {
@@ -66,8 +66,11 @@ export const resolvers: Resolvers = {
       context.dataSources.planProvider.updatePlan(args.input),
     modifyUser: (_, args, context) =>
       context.dataSources.userProvider.updateUser(args.input),
-    addWishlistPlan: (_, args, context) =>
-    context.dataSources.userProvider.addWishlistPlan(args.input),
+    addWishlistPlan: (_, args, context) => {
+      return context.dataSources.userProvider.addWishlistPlan(args.input)
+    },
+    removeWishlistPlan: (_, args, context) =>
+      context.dataSources.userProvider.removeWishlistPlan(args.input),
   },
   User: {
     // prefs: (parent, __, context) =>
