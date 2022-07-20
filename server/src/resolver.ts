@@ -36,6 +36,16 @@ export const resolvers: Resolvers = {
         args.username,
         args.email);
       },
+    getUserPlans: (_, args, context) =>
+      {
+        console.log("!!!!!!!", args);
+        return context.dataSources.userProvider.getUserPlans(context.user);
+      },
+    getWishlistPlans: (_, args, context) =>
+      {
+        console.log("!!!!!!!", args);
+        return context.dataSources.userProvider.getWishlistPlans(context.user);
+      },
   },
   Mutation: {
     addUser: (_, args, context) =>

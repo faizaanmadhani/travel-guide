@@ -13,10 +13,10 @@ export const getPayload = token => {
     {
         try {
             const payload = jwt.verify(token, config.secret);
-            console.log("payload HERE", payload);
+            // console.log("payload HERE", payload);
             return { loggedIn: true, payload };
         } catch (err) {
-            console.log(err);
+            // console.log(err);
             return { loggedIn: false }
         }
     }

@@ -68,6 +68,8 @@ export const typeDefs = gql`
     authUserEmail(email: String!, password: String!): User!
     verifyEmail(email: String!): User!
     getUserID(username: String!, email: String!): User!
+    getUserPlans(id: String!): [Plan]
+    getWishlistPlans(id: String!): [Plan]
   }
 
   type Mutation {

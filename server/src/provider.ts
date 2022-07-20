@@ -57,7 +57,6 @@ export class UserProvider extends DataSource {
 
   public async getUser(id: String) {
     const user = await UserModel.findById(id).exec();
-    console.log("AHHHH USER", user);
     console.log("getUser reached", id);
     return castIUserToUser(user);
   }
@@ -151,19 +150,42 @@ export class UserProvider extends DataSource {
     const prefs: Preference[] = [];
     return prefs;
   }
-
   }
 
-  public async getPlansFromUser(user_id: string) {
+  public async getUserPlans(user_id: String) {
+    console.log("getPlanUser reached", user_id);
+
     const plansArray = (await UserModel.findById(user_id).select("saved_plans").populate({
       path: "saved_plans",
       model: "Plan"
     }).exec())?.saved_plans;
+
     if (plansArray) {
       const savedPlans: Plan[] = plansArray?.map((plan, _) => {
-        return castIPlantoPlan(plan[0]); // populate for some reason stores each obj in nested array
+        return castIPlantoPlan(plan); // populate for some reason stores each obj in nested array
       })
+      
       return savedPlans;
+    } else {
+      const plans: Plan[] = [];
+      return plans;
+    }
+  }
+
+  public async getWishlistPlans(user_id: String) {
+    console.log("getWishListPlans reached", user_id);
+
+    const plansArray = (await UserModel.findById(user_id).select("wishlist_plans").populate({
+      path: "wishlist_plans",
+      model: "Plan"
+    }).exec())?.wishlist_plans;
+
+    if (plansArray) {
+      const wishlistPlans: Plan[] = plansArray?.map((plan, _) => {
+        return castIPlantoPlan(plan); // populate for some reason stores each obj in nested array
+      })
+      
+      return wishlistPlans;
     } else {
       const plans: Plan[] = [];
       return plans;

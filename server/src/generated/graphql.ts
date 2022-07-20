@@ -123,6 +123,8 @@ export type Query = {
   authUserEmail: User;
   verifyEmail: User;
   getUserID: User;
+  getUserPlans: Array<Plan>;
+  getWishlistPlans: Array<Plan>;
 };
 
 
@@ -387,6 +389,8 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   authUserEmail?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthUserEmailArgs, 'email' | 'password'>>;
   verifyEmail?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryVerifyEmailArgs, 'email'>>;
   getUserID?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserIDArgs, 'username' | "email">>;
+  getUserPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+  getWishlistPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
 };
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
