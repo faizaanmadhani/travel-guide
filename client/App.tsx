@@ -182,7 +182,7 @@ export default function App() {
                 name="Wishlist"
                 component={WishlistPage}
                 options={{
-                  headerShown: false,
+                  headerShown: true,
                 }}
               />
               <Tab.Screen

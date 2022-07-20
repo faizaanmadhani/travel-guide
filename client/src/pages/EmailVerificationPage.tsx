@@ -180,6 +180,12 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
                     Done
                 </Button>
                 </Box> 
+                <Box mt={"2"} w = "92%">
+                <Button variant="subtle" colorScheme="primary"
+                        onPress={() => {goToLogin()}}>
+                    Skip to Login
+                </Button>
+                </Box>
             </Center>
         </VStack>
         </ImageBackground>
