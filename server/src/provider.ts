@@ -305,6 +305,25 @@ export class UserProvider extends DataSource {
 
     return castIUserToUser(user);
   }
+
+  public async updateWishlistPlan(input: AddWishlistPlanInput) {
+    console.log("update", input.planID, "for", input.userID);
+    const user = await UserModel.findById(input.userID);
+    if (user) {
+      if (!user.wishlist_plans.includes(ObjectId(input.planID)))
+      {
+        user.wishlist_plans.push(input.planID);
+      }
+      else
+      {
+        const loc = user.wishlist_plans.indexOf(ObjectId(input.planID));
+        user.wishlist_plans.splice(loc, 1);
+      }
+      await user.save();
+    }
+
+    return castIUserToUser(user);
+  }
 }
 
 export class PlanProvider extends DataSource {

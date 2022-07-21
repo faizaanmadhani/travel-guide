@@ -14,6 +14,7 @@ import {
 } from "native-base";
 import { Pressable, useWindowDimensions } from "react-native";
 import { UserContext } from "../../App"; 
+import { gql, useMutation } from "@apollo/client";
 
 export type PlanView_Data = {
   id: String;
@@ -26,8 +27,7 @@ export type PlanView_Data = {
   months: String[];
 };
 
-export default function PlanCardWishlist(plan: PlanView_Data, navigation?: any) {
-    const { userID, setUserID } = useContext(UserContext);
+export default function PlanCardWishlist(plan: PlanView_Data, updateWishlist : Function, userID : String) {
 
   const displayBudget = (budget: Number) => {
     let dollarSigns = "";
@@ -57,9 +57,16 @@ export default function PlanCardWishlist(plan: PlanView_Data, navigation?: any) 
     }
   };
 
-  function addToWishlist()
+  function UpdateWishlist()
   {
-
+    if (true)
+    {
+        console.log(updateWishlist({variables : {input : {userID : userID, planID : plan.id}}}))
+    }
+    else
+    {
+        // removeWishlist({variables : {input : {userID : userID, planID : plan.id}}})
+    }
   }
   
   return (
@@ -96,7 +103,7 @@ export default function PlanCardWishlist(plan: PlanView_Data, navigation?: any) 
                     _icon: {
                       color: "red.400"
                     }}}
-                onPress={() => {addToWishlist()}}/>
+                onPress={() => {UpdateWishlist()}}/>
         </HStack>
         
         <Text

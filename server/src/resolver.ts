@@ -71,6 +71,9 @@ export const resolvers: Resolvers = {
     },
     removeWishlistPlan: (_, args, context) =>
       context.dataSources.userProvider.removeWishlistPlan(args.input),
+    updateWishlistPlan: (_, args, context) => {
+        return context.dataSources.userProvider.updateWishlistPlan(args.input)
+      },
   },
   User: {
     // prefs: (parent, __, context) =>

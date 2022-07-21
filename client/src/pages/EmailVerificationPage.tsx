@@ -86,7 +86,7 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
         {refetchQueries: [{query: GET_USER_ID}]});
 
     if (loading1) console.log("Loading...");;
-    if (error1) console.log(`Error! ${error.message}`);
+    if (error1) console.log(`Error! ${error1.message}`);
 
     function updateEmailValid(valid : Number) {
         // new code after current one is used

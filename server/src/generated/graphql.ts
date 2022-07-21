@@ -45,6 +45,7 @@ export type Mutation = {
   addPlanBlock: PlanBlock;
   addWishlistPlan: Maybe<User>;
   removeWishlistPlan: Maybe<User>;
+  updateWishlistPlan: Maybe<User>;
 };
 
 
@@ -354,6 +355,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   addPlanBlock?: Resolver<ResolversTypes['PlanBlock'], ParentType, ContextType, RequireFields<MutationAddPlanBlockArgs, 'input'>>;
   addWishlistPlan?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddWishlistPlanArgs, 'input'>>;
   removeWishlistPlan?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddWishlistPlanArgs, 'input'>>;
+  updateWishlistPlan?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddWishlistPlanArgs, 'input'>>;
 };
 
 export type PlanResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Plan'] = ResolversParentTypes['Plan']> = {

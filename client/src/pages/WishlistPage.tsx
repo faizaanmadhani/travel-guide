@@ -1,4 +1,5 @@
 import React from "react";
+import { useContext } from "react";
 import { Button, Box, ScrollView, Center} from "native-base";
 import { useWindowDimensions } from "react-native";
 
@@ -10,41 +11,19 @@ import { PlanView_Data } from "../components/PlanCardSmall";
 import PlanCardWishlist from "../components/PlanCardWishlist";
 import PlanView from "../components/PlanView";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-const sampleData : PlanView_Data =
-  {id: "",
-    name: "Travel with us",
-    budget: 1,
-    rating: 5,
-    tags: ["happy", "hiking", "outdoors"],
-    description: "have fun with us",
-    countries: ["Canada"],
-    months: ["January"]};
+import { gql, useQuery, useLazyQuery } from "@apollo/client";
+import { UserContext } from "../../App";
+import WishlistView from "../views/WishlistView";
 
 export default function WishlistPage({ navigation }: { navigation: any }) {
+  const { userID, setUserID } = useContext(UserContext);
+
   return(
-      <Center>
-      <ScrollView>
-      <Box>
-        {PlanCardWishlist(sampleData)}
-      </Box>
-      <Box>
-        {PlanCardWishlist(sampleData)}
-      </Box>
-      <Box>
-        {PlanCardWishlist(sampleData)}
-      </Box>
-      <Box>
-        {PlanCardWishlist(sampleData)}
-      </Box>
-      <Box>
-        {PlanCardWishlist(sampleData)}
-      </Box>
-      <Box>
-        {PlanCardWishlist(sampleData)}
-      </Box>
-      </ScrollView>
-      </Center>
     
+      <Center>
+        <ScrollView>
+        {WishlistView(userID)}
+        </ScrollView>
+      </Center>  
   );
 }
