@@ -58,7 +58,7 @@ function displayUser()
               Profile Pic: {user_profilePic}
             </Text> */}
             <Image rounded="lg" source={{
-                              uri: "https://prod-virtuoso.dotcmscloud.com/dA/188da7ea-f44f-4b9c-92f9-6a65064021c1/heroImage1/PowerfulReasons_hero.jpg"
+                              uri: "https://t4.ftcdn.net/jpg/02/15/84/43/240_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg"
                               }}
                               alt="Alternate Text"
                               height={"100"} width={"100"} resizeMode={"contain"} alignSelf={"center"}/>

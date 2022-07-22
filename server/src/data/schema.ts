@@ -9,14 +9,12 @@ export const userSchema = new Schema<IUser>({
   token: { type: String, required: false },
   randStr: {type: String, required: true},
   emailValid: {type: Number, required: true},
-  // prefs: [
-  //   {
-  //     pref_tag: { type: String, required: true },
-  //     user_rating: { type: Schema.Types.Decimal128, required: true },
-  //   },
-  // ],
+
   saved_plans: [
-    { type: [Schema.Types.ObjectId], required: false, ref: "Plan" },
+    { type: Schema.Types.ObjectId, required: false, ref:"Plan" },
+  ],
+  wishlist_plans: [
+    { type: Schema.Types.ObjectId, required: false, ref: "Plan" },
   ],
 });
 

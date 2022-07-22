@@ -9,7 +9,8 @@ export const typeDefs = gql`
     token: String!
     randStr: String!
     emailValid: Int!
-    savedPlans: [Plan]
+    savedPlans: [ID]
+    wishlistPlans: [ID]
   }
 
   type Preference {
@@ -67,6 +68,8 @@ export const typeDefs = gql`
     authUserEmail(email: String!, password: String!): User!
     verifyEmail(email: String!): User!
     getUserID(username: String!, email: String!): User!
+    getUserPlans(id: String!): [Plan]
+    getWishlistPlans(id: String!): [Plan]
   }
 
   type Mutation {
@@ -75,10 +78,18 @@ export const typeDefs = gql`
     modifyPlan(input: UpdatePlanInput!): Plan
     modifyUser(input: UpdateUserInput!): User
     addPlanBlock(input: UpdatePlanBlockInput!): PlanBlock!
+    addWishlistPlan(input: AddWishlistPlanInput!): User
+    removeWishlistPlan(input: AddWishlistPlanInput!): User
+    updateWishlistPlan(input: AddWishlistPlanInput!): User
     #addPlanBlock(input: PlanBlockInput!)
     #modifyUser(input: UserInput!)
     #modifyPlan(input: modifyPlan!)
     #modifyPlanBlock(input: PlanBlockInput!)
+  }
+
+  input AddWishlistPlanInput {
+    userID: String!
+    planID: String!
   }
 
   input FilterInput {

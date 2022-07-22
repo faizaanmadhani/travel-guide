@@ -1,8 +1,10 @@
 import { DataSource } from "apollo-datasource";
 import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
-import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, UpdateUserInput } from "./generated/graphql";
+import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, UpdateUserInput, AddWishlistPlanInput } from "./generated/graphql";
 import { transporter } from ".";
 import { getToken } from "./util";
+const ObjectId = require('mongodb').ObjectID
+
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -14,6 +16,8 @@ const castIUserToUser = (user: any) => {
     token: !user?.token ? "" : user?.token,
     emailValid: !user?.emailValid ? 0 : user?.emailValid,
     randStr: !user?.randStr ? "" : user?.randStr,
+    savedPlans: !user?.saved_plans ? [] : user?.saved_plans,
+    wishlistPlans: !user?.wishlist_plans ? [] : user?.wishlist_plans,
   }
   return gqlUser
 }
@@ -54,7 +58,6 @@ const castIPlanBlocktoPlanBlock = (planBlock: any) => {
 export class UserProvider extends DataSource {
 
   public async getUser(id: String) {
-
     const user = await UserModel.findById(id).exec();
     console.log("getUser reached", id);
     return castIUserToUser(user);
@@ -149,19 +152,42 @@ export class UserProvider extends DataSource {
     const prefs: Preference[] = [];
     return prefs;
   }
-
   }
 
-  public async getPlansFromUser(user_id: string) {
+  public async getUserPlans(user_id: String) {
+    console.log("getPlanUser reached", user_id);
+
     const plansArray = (await UserModel.findById(user_id).select("saved_plans").populate({
       path: "saved_plans",
       model: "Plan"
     }).exec())?.saved_plans;
+
     if (plansArray) {
       const savedPlans: Plan[] = plansArray?.map((plan, _) => {
-        return castIPlantoPlan(plan[0]); // populate for some reason stores each obj in nested array
+        return castIPlantoPlan(plan); // populate for some reason stores each obj in nested array
       })
+      
       return savedPlans;
+    } else {
+      const plans: Plan[] = [];
+      return plans;
+    }
+  }
+
+  public async getWishlistPlans(user_id: String) {
+    console.log("getWishListPlans reached", user_id);
+
+    const plansArray = (await UserModel.findById(user_id).select("wishlist_plans").populate({
+      path: "wishlist_plans",
+      model: "Plan"
+    }).exec())?.wishlist_plans;
+
+    if (plansArray) {
+      const wishlistPlans: Plan[] = plansArray?.map((plan, _) => {
+        return castIPlantoPlan(plan); // populate for some reason stores each obj in nested array
+      })
+      
+      return wishlistPlans;
     } else {
       const plans: Plan[] = [];
       return plans;
@@ -177,7 +203,8 @@ export class UserProvider extends DataSource {
       token: "",
       randStr: randString(),
       emailValid: 0,
-      saved_plans: []
+      saved_plans: [],
+      wishlist_plans: []
     });
 
     await newUser.save();
@@ -199,7 +226,8 @@ export class UserProvider extends DataSource {
       token: token,
       randStr: randString(),
       emailValid: 0,
-      saved_plans: []
+      saved_plans: [],
+      wishlist_plans: []
     }))
     await newUser.save();
 
@@ -240,6 +268,62 @@ export class UserProvider extends DataSource {
     }
 
     return null;
+  }
+
+  public async addWishlistPlan(input: AddWishlistPlanInput) {
+    console.log("add", input.planID, "to", input.userID);
+    const user = await UserModel.findById(input.userID);
+    if (user) {
+      if (!user.wishlist_plans.includes(ObjectId(input.planID)))
+      {
+        user.wishlist_plans.push(input.planID);
+        await user.save();
+      }
+      else
+      {
+        console.log("plan already wishlisted", Object(input.planID));
+      }
+    }
+
+    return castIUserToUser(user);
+  }
+
+  public async removeWishlistPlan(input: AddWishlistPlanInput) {
+    console.log("remove", input.planID, "from", input.userID);
+    const user = await UserModel.findById(input.userID);
+    if (user) {
+      if (user.wishlist_plans.includes(ObjectId(input.planID)))
+      {
+        const loc = user.wishlist_plans.indexOf(ObjectId(input.planID));
+        user.wishlist_plans.splice(loc, 1);
+        await user.save();
+      }
+      else
+      {
+        console.log("plan not in wishlist", Object(input.planID));
+      }
+    }
+
+    return castIUserToUser(user);
+  }
+
+  public async updateWishlistPlan(input: AddWishlistPlanInput) {
+    console.log("update", input.planID, "for", input.userID);
+    const user = await UserModel.findById(input.userID);
+    if (user) {
+      if (!user.wishlist_plans.includes(ObjectId(input.planID)))
+      {
+        user.wishlist_plans.push(input.planID);
+      }
+      else
+      {
+        const loc = user.wishlist_plans.indexOf(ObjectId(input.planID));
+        user.wishlist_plans.splice(loc, 1);
+      }
+      await user.save();
+    }
+
+    return castIUserToUser(user);
   }
 }
 

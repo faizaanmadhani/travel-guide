@@ -86,7 +86,7 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
         {refetchQueries: [{query: GET_USER_ID}]});
 
     if (loading1) console.log("Loading...");;
-    if (error1) console.log(`Error! ${error.message}`);
+    if (error1) console.log(`Error! ${error1.message}`);
 
     function updateEmailValid(valid : Number) {
         // new code after current one is used
@@ -150,6 +150,8 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
         }
     }
 
+    const info = `Enter code sent to: ${data?.verifyEmail.email}`;
+
     return (
             <ImageBackground source={{uri:"https://prod-virtuoso.dotcmscloud.com/dA/188da7ea-f44f-4b9c-92f9-6a65064021c1/heroImage1/PowerfulReasons_hero.jpg"}}
         imageStyle={{opacity:0.1}}>
@@ -157,12 +159,10 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
 
         <VStack h={1.1 * useWindowDimensions().height} w={useWindowDimensions().width}>
             <Box h={0.25 * useWindowDimensions().height}></Box>
-         
-            <Text fontSize={"lg"}> Verify Email: {data && data.verifyEmail.email}</Text>
-            
             <FormControl isRequired isInvalid={(('code' in errors) && (errors.code != ""))}>
-            <Stack mx="4">
-                <FormControl.Label>Verification Code</FormControl.Label>
+            <VStack mx="4">
+                <FormControl.Label>{info}</FormControl.Label>
+                {/* <FormControl.HelperText> {info} </FormControl.HelperText> */}
                 <Input placeholder="Code"
                     onChangeText={(code) => {setCode(code)}}
                     onKeyPress={() => {setErrors({ ...errors,
@@ -170,7 +170,8 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
                       })}}
                     onBlur={() => validateCode()}/>
             {('code' in errors) && <FormControl.ErrorMessage> {errors.code} </FormControl.ErrorMessage>}
-            </Stack>
+            </VStack>
+
             </FormControl>
 
             <Center>
@@ -180,6 +181,13 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
                     Done
                 </Button>
                 </Box> 
+                <Box mt={"2"} w = "92%">
+                <Button variant="subtle" colorScheme="primary"
+                        onPress={() => {goToLogin()}}>
+                    Skip to Login
+                </Button>
+                </Box>
+
             </Center>
         </VStack>
         </ImageBackground>
