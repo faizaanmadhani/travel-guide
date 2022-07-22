@@ -1,4 +1,5 @@
 import React from "react";
+import { useContext } from "react";
 import {
   Stack,
   Heading,
@@ -7,8 +8,13 @@ import {
   Image,
   HStack,
   AspectRatio,
+  Icon,
+  IconButton,
+  FavouriteIcon
 } from "native-base";
-import { Pressable } from "react-native";
+import { Pressable, useWindowDimensions } from "react-native";
+import { UserContext } from "../../App"; 
+import { gql, useMutation } from "@apollo/client";
 
 export type PlanView_Data = {
   id: String;
@@ -21,7 +27,8 @@ export type PlanView_Data = {
   months: String[];
 };
 
-export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
+export default function PlanCardSmall(plan: PlanView_Data, updateWishlist : Function, userID : String) {
+
   const displayBudget = (budget: Number) => {
     let dollarSigns = "";
 
@@ -50,6 +57,18 @@ export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
     }
   };
 
+  function UpdateWishlist()
+  {
+    if (true)
+    {
+        console.log(updateWishlist({variables : {input : {userID : userID, planID : plan.id}}}))
+    }
+    else
+    {
+        // removeWishlist({variables : {input : {userID : userID, planID : plan.id}}})
+    }
+  }
+  
   return (
     <Box
       maxW="260"
@@ -71,9 +90,22 @@ export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
     >
       <Stack p="5" space={3}>
         {/* <Stack space={2}> */}
-        <Heading size="sm" ml="-1">
-          {plan.name}
-        </Heading>
+        <HStack justifyContent={"space-between"} alignItems={"center"}>
+            <Heading size="sm" ml="-1">
+                {plan.name}
+            </Heading>
+            
+            <IconButton
+                icon={<FavouriteIcon/>}
+                borderRadius="full"
+                _icon={{color: "red.100"}}
+                _pressed={{
+                    _icon: {
+                      color: "red.400"
+                    }}}
+                onPress={() => {UpdateWishlist()}}/>
+        </HStack>
+        
         <Text
           fontSize="xs"
           _light={{
@@ -153,19 +185,6 @@ export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
           >
             {plan.tags[2] ? plan.tags[2] : null}
           </Box>
-          {/* <Box
-              backgroundColor={"violet.600"}
-              p="1"
-              m="1"
-              rounded="xs"
-              _text={{
-                fontSize: "xs",
-                fontWeight: "bold",
-                color: "white",
-              }}
-            >
-              +
-            </Box> */}
         </HStack>
       </Stack>
     </Box>

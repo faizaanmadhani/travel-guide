@@ -7,9 +7,8 @@ import { useFocusEffect } from "@react-navigation/native";
 // For testing purposes
 // import TravelPlanPage from "./PlanMain";
 import PageView from "../components/PageView";
-import PlanCardSmall from "../components/PlanCardSmall";
 import { PlanView_Data } from "../components/PlanCardSmall";
-import PlanCardWishlist from "../components/PlanCardWishlist";
+import PlanCardSmall from "../components/PlanCardSmall";
 import PlanView from "../components/PlanView";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { gql, useQuery, useLazyQuery, useMutation } from "@apollo/client";
@@ -86,7 +85,7 @@ export default function WishlistView(userID : String) {
     let planViews = []
     for (let i = 0; plans[i] != undefined; i++)
     {
-        planViews.push(<Box key={i}>{PlanCardWishlist(plans[i], updateWishlist, userID)}</Box>)
+        planViews.push(<Box key={i}>{PlanCardSmall(plans[i], updateWishlist, userID)}</Box>)
     }
     // planViews.push(<Box key={100}>{PlanCardWishlist(sampleData, updateWishlist, userID)}</Box>)
 
