@@ -17,6 +17,7 @@ export const getPayload = token => {
             return { loggedIn: true, payload };
         } catch (err) {
             // console.log(err);
+
             return { loggedIn: false }
         }
     }

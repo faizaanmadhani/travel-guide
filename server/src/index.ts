@@ -66,6 +66,7 @@ async function startApolloServer() {
    
       // Add the user to the context
       console.log("[CONTEXT]", "logged in:", loggedIn, "user_id:", user.id);
+
       return { loggedIn:loggedIn, user:user.id };
     },
   });

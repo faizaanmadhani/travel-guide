@@ -9,6 +9,7 @@ export const userSchema = new Schema<IUser>({
   token: { type: String, required: false },
   randStr: {type: String, required: true},
   emailValid: {type: Number, required: true},
+
   saved_plans: [
     { type: Schema.Types.ObjectId, required: false, ref:"Plan" },
   ],

@@ -5,6 +5,7 @@ import { transporter } from ".";
 import { getToken } from "./util";
 const ObjectId = require('mongodb').ObjectID
 
+
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
     id: !user?.id ? "" : user?.id,

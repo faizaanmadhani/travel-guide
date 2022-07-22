@@ -171,6 +171,7 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
                     onBlur={() => validateCode()}/>
             {('code' in errors) && <FormControl.ErrorMessage> {errors.code} </FormControl.ErrorMessage>}
             </VStack>
+
             </FormControl>
 
             <Center>
@@ -186,6 +187,7 @@ export default function EmailVerificationPage({ navigation }: { navigation: any 
                     Skip to Login
                 </Button>
                 </Box>
+
             </Center>
         </VStack>
         </ImageBackground>
