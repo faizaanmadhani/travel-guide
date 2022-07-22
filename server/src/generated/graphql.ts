@@ -41,6 +41,7 @@ export type Mutation = {
   addUser: User;
   addPlan: Plan;
   modifyPlan?: Maybe<Plan>;
+  modifyUser?: Maybe<User>;
   addPlanBlock: PlanBlock;
 };
 
@@ -49,6 +50,9 @@ export type MutationAddUserArgs = {
   input: CreateUserInput;
 };
 
+export type MutationModifyUserArgs = {
+  input: UpdateUserInput;
+};
 
 export type MutationAddPlanArgs = {
   creatorId: Scalars['String'];
@@ -58,7 +62,6 @@ export type MutationAddPlanArgs = {
 export type MutationModifyPlanArgs = {
   input: UpdatePlanInput;
 };
-
 
 export type MutationAddPlanBlockArgs = {
   input: UpdatePlanBlockInput;
@@ -117,6 +120,9 @@ export type Query = {
   planblocks: Array<PlanBlock>;
   filteredPlans: Array<Plan>;
   authenticateUser: User;
+  authUserEmail: User;
+  verifyEmail: User;
+  getUserID: User;
 };
 
 
@@ -143,6 +149,21 @@ export type QueryFilteredPlansArgs = {
 export type QueryAuthenticateUserArgs = {
   username: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type QueryAuthUserEmailArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type QueryVerifyEmailArgs = {
+  email: Scalars['String'];
+};
+
+
+export type QueryGetUserIDArgs = {
+  username: Scalars['String'];
+  email: Scalars['String'];
 };
 
 export type UpdatePlanBlockInput = {
@@ -173,10 +194,22 @@ export type User = {
   email: Scalars['String'];
   profile_pic: Scalars['String'];
   password: Scalars['String'];
+  token: Scalars['String'];
+  randStr: Scalars['String'];
+  emailValid: Scalars['Int'];
   savedPlans?: Maybe<Array<Maybe<Plan>>>;
 };
 
-
+export type UpdateUserInput = {
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  profile_pic?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+  token?: Maybe<Scalars['String']>;
+  randStr?: Maybe<Scalars['String']>;
+  emailValid?: Maybe<Scalars['Int']>;
+};
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -269,12 +302,9 @@ export type ResolversTypes = {
   FilterInput: FilterInput;
   Mutation: ResolverTypeWrapper<{}>;
   CreateUserInput: CreateUserInput;
-<<<<<<< HEAD
-  CreatePlanInput: CreatePlanInput;
-=======
   UpdatePlanInput: UpdatePlanInput;
+  UpdateUserInput: UpdateUserInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
->>>>>>> master
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BlockType: BlockType;
   PrefInput: PrefInput;
@@ -294,12 +324,9 @@ export type ResolversParentTypes = {
   FilterInput: FilterInput;
   Mutation: {};
   CreateUserInput: CreateUserInput;
-<<<<<<< HEAD
-  CreatePlanInput: CreatePlanInput;
-=======
   UpdatePlanInput: UpdatePlanInput;
+  UpdateUserInput: UpdateUserInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
->>>>>>> master
   Boolean: Scalars['Boolean'];
   PrefInput: PrefInput;
   Float: Scalars['Float'];
@@ -310,6 +337,7 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   addUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddUserArgs, 'input'>>;
   addPlan?: Resolver<ResolversTypes['Plan'], ParentType, ContextType, RequireFields<MutationAddPlanArgs, 'creatorId'>>;
   modifyPlan?: Resolver<Maybe<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<MutationModifyPlanArgs, 'input'>>;
+  modifyUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationModifyUserArgs, 'input'>>;
   addPlanBlock?: Resolver<ResolversTypes['PlanBlock'], ParentType, ContextType, RequireFields<MutationAddPlanBlockArgs, 'input'>>;
 };
 
@@ -355,6 +383,9 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   planblocks?: Resolver<Array<ResolversTypes['PlanBlock']>, ParentType, ContextType>;
   filteredPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryFilteredPlansArgs, 'input'>>;
   authenticateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthenticateUserArgs, 'username' | 'password'>>;
+  authUserEmail?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthUserEmailArgs, 'email' | 'password'>>;
+  verifyEmail?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryVerifyEmailArgs, 'email'>>;
+  getUserID?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserIDArgs, 'username' | "email">>;
 };
 
 export type UserResolvers<ContextType = Context, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -363,6 +394,9 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   profile_pic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  randStr?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  emailValid?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   savedPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

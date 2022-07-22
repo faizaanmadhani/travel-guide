@@ -5,7 +5,10 @@ import { Resolvers } from "./generated/graphql";
 export const resolvers: Resolvers = {
   Query: {
     user: (_, args, context) =>
-      context.dataSources.userProvider.getUser(args.id),
+      {
+        console.log("query: user", context.loggedIn, context.user);
+        return context.dataSources.userProvider.getUser(args.id);
+      },
     users: (_, __, context) => context.dataSources.userProvider.getUsers(),
     plan: (_, args, context) =>
       context.dataSources.planProvider.getPlan(args.id),
@@ -17,10 +20,30 @@ export const resolvers: Resolvers = {
         args.username,
         args.password
       ),
+    authUserEmail: (_, args, context) =>
+      context.dataSources.userProvider.authUserEmail(
+        args.email,
+        args.password
+      ),
+    verifyEmail: (_, args, context) =>
+      context.dataSources.userProvider.verifyEmail(
+        args.email
+      ),
+    getUserID: (_, args, context) =>
+      {
+        console.log("!!!!!!!", context);
+        return context.dataSources.userProvider.getUserID(
+        args.username,
+        args.email);
+      },
   },
   Mutation: {
     addUser: (_, args, context) =>
-      context.dataSources.userProvider.createUser(args.input),
+      {
+        const newUser = context.dataSources.userProvider.createUser(args.input);
+        console.log(newUser);
+        return newUser;
+      },
     addPlan: async (_, args, context) => {
       console.log("The args", args);
       const newPlan = await context.dataSources.planProvider.createPlan(
@@ -31,6 +54,8 @@ export const resolvers: Resolvers = {
     },
     modifyPlan: (_, args, context) =>
       context.dataSources.planProvider.updatePlan(args.input),
+    modifyUser: (_, args, context) =>
+      context.dataSources.userProvider.updateUser(args.input),
   },
   User: {
     // prefs: (parent, __, context) =>

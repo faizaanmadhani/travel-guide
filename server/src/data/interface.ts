@@ -11,6 +11,9 @@ export interface IUser {
   email: string;
   profile_pic: string;
   password: string;
+  token: string;
+  randStr: string;
+  emailValid: number;
   prefs: Types.DocumentArray<IPrefs>;
   saved_plans?: Types.Array<Types.ObjectId>;
 }

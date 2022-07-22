@@ -6,6 +6,9 @@ export const typeDefs = gql`
     email: String!
     profile_pic: String!
     password: String!
+    token: String!
+    randStr: String!
+    emailValid: Int!
     savedPlans: [Plan]
   }
 
@@ -61,12 +64,16 @@ export const typeDefs = gql`
     planblocks: [PlanBlock!]!
     filteredPlans(input: FilterInput!): [Plan!]!
     authenticateUser(username: String!, password: String!): User!
+    authUserEmail(email: String!, password: String!): User!
+    verifyEmail(email: String!): User!
+    getUserID(username: String!, email: String!): User!
   }
 
   type Mutation {
     addUser(input: CreateUserInput!): User!
     addPlan(creatorId: String!): Plan!
     modifyPlan(input: UpdatePlanInput!): Plan
+    modifyUser(input: UpdateUserInput!): User
     addPlanBlock(input: UpdatePlanBlockInput!): PlanBlock!
     #addPlanBlock(input: PlanBlockInput!)
     #modifyUser(input: UserInput!)
@@ -91,6 +98,16 @@ export const typeDefs = gql`
     email: String!
     profile_pic: String!
     password: String!
+  }
+
+  input UpdateUserInput {
+    id: String
+    name: String
+    email: String
+    profile_pic: String
+    password: String
+    randStr: String
+    emailValid: Int
   }
 
   input UpdatePlanInput {

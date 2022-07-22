@@ -1,6 +1,8 @@
 import { DataSource } from "apollo-datasource";
 import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
-import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput } from "./generated/graphql";
+import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, UpdateUserInput } from "./generated/graphql";
+import { transporter } from ".";
+import { getToken } from "./util";
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -9,6 +11,9 @@ const castIUserToUser = (user: any) => {
     email: !user?.email ? "" : user?.email,
     profile_pic: !user?.profile_pic ? "" : user?.profile_pic,
     password: !user?.password ? "" : user?.password,
+    token: !user?.token ? "" : user?.token,
+    emailValid: !user?.emailValid ? 0 : user?.emailValid,
+    randStr: !user?.randStr ? "" : user?.randStr,
   }
   return gqlUser
 }
@@ -51,7 +56,7 @@ export class UserProvider extends DataSource {
   public async getUser(id: String) {
 
     const user = await UserModel.findById(id).exec();
-
+    console.log("getUser reached", id);
     return castIUserToUser(user);
   }
 
@@ -59,10 +64,64 @@ export class UserProvider extends DataSource {
     console.log("reached", username, password);
     const user = await UserModel.findOne({name: username});
     if (user && user.password === password) {
+      console.log(castIUserToUser(user));
       return castIUserToUser(user);
     } else {
       return castIUserToUser(null);
     }
+  }
+
+  public async authUserEmail(email: String, password: String) {
+    console.log("reached", email, password);
+    const user = await UserModel.findOne({email: email});
+    if (user && user.password === password) {
+      return castIUserToUser(user);
+    } else {
+      return castIUserToUser(null);
+    }
+  }
+
+  public async verifyEmail(email: String) {
+    console.log("reached", email);
+    const user = await UserModel.findOne({email: email});
+    if (user) {
+      
+      var mailOptions = {
+        from: 'wandr497@gmail.com',
+        to: email,
+        subject: 'Wandr: Confirm Email',
+        text: `Your code is ${user.randStr}.`
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
+      return castIUserToUser(user);
+    } else {
+      return castIUserToUser(null);
+    }
+  }
+
+  public async getUserID(username: String, email: String) {
+    console.log("reached", username, email);
+    const user1 = await UserModel.findOne({name: username});
+    const user2 = await UserModel.findOne({email: email});
+    if (user1) {
+      console.log("username found");
+      return castIUserToUser(user1);
+    }
+    if (user2)
+    {
+      console.log("email found");
+      return castIUserToUser(user2);
+    }
+    // else
+    return castIUserToUser(null);
   }
 
   public async getUsers() {
@@ -110,19 +169,14 @@ export class UserProvider extends DataSource {
   }
 
   public async createUser(input: CreateUserInput) {
-
     const newUser = new UserModel({
       name: input.name,
       email: input.email,
       profile_pic: input.profile_pic,
       password: input.password,
-      // prefs: input.prefs.map((obj, _) => {
-      //   const modelPref = {
-      //     pref_tag: obj?.prefTag,
-      //     user_rating: obj?.userRating
-      //   }
-      //   return modelPref
-      // }),
+      token: "",
+      randStr: randString(),
+      emailValid: 0,
       saved_plans: []
     });
 
@@ -131,7 +185,61 @@ export class UserProvider extends DataSource {
 
     const gqlUser: User = await this.getUser(id);
 
+    // Creating a Token from User Payload obtained.
+    const token = getToken(gqlUser);
+    gqlUser.token = token; // Adding token to user object
+    console.log("token is", token);
+    console.log(gqlUser);
+
+    newUser.overwrite(({
+      name: input.name,
+      email: input.email,
+      profile_pic: input.profile_pic,
+      password: input.password,
+      token: token,
+      randStr: randString(),
+      emailValid: 0,
+      saved_plans: []
+    }))
+    await newUser.save();
+
     return gqlUser;
+  }
+
+  public async updateUser(input: UpdateUserInput) {
+    const user = await UserModel.findById(input.id);
+    if (user) {
+      // user.overwrite({
+      //   name: "",
+      //   email: "",
+      //   password: "",
+      //   profile_pic: "",
+      //   randStr: "",
+      //   emailValid: 0
+      // });
+
+      const name = user?.name;
+      const email = user?.email;
+      const password = user?.password;
+      const profile_pic = user?.profile_pic;
+      const randStr = user?.randStr;
+      const emailValid = user?.emailValid;
+
+      user.name = input.name ? input.name : name;
+      user.email = input.email ? input.email : email;
+      user.password = input.password ? input.password : password;
+      user.profile_pic = input.profile_pic ? input.profile_pic : profile_pic;
+      user.randStr = input.randStr ? input.randStr : randStr;
+      if (input.emailValid != undefined)
+      {
+        user.emailValid = (input.emailValid == 0 || input.emailValid == 1) ? input.emailValid : emailValid;
+      }
+      
+      await user.save();
+      return this.getUser(input?.id || "");
+    }
+
+    return null;
   }
 }
 
@@ -286,4 +394,15 @@ export class PlanBlockProvider extends DataSource {
 
     return castIPlanBlocktoPlanBlock(this.getPlanBlock(id));
   }
+}
+
+function randString() {
+  const codeLen = 6;
+  let code = '';
+  let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let alphabetLen = alphabet.length;
+  for ( var i = 0; i < codeLen; i++ ) {
+    code += alphabet.charAt(Math.floor(Math.random() * alphabetLen));
+  }
+  return code;
 }
