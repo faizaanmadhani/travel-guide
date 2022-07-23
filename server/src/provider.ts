@@ -156,7 +156,7 @@ export class PlanProvider extends DataSource {
   public async getFilteredPlans(input: FilterInput) {
     // filtering logic: rating AND budget AND (country 1 OR country 2 OR ...) AND (month 1 OR month 2 OR ...)
 
-    const shouldApplyFilters = input.countries || input.rating || input.budget || input.months;
+    const shouldApplyFilters = input.countries || input.rating || input.budget || input.months || input.tags || input.name;
     let plans = (await PlanModel.find({}).exec()).map((obj, _) => castIPlantoPlan(obj));
 
     if (!shouldApplyFilters) {
@@ -167,6 +167,8 @@ export class PlanProvider extends DataSource {
     const ratingFilter = input.rating? input.rating: [];
     const budgetFilter = input.budget? input.budget: [];
     const monthsFilter = input.months? input.months: [];
+    const tagsFilter = input.tags? input.tags: [];
+    const nameFilter = input.name? input.name: "";
     
     if (countriesFilter && countriesFilter.length) {
       plans = plans.filter(plan => {
@@ -185,6 +187,18 @@ export class PlanProvider extends DataSource {
     if (monthsFilter && monthsFilter.length) {
       plans = plans.filter(plan => {
         return plan.months.some(month => monthsFilter.includes(month));
+      })
+    }
+
+    if (tagsFilter && tagsFilter.length) {
+      plans = plans.filter(plan => {
+        return plan.tags.some(tag => tagsFilter.includes(tag));
+      })
+    }
+
+    if (nameFilter && nameFilter.length) {
+      plans = plans.filter(plan => {
+        return plan.name.toLowerCase().includes(nameFilter.toLowerCase());
       })
     }
     
@@ -297,45 +311,20 @@ export class PlanBlockProvider extends DataSource {
 
 export class TagProvider extends DataSource {
   public async getFilteredTags(input: TagInput) {
-    console.log("input - ", input.tags);
+    console.log("input - ", input.keywords);
 
-    const tags = (await TagModel.find({}).exec());
-    return tags.map((obj, _) => castITagtoTag(obj));
-    // filtering logic: rating AND budget AND (country 1 OR country 2 OR ...) AND (month 1 OR month 2 OR ...)
+    let tags = (await TagModel.find({}).exec()).map((obj, _) => castITagtoTag(obj));
 
+    if (!input.keywords) {
+      return tags;
+    }
 
-    // const shouldApplyFilters = input.countries || input.rating || input.budget || input.months;
-    // let plans = (await PlanModel.find({}).exec()).map((obj, _) => castIPlantoPlan(obj));
-
-    // if (!shouldApplyFilters) {
-    //   return plans;
-    // }
-
-    // const countriesFilter = input.countries? input.countries: [];
-    // const ratingFilter = input.rating? input.rating: [];
-    // const budgetFilter = input.budget? input.budget: [];
-    // const monthsFilter = input.months? input.months: [];
+    const tagsFilter = input.keywords? input.keywords: "";
     
-    // if (countriesFilter && countriesFilter.length) {
-    //   plans = plans.filter(plan => {
-    //     return plan.countries.some(country => countriesFilter.includes(country));
-    //   })
-    // }
-
-    // if (ratingFilter && ratingFilter.length) {
-    //   plans = plans.filter(plan =>  ratingFilter.includes(plan.rating))
-    // }
+      tags = tags.filter(tag => {
+        return tag.name.startsWith(tagsFilter);
+      })
     
-    // if (budgetFilter && budgetFilter.length) {
-    //   plans = plans.filter(plan => budgetFilter.includes(plan.budget))
-    // }
-
-    // if (monthsFilter && monthsFilter.length) {
-    //   plans = plans.filter(plan => {
-    //     return plan.months.some(month => monthsFilter.includes(month));
-    //   })
-    // }
-    
-    // return plans.map((obj, _) => castIPlantoPlan(obj));
+    return tags;
   }
 }

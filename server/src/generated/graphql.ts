@@ -34,6 +34,8 @@ export type FilterInput = {
   rating?: Maybe<Array<Maybe<Scalars['Int']>>>;
   budget?: Maybe<Array<Maybe<Scalars['Int']>>>;
   months?: Maybe<Array<Maybe<Scalars['String']>>>;
+  tags?: Maybe<Array<Maybe<Scalars['String']>>>;
+  name?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -157,7 +159,7 @@ export type Tag = {
 };
 
 export type TagInput = {
-  tags?: Maybe<Array<Maybe<Scalars['String']>>>;
+  keywords?: Maybe<Scalars['String']>;
 };
 
 export type UpdatePlanBlockInput = {

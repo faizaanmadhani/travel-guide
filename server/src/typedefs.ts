@@ -84,10 +84,12 @@ export const typeDefs = gql`
     rating: [Int]
     budget: [Int]
     months: [String]
+    tags: [String]
+    name: String
   }
 
   input TagInput {
-    tags: [String]
+    keywords: String
   }
 
   input PrefInput {

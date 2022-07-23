@@ -24,6 +24,8 @@ export default function Filters(props) {
           rating: [],
           budget: [],
           months: [],
+          tags: [],
+          name: "",
         }
   );
 

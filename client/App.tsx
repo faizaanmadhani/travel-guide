@@ -33,7 +33,7 @@ export const UserContext = React.createContext({
 });
 
 export const client = new ApolloClient({
-  uri: "http://56f1-192-159-178-168.ngrok.io",
+  uri: "http://ec60-192-159-178-168.ngrok.io",
   cache: new InMemoryCache(),
 });
 

@@ -30,7 +30,14 @@ export default function ExploreView(props) {
     }
   );
 
+  const [isRendering, setIsRendering] = React.useState(true);
+
   React.useEffect(() => {
+    setIsRendering(false);
+  }, []);
+
+  React.useEffect(() => {
+    console.log("refetching plans with: ", props.filtersApplied);
     if (props.filtersApplied) {
       refetch({
         input: props.filtersApplied,
@@ -39,6 +46,7 @@ export default function ExploreView(props) {
   }, [props.filtersApplied]);
 
   if (networkStatus === NetworkStatus.refetch || loading) {
+    // props.setIsLoading(true);
     return (
       <Box pt="6">
         <Spinner color="indigo.500" />
@@ -83,20 +91,26 @@ export default function ExploreView(props) {
 
   return (
     <Box>
-      <ScrollView>
-        {allCategories.map((category, index) =>
-          category.plans.length ? (
-            <Box key={index}>
-              <Heading size="sm" pt="6" pl="1">
-                {category.title}
-              </Heading>
-              <ScrollView horizontal={true} my="2">
-                <HStack>{displayPlans(category.plans)}</HStack>
-              </ScrollView>
-            </Box>
-          ) : null
-        )}
-      </ScrollView>
+      {isRendering ? (
+        <Box pt="6">
+          <Spinner color="indigo.500" />
+        </Box>
+      ) : (
+        <ScrollView>
+          {allCategories.map((category, index) =>
+            category.plans.length ? (
+              <Box key={index}>
+                <Heading size="sm" pt="4" pl="1">
+                  {category.title}
+                </Heading>
+                <ScrollView horizontal={true} my="2">
+                  <HStack>{displayPlans(category.plans)}</HStack>
+                </ScrollView>
+              </Box>
+            ) : null
+          )}
+        </ScrollView>
+      )}
     </Box>
   );
 }
