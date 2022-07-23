@@ -30,6 +30,7 @@ export default function ExplorePage() {
     months: [],
     tags: [],
     name: "",
+    limit: 10,
   });
   const [isTagsSearch, setIsTagsSearch] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -98,7 +99,7 @@ export default function ExplorePage() {
             }}
             flexWrap="wrap"
           >
-            {filtersApplied.tags.map((selectedTag, index) => (
+            {filtersApplied.tags ? filtersApplied.tags.map((selectedTag, index) => (
               <Button
                 key={index}
                 onPress={() => removeSelectedTag(selectedTag)}
@@ -107,7 +108,7 @@ export default function ExplorePage() {
               >
                 {selectedTag}
               </Button>
-            ))}
+            )): null}
           </Stack>
         </Box>
         {/* plans list */}

@@ -86,6 +86,7 @@ export const typeDefs = gql`
     months: [String]
     tags: [String]
     name: String
+    limit: Int
   }
 
   input TagInput {
