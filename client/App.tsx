@@ -7,6 +7,7 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
+  createHttpLink,
   useQuery,
   gql,
 } from "@apollo/client";
@@ -27,6 +28,27 @@ import LoginPage from "./src/pages/LoginPage";
 import TravelStackScreen from "./src/navigation/TravelPageStack";
 import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
 import ExplorePageStack from "./src/navigation/ExplorePageStack";
+import EmailVerificationPage from "./src/pages/EmailVerificationPage";
+import { setContext } from '@apollo/client/link/context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const httpLink = createHttpLink({
+  uri: "https://feb0-207-107-159-98.ngrok.io/",
+  credentials: 'include'
+});
+
+const authLink = setContext(async (_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = await AsyncStorage.getItem('curUser') || "";
+  // console.log("authLink token:", token);
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : `Bearer ${""}`,
+    }
+  }
+});
 
 export const UserContext = React.createContext({
   userID: "",
@@ -35,8 +57,13 @@ export const UserContext = React.createContext({
   setUserSessionToken: (token) => {},
 });
 
+export const RegisterContext = React.createContext({
+  regEmail: "",
+  setRegEmail: (email) => {},
+});  
+
 export const client = new ApolloClient({
-  uri: "https://2be0-2620-101-f000-740-8000-00-79f.ngrok.io",
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 
@@ -48,13 +75,12 @@ const Tab = createBottomTabNavigator();
 
 export default function App() {
   const [userID, setUserID] = useState("");
-  const [userSessionToken, setUserSessionToken] = useState("");
+  const [regEmail, setRegEmail] = useState("");
 
   return (
     <ApolloProvider client={client}>
-      <UserContext.Provider
-        value={{ userID, setUserID, userSessionToken, setUserSessionToken }}
-      >
+      <UserContext.Provider value={{ userID, setUserID }}>
+      <RegisterContext.Provider value={{ regEmail, setRegEmail }}>
         <NativeBaseProvider>
           <NavigationContainer>
             <Tab.Navigator
@@ -132,6 +158,16 @@ export default function App() {
                   headerShown: false,
                 }}
               />
+              <Tab.Screen
+                name="Verify"
+                component={EmailVerificationPage}
+                options={{
+                  tabBarButton: () => null,
+                  // tabBarVisible: false,
+                  tabBarStyle: { display: "none" },
+                  headerShown: false,
+                }}
+              />
 
               <Tab.Screen
                 name="Explore"
@@ -149,7 +185,7 @@ export default function App() {
                 name="Wishlist"
                 component={WishlistPage}
                 options={{
-                  headerShown: false,
+                  headerShown: true,
                 }}
               />
               <Tab.Screen
@@ -163,6 +199,7 @@ export default function App() {
             </Tab.Navigator>
           </NavigationContainer>
         </NativeBaseProvider>
+      </RegisterContext.Provider>
       </UserContext.Provider>
     </ApolloProvider>
   );

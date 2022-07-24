@@ -1,4 +1,5 @@
 import React from "react";
+import { useContext } from "react";
 import {
   useDisclose,
   Actionsheet,
@@ -15,10 +16,12 @@ import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import ExploreView from "../views/ExploreView";
 import Filters from "../components/Filters";
 import PageView from "../components/PageView";
+import { UserContext } from "../../App";
 
 export default function ExplorePage() {
   const { isOpen, onOpen, onClose } = useDisclose();
   const [filtersApplied, setFiltersApplied] = React.useState(null);
+  const { userID, setUserID } = useContext(UserContext);
 
   return (
     <Box>
@@ -69,7 +72,7 @@ export default function ExplorePage() {
         </Box>
         {/* plans list */}
         <ScrollView w="100%">
-          <ExploreView filtersApplied={filtersApplied} />
+          <ExploreView filtersApplied={filtersApplied} userID={userID}/>
         </ScrollView>
       </PageView>
     </Box>

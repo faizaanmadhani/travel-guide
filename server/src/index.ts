@@ -11,6 +11,7 @@ import { DB_URL } from "./config";
 // import { PlanModel } from "./data/model";
 import Multer from "multer";
 import ImgUpload from "./helpers/imgUpload";
+import { getPayload } from "./util";
 
 export interface Context {
   dataSources: {
@@ -18,6 +19,8 @@ export interface Context {
     planProvider: PlanProvider;
     planBlockProvider: PlanBlockProvider;
   };
+  loggedIn: boolean;
+  user: String;
 }
 
 async function startApolloServer() {
@@ -45,63 +48,31 @@ async function startApolloServer() {
     // @ts-ignore (FIXME: should be casted to default Resolvers type?)
     resolvers,
     dataSources,
+    context: ({ req }) => {
+      // Note: This example uses the `req` argument to access headers,
+      // but the arguments received by `context` vary by integration.
+      // This means they vary for Express, Koa, Lambda, etc.
+      //
+      // To find out the correct arguments for a specific integration,
+      // see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#middleware-specific-context-fields
+   
+      // Get the user token from the headers.
+      let token = req.headers.authorization || '';
+      if (token) token = token.split(' ')[1];
+      // console.log("token HERE", req.headers.authorization);
+      // Try to retrieve a user with the token
+      const { payload: user, loggedIn } = getPayload(token);
+      // console.log("user HERE", user);
+   
+      // Add the user to the context
+      console.log("[CONTEXT]", "logged in:", loggedIn, "user_id:", user.id);
+
+      return { loggedIn:loggedIn, user:user.id };
+    },
   });
 
   const initDb = async () => {
     await connect(DB_URL);
-    // const samplePlan = new PlanModel({
-    //   name: "Travel through France",
-    //   creator: "629866d100dc6494a0668401",
-    //   rating: 5,
-    //   budget: 2,
-    //   tags: ["outdoor", "museum", "easy"],
-    //   description: "Travel through france on this plan",
-    //   blocks: [],
-    //   countries: ["Canada", "Brazil", "Austria"],
-    //   months: ["Jan", "Feb"],
-    // });
-
-    // const samplePlan2 = new PlanModel({
-    //   name: "Travel through Italy",
-    //   creator: "629866d100dc6494a0668401",
-    //   rating: 4,
-    //   budget: 5,
-    //   tags: ["indoor", "sightseeing", "long"],
-    //   description: "travel through italy with us",
-    //   blocks: [],
-    //   countries: ["Vietnam", "South Korea", "France"],
-    //   months: ["Mar", "Apr"],
-    // });
-
-    // const samplePlan3 = new PlanModel({
-    //   name: "Travel through Germany",
-    //   creator: "629866d100dc6494a0668401",
-    //   rating: 5,
-    //   budget: 1,
-    //   tags: ["outdoor", "hiking", "food"],
-    //   description: "A journey through Germany",
-    //   blocks: [],
-    //   countries: ["China", "Spain", "England"],
-    //   months: ["Nov"],
-    // });
-
-    // const user = new UserModel({
-    //   name: "Faizaan",
-    //   email: "fzmadhani@gmail.com",
-    //   profile_pic: "Hi",
-    //   password: "123",
-    //   prefs: [
-    //     {
-    //       pref_tag: "outdoors",
-    //       user_rating: 1,
-    //     },
-    //   ],
-    // });
-
-    // // await user.save();
-    // await samplePlan.save();
-    // await samplePlan2.save();
-    // await samplePlan3.save();
   };
 
   // This `listen` method launches a web-server.  Existing apps
@@ -112,6 +83,7 @@ async function startApolloServer() {
   server.applyMiddleware({
     app,
     path: "/",
+    cors: corsConfig
   });
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: 4000 }, resolve)
@@ -141,3 +113,19 @@ router.post(
     response.send(data);
   }
 );
+
+var nodemailer = require('nodemailer');
+
+export var transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'wandr497@gmail.com',
+    pass: 'hepvigybygnzmutg'
+  }
+});
+
+const corsConfig = {
+  credentials: true,
+  allowedHeaders: ['Authorization'],
+  exposedHeaders: ['Authorization'],
+};
