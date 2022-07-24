@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Spinner, Button, Heading, VStack } from "native-base";
-import PlanCardSmall from "../PlanCardSmall";
+import PlanView from "../../views/PlanView";
 
 export default function PlansByCategory(props) {
   const [isLoading, setIsLoading] = React.useState(true);
@@ -39,7 +39,7 @@ export default function PlansByCategory(props) {
 
     if (categoryPlans) {
       return categoryPlans.map((plan, index) => {
-        return <Box key={index}>{PlanCardSmall(plan)}</Box>;
+        return <Box key={index}>{PlanView(plan)}</Box>;
       });
     }
   };

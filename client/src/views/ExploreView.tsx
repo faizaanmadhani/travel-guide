@@ -10,7 +10,7 @@ import {
   Pressable,
 } from "native-base";
 import { gql, useQuery, NetworkStatus } from "@apollo/client";
-import PlanCardSmall from "../components/PlanCardSmall";
+import PlanView from "./PlanView";
 import PlansByCategory from "../components/explore/PlansByCategory";
 
 const CURRENT_LOCATION = "Canada";
@@ -115,7 +115,7 @@ export default function ExploreView(props) {
 
   const displayPlans = (plansList) => {
     return plansList.map((plan) => {
-      return <Box key={plan.id}>{PlanCardSmall(plan)}</Box>;
+      return <Box key={plan.id}>{PlanView(plan)}</Box>;
     });
   };
 
