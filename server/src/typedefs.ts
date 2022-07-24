@@ -26,23 +26,25 @@ export const typeDefs = gql`
     blocks(day: Int!): [PlanBlock!]
     countries: [String!]!
     months: [String!]!
-    assetLinks: [String]
+    imageUrl: String!
+    numDays: Int!
   }
 
   type PlanBlock {
     id: ID
     title: String
+    day: Int
     description: String
     # type: BlockType!
-    images: [String] # Link to image urls. string at images[0] is first one displayed
     # mapId: String! #Something to help render gmaps url. Maybe a google maps link
     # locationUrl: String # External link to the location
     # Store some links additional assets
     # audio: String!
     # video: String!
     price: Int
-    day: Int
-    externalUrl: [String]
+    imageUrl: String
+    lat: Float
+    long: Float
   }
 
   enum BlockType {
@@ -68,10 +70,9 @@ export const typeDefs = gql`
     addPlan(creatorId: String!): Plan!
     modifyPlan(input: UpdatePlanInput!): Plan
     addPlanBlock(input: UpdatePlanBlockInput!): PlanBlock!
-    #addPlanBlock(input: PlanBlockInput!)
-    #modifyUser(input: UserInput!)
-    #modifyPlan(input: modifyPlan!)
-    #modifyPlanBlock(input: PlanBlockInput!)
+    modifyPlanBlock(id: String!, input: UpdatePlanBlockInput!): PlanBlock
+    deletePlan(id: String!): Plan
+    deleteBlock(id: String!): PlanBlock
   }
 
   input FilterInput {
@@ -101,7 +102,7 @@ export const typeDefs = gql`
     rating: Int # value between 1 and 5
     tags: [String]
     description: String
-    assetLinks: [String]
+    imageUrl: String
   }
 
   input UpdatePlanBlockInput {
@@ -112,8 +113,8 @@ export const typeDefs = gql`
     price: Int
     links: [String]
     day: Int
-    #audio: Int
-    #video: Int
-    images: [String]
+    imageUrl: String
+    lat: Float
+    long: Float
   }
 `;

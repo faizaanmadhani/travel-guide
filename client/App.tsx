@@ -26,6 +26,7 @@ import RegisterPage from "./src/pages/RegisterPage";
 import LoginPage from "./src/pages/LoginPage";
 import TravelStackScreen from "./src/navigation/TravelPageStack";
 import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
+import ExplorePageStack from "./src/navigation/ExplorePageStack";
 
 export const UserContext = React.createContext({
   userID: "",

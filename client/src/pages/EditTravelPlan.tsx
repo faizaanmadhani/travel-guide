@@ -38,7 +38,15 @@ const UPDATE_PLAN = gql`
       budget
       tags
       description
-      assetLinks
+      imageUrl
+    }
+  }
+`;
+
+const DELETE_PLAN = gql`
+  mutation deletePlan($planID: String!) {
+    deletePlan(id: $planID) {
+      id
     }
   }
 `;
@@ -49,7 +57,6 @@ export default function EditTravelPlan({
 }: {
   route: any;
   navigation: any;
-  new: boolean;
 }) {
   const { planID } = route.params;
   const { userID } = useContext(UserContext);
@@ -127,6 +134,15 @@ export default function EditTravelPlan({
     },
   });
 
+  const [
+    deletePlan,
+    { data: deleteData, loading: deleteLoading, error: deleteError },
+  ] = useMutation(DELETE_PLAN, {
+    onCompleted: (resultData) => {
+      navigation.goBack();
+    },
+  });
+
   const triggerUpdate = () => {
     const inputData: any = {
       id: planID,
@@ -136,9 +152,8 @@ export default function EditTravelPlan({
       budget: activeBudgetIndicator + 1,
       tags: tags.tagsArray,
       description: description,
-      assetLinks: [
-        "https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2014/01/scenery.jpg", // HARDCODED asset right now
-      ],
+      imageUrl:
+        "https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2014/01/scenery.jpg", // HARDCODED asset right now,
     };
     updatePlan({ variables: { input: inputData } }).catch((error) => {
       console.log(JSON.stringify(error, null, 2));
@@ -155,8 +170,6 @@ export default function EditTravelPlan({
       setDaysLabels([...daysLabels, newDayStr]);
     }
   }, [numDays]);
-
-  // TODO: Implement delete days functionality
 
   return (
     <ScrollView w="100%">
@@ -189,6 +202,7 @@ export default function EditTravelPlan({
                   marginRight="1"
                   onPress={(_) => {
                     triggerUpdate();
+
                     setActiveTab(index);
                   }}
                   key={label}
@@ -310,7 +324,15 @@ export default function EditTravelPlan({
                 <Button
                   backgroundColor="#3CB371"
                   onPress={() => {
-                    triggerUpdate();
+                    if (title !== "") {
+                      triggerUpdate();
+                    } else {
+                      deletePlan({
+                        variables: {
+                          planID: planID,
+                        },
+                      });
+                    }
                     navigation.goBack();
                   }}
                 >
@@ -320,7 +342,18 @@ export default function EditTravelPlan({
             </Box>
             <Box>
               <FormControl mb="1">
-                <Button backgroundColor="#AF2C43">Delete Plan</Button>
+                <Button
+                  backgroundColor="#AF2C43"
+                  onPress={() => {
+                    deletePlan({
+                      variables: {
+                        planID: planID,
+                      },
+                    });
+                  }}
+                >
+                  Delete Plan
+                </Button>
               </FormControl>
             </Box>
           </Stack>

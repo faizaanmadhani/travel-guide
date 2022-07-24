@@ -33,6 +33,12 @@ export const resolvers: Resolvers = {
       context.dataSources.planProvider.updatePlan(args.input),
     addPlanBlock: (_, args, context) =>
       context.dataSources.planBlockProvider.createBlock(args.input),
+    modifyPlanBlock: (_, args, context) =>
+      context.dataSources.planBlockProvider.modifyBlock(args.id, args.input),
+    deletePlan: (_, args, context) =>
+      context.dataSources.planProvider.deletePlan(args.id),
+    deleteBlock: (_, args, context) =>
+      context.dataSources.planBlockProvider.deletePlanBlock(args.id),
   },
   User: {
     // prefs: (parent, __, context) =>
@@ -43,10 +49,11 @@ export const resolvers: Resolvers = {
   Plan: {
     creator: (parent, __, context) =>
       context.dataSources.userProvider.getUser(parent.creatorId),
-    blocks: (parent, args, context) =>
-      context.dataSources.planBlockProvider.getPlanBlocksByPlanAndDay(
-        parent.id,
+    blocks: (parent, args, context) => {
+      return context.dataSources.planBlockProvider.getPlanBlocksByPlanAndDay(
+        parent.id.toString(),
         args.day
-      ),
+      );
+    },
   },
 };

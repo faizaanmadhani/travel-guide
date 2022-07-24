@@ -17,11 +17,12 @@ export type PlanView_Data = {
   rating: number;
   tags: String[];
   description: String;
-  countries: String[];
+  // countries: String[];
   months: String[];
 };
 
 export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
+  console.log("the plan", plan);
   const displayBudget = (budget: Number) => {
     let dollarSigns = "";
 
@@ -32,23 +33,23 @@ export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
     return dollarSigns;
   };
 
-  const displayCountries = (countries: Array<String>) => {
-    if (countries.length) {
-      let countriesList = "";
+  // const displayCountries = (countries: Array<String>) => {
+  //   if (countries.length) {
+  //     let countriesList = "";
 
-      for (let i = 0; i < countries.length; i++) {
-        if (i !== 0) {
-          countriesList = countriesList + " " + "\u2022" + " ";
-        }
+  //     for (let i = 0; i < countries.length; i++) {
+  //       if (i !== 0) {
+  //         countriesList = countriesList + " " + "\u2022" + " ";
+  //       }
 
-        countriesList = countriesList + countries[i];
-      }
+  //       countriesList = countriesList + countries[i];
+  //     }
 
-      return countriesList;
-    } else {
-      return "No Countries";
-    }
-  };
+  //     return countriesList;
+  //   } else {
+  //     return "No Countries";
+  //   }
+  // };
 
   return (
     <Box
@@ -69,6 +70,7 @@ export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
         backgroundColor: "gray.50",
       }}
     >
+      {/* <Pressable onPress={navigation.navigate("View Plan", plan)}> */}
       <Stack p="5" space={3}>
         {/* <Stack space={2}> */}
         <Heading size="sm" ml="-1">
@@ -86,7 +88,7 @@ export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
           ml="-0.5"
           mt="-1"
         >
-          {displayCountries(plan.countries)}
+          {/* {displayCountries(plan.countries)} */}
         </Text>
         <Text
           fontSize="xs"
@@ -168,6 +170,7 @@ export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
             </Box> */}
         </HStack>
       </Stack>
+      {/* </Pressable> */}
     </Box>
   );
 }

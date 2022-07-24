@@ -25,7 +25,8 @@ export interface IPlan {
   blocks: Types.Array<Types.ObjectId>;
   countries: Types.Array<string>;
   months: Types.Array<string>;
-  assetLinks: Types.Array<string>;
+  imageUrl: string;
+  numDays: number;
 }
 
 export interface IPlanBlock {
@@ -36,8 +37,7 @@ export interface IPlanBlock {
   price: number;
   location: string;
   day: number;
-  // map_id?: string;
-  // location_url?: string;
-  // audio?: string;
-  // video?: string;
+  lat: number;
+  long: number;
+  imageUrl: string;
 }

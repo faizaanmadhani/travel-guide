@@ -15,7 +15,7 @@ const castIUserToUser = (user: any) => {
 
 const castIPlantoPlan = (plan: any) => {
   const gqlPlan: Plan = {
-    id: !plan?.id ? "" : plan?.id,
+    id: !plan?._id ? "" : plan?._id,
     name: !plan?.name ? "" : plan?.name,
     creator: null,
     creatorId: !plan?.creator ? "" : plan?.creator,
@@ -25,7 +25,8 @@ const castIPlantoPlan = (plan: any) => {
     description: !plan?.description? "" : plan?.description,
     countries: !plan?.countries ? "" : plan?.countries,
     months: !plan?.months ? "" : plan?.months,
-    assetLinks: !plan?.assetLinks ? [] : plan?.assetLinks,
+    imageUrl: !plan?.imageUrl ? "" : plan?.imageUrl,
+    numDays: !plan?.numDays ? "" : plan?.numDays,
   }
   return gqlPlan;
 }
@@ -35,13 +36,9 @@ const castIPlanBlocktoPlanBlock = (planBlock: any) => {
     id: !planBlock?.id ? "" : planBlock?.id,
     title: !planBlock?.title ? "" : planBlock?.title,
     description: !planBlock?.description ? "" : planBlock?.description,
-    images: !planBlock?.images ? [] : planBlock?.images,
-    // mapId: !planBlock?.mapId ? "" : planBlock?.mapId,
-    // audio: !planBlock?.audio ? "" : planBlock?.audio,
-    // video: !planBlock?.video ? "" : planBlock?.video,
     price: !planBlock?.price ? 0 : planBlock?.price,
     day: !planBlock?.day ? 1 : planBlock.day,
-    externalUrl: !planBlock?.links ? [] : planBlock.links
+    imageUrl: !planBlock?.imageUrl ? "" : planBlock.day,
   }
   return gqlPlanBlock;
 }
@@ -100,6 +97,7 @@ export class UserProvider extends DataSource {
     }).exec())?.saved_plans;
     if (plansArray) {
       const savedPlans: Plan[] = plansArray?.map((plan, _) => {
+        console.log("Each plan", plan);
         return castIPlantoPlan(plan[0]); // populate for some reason stores each obj in nested array
       })
       return savedPlans;
@@ -137,6 +135,7 @@ export class UserProvider extends DataSource {
 
 export class PlanProvider extends DataSource {
   public async getPlan(id: string) {
+    console.log("the plan just fetched", id);
     const plan = (await PlanModel.findById(id).exec());
     return castIPlantoPlan(plan);
   }
@@ -220,8 +219,8 @@ export class PlanProvider extends DataSource {
         budget: 0,
         tags: [],
         description: "",
-        blocks: [],
-        assetLinks: []
+        blocks: doc.blocks,
+        imageUrl: ""
       });
 
       doc.name = !input.name ? "" : input.name;
@@ -231,9 +230,7 @@ export class PlanProvider extends DataSource {
         doc.tags.push(tag);
       })
       doc.description = !input.description ? "" : input.description;
-      input.assetLinks?.forEach((link, _) => {
-        doc.assetLinks.push(link);
-      })
+      input.imageUrl = !input.imageUrl ? "" : input.imageUrl;
 
       await doc.save();
       return this.getPlan(input?.id || "");
@@ -241,6 +238,13 @@ export class PlanProvider extends DataSource {
 
     return null;
   }
+
+  public async deletePlan(id: string) {
+    const plan = (await PlanModel.findById(id));
+    await PlanModel.deleteOne({_id: id});
+    return castIPlantoPlan(plan);
+  }
+
 }
 
 export class PlanBlockProvider extends DataSource {
@@ -250,17 +254,22 @@ export class PlanBlockProvider extends DataSource {
   }
 
   public async getPlanBlocksByPlanAndDay(planId: string, day: number) {
+    console.log("stack trace leads here?", planId, day);
     let planBlocksArray: any = (await PlanModel.findById(planId).select("blocks").populate({
       path: "blocks",
       model: "PlanBlock"
     }).exec())?.blocks;
 
+    console.log("The plan blocks array", planBlocksArray);
     planBlocksArray = planBlocksArray.filter((obj: any) => obj.day === day);
+    console.log("The filtered plan blocks array", planBlocksArray);
 
     if (planBlocksArray) {
       const blocks: PlanBlock[] = planBlocksArray?.map((block, _) => {
-        return castIPlanBlocktoPlanBlock(block[0]);
+        console.log("each block", block);
+        return castIPlanBlocktoPlanBlock(block);
       });
+      console.log("the blocks", blocks);
       return blocks;
     } else {
       const blocks: PlanBlock[] = [];
@@ -272,11 +281,15 @@ export class PlanBlockProvider extends DataSource {
     const newPlanBlock = new PlanBlockModel({
       title: input.title,
       description: input.description,
-      images: input.images,
+      imageUrl: input.imageUrl,
+      lat: input.lat,
+      long: input.long,
       links: input.links,
       location: input.location,
       day: input.day,
     })
+
+    console.log("the input ", input);
 
     await newPlanBlock.save();
     const id = newPlanBlock._id.toString();
@@ -285,5 +298,34 @@ export class PlanBlockProvider extends DataSource {
     await plan?.save();
 
     return castIPlanBlocktoPlanBlock(this.getPlanBlock(id));
+  }
+
+  public async modifyBlock(id: string, input: UpdatePlanBlockInput) {
+    const doc = await PlanBlockModel.findById(id);
+    if (doc) {
+      doc.overwrite({
+        title: input.title,
+        description: input.description,
+        links: input.links,
+        price: input.price,
+        location: input.location,
+        day: input.day,
+        lat: input.lat,
+        long: input.long,
+      })
+
+      await doc.save();
+
+      return this.getPlanBlock(id);
+    }
+
+    return null
+  }
+
+  public async deletePlanBlock(id: string) {
+    console.log("delete plan block was triggered", id);
+    const planBlock = (await PlanBlockModel.findById(id));
+    await PlanBlockModel.deleteOne({_id: id});
+    return castIPlanBlocktoPlanBlock(planBlock);
   }
 }

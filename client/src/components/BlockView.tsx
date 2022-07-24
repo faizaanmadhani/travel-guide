@@ -54,6 +54,8 @@ export default function BlockView(props: IBlockProps) {
       _light={{
         backgroundColor: "gray.50",
       }}
+      marginTop={3}
+      marginBottom={3}
     >
       <Stack p="5" space="2">
         <HStack justifyContent="space-between">

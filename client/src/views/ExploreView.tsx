@@ -16,7 +16,7 @@ export const GET_FILTERED_PLANS = gql`
       description
       countries
       months
-      assetLinks
+      imageUrl
     }
   }
 `;

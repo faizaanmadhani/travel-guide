@@ -25,6 +25,7 @@ import axios from "axios";
 import { useDebounce } from "../hooks/useDebounce";
 import * as ImagePicker from "expo-image-picker";
 import { gql, useMutation } from "@apollo/client";
+import MapView, { Marker } from "react-native-maps";
 
 const GOOGLE_PLACES_API_BASE_URL = "https://maps.googleapis.com/maps/api/place";
 
@@ -49,6 +50,7 @@ export const EditBlockForm = ({
   console.log("planID and day", planID, day);
 
   const [search, setSearch] = useState({ term: "", fetchPredictions: false });
+  const [coordinates, setCoordinates] = useState({ lat: null, long: null });
   const [showPredictions, setShowPredictions] = useState(false);
   const [predictions, setPredictions] = useState<PredictionType[]>([]);
   const [, updateState] = useState({});
@@ -144,6 +146,7 @@ export const EditBlockForm = ({
           },
         } = result;
         const { lat, lng } = location;
+        setCoordinates({ lat: lat, long: lng });
         setShowPredictions(false);
         setSearch({ term: description, fetchPredictions: false });
       }
@@ -173,7 +176,9 @@ export const EditBlockForm = ({
       title: title,
       price: activeBudgetIndicator + 1,
       day: day,
-      images: image === null ? [""] : [image],
+      imageUrl: image === null ? "" : image,
+      lat: coordinates.lat,
+      long: coordinates.long,
     };
     console.log("the input data", inputData);
     createBlock({ variables: { input: inputData } }).catch((error) => {
@@ -205,6 +210,20 @@ export const EditBlockForm = ({
             onPredictionTapped={onPredictionTapped}
           />
         </FormControl>
+        {/* {search.term === "" ? null : (
+          <View>
+            <MapView>
+              <Marker
+                coordinate={{
+                  latitude: coordinates.lat,
+                  longitude: coordinates.long,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0922,
+                }}
+              />
+            </MapView>
+          </View>
+        )} */}
         <Pressable onPress={() => pickImage()}>
           <Center>
             {!image ? (
@@ -239,17 +258,6 @@ export const EditBlockForm = ({
             onChangeText={(text) => setDescription(text)}
             autoCompleteType={undefined}
           />
-        </FormControl>
-        <FormControl mb="1">
-          <FormControl.Label>Audio File</FormControl.Label>
-          <Button
-            marginRight="1"
-            backgroundColor="#06B6D4"
-            //   onPress={(_) => setActiveTab(index)}
-            //   key={label}
-          >
-            Record Audio
-          </Button>
         </FormControl>
         <FormControl mb="1">
           <FormControl.Label>Title</FormControl.Label>

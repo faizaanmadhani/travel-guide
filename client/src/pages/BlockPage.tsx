@@ -11,10 +11,10 @@ const GET_BLOCKS = gql`
     plan(id: $id) {
       blocks(day: $day) {
         title
-        images
+        imageUrl
         description
         price
-        externalUrl
+        imageUrl
       }
     }
   }
@@ -26,7 +26,7 @@ export default function BlockPage({
   day,
 }: {
   navigation: any;
-  planID: string;
+  planID: String;
   day: number;
 }) {
   console.log("the plan ID", planID);
@@ -34,19 +34,6 @@ export default function BlockPage({
     variables: { id: planID, day: day },
     skip: !planID,
   });
-
-  //   if (loading)
-  //     return (
-  //       <Box>
-  //         <Spinner accessibilityLabel="Loading blocks" />
-  //       </Box>
-  //     );
-  //   if (error)
-  //     return (
-  //       <Box>
-  //         <Text>Error! ${error}</Text>
-  //       </Box>
-  //     );
 
   if (loading) return <Spinner />;
 
@@ -86,6 +73,16 @@ export default function BlockPage({
           {data?.plan?.blocks.map((obj: IBlockProps, index: number) => (
             <BlockView key={index} {...obj} />
           ))}
+          <Button
+            onPress={() =>
+              navigation.navigate("Edit Block", {
+                planID: planID,
+                day: day,
+              })
+            }
+          >
+            Add Block
+          </Button>
         </ScrollView>
       )}
     </Box>
