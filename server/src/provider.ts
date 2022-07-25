@@ -202,6 +202,7 @@ export class UserProvider extends DataSource {
   }
 
   public async createUser(input: CreateUserInput) {
+    console.log("hit create user", input);
     const newUser = new UserModel({
       name: input.name,
       email: input.email,

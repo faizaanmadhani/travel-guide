@@ -32,13 +32,13 @@ import { setContext } from '@apollo/client/link/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const httpLink = createHttpLink({
-  uri: "https://feb0-207-107-159-98.ngrok.io/",
+  uri: "https://e0ee-2620-101-f000-700-abe6-da88-8c62-a758.ngrok.io",
   credentials: 'include'
 });
 
 const authLink = setContext(async (_, { headers }) => {
   // get the authentication token from local storage if it exists
-  const token = await AsyncStorage.getItem('curUser') || "";
+  const token = await AsyncStorage.getItem('curUser') || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyZDg3NWY2ZWE3MjU2ZjQzYzQ1NWNhMSIsIm5hbWUiOiJKIiwiZW1haWwiOiJ3YW5kcjQ5N0BnbWFpbC5jb20iLCJwcm9maWxlX3BpYyI6InBpYyIsInBhc3N3b3JkIjoiMTIzIiwidG9rZW4iOiIiLCJlbWFpbFZhbGlkIjowLCJyYW5kU3RyIjoiNElRVkdYIiwic2F2ZWRQbGFucyI6W10sIndpc2hsaXN0UGxhbnMiOltdLCJpYXQiOjE2NTgzNTMxNDJ9.iRIQHW4PhJozDMWAebZxTj-Q70jYA8WFkR0WCPeQlxc";
   // console.log("authLink token:", token);
   // return the headers to the context so httpLink can read them
   return {
