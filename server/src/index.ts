@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import http from "http";
 
-import { UserProvider, PlanProvider, PlanBlockProvider } from "./provider";
+import { UserProvider, PlanProvider, PlanBlockProvider, TagProvider } from "./provider";
 import { resolvers } from "./resolver";
 import { typeDefs } from "./typedefs";
 import { connect } from "mongoose";
@@ -18,6 +18,7 @@ export interface Context {
     userProvider: UserProvider;
     planProvider: PlanProvider;
     planBlockProvider: PlanBlockProvider;
+    tagProvider: TagProvider;
   };
   loggedIn: boolean;
   user: String;
@@ -61,6 +62,7 @@ async function startApolloServer(app: any) {
       userProvider: new UserProvider(),
       planProvider: new PlanProvider(),
       planBlockProvider: new PlanBlockProvider(),
+      tagProvider: new TagProvider(),
     };
   };
 

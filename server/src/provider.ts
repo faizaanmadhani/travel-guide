@@ -1,7 +1,7 @@
 import { DataSource } from "apollo-datasource";
-import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
-import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, UpdateUserInput, AddWishlistPlanInput } from "./generated/graphql";
-import { transporter } from ".";
+import { PlanBlockModel, PlanModel, UserModel, TagModel } from "./data/model";
+import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, UpdateUserInput, AddWishlistPlanInput, Tag, TagInput } from "./generated/graphql";
+import { transporter } from "../src/index";
 import { getToken } from "./util";
 const ObjectId = require('mongodb').ObjectID
 
@@ -50,6 +50,13 @@ const castIPlanBlocktoPlanBlock = (planBlock: any) => {
     imageUrl: !planBlock?.imageUrl ? "" : planBlock.imageUrl,
   }
   return gqlPlanBlock;
+}
+
+const castITagtoTag = (tag: any) => {
+  const gqlTag: Tag = {
+    name: !tag?.name ? "" : tag?.name,
+  }
+  return gqlTag;
 }
 
 export class UserProvider extends DataSource {
@@ -193,6 +200,7 @@ export class UserProvider extends DataSource {
   }
 
   public async createUser(input: CreateUserInput) {
+    console.log("hit create user", input);
     const newUser = new UserModel({
       name: input.name,
       email: input.email,
@@ -340,7 +348,7 @@ export class PlanProvider extends DataSource {
   public async getFilteredPlans(input: FilterInput) {
     // filtering logic: rating AND budget AND (country 1 OR country 2 OR ...) AND (month 1 OR month 2 OR ...)
 
-    const shouldApplyFilters = input.countries || input.rating || input.budget || input.months;
+    const shouldApplyFilters = input.countries || input.rating || input.budget || input.months || input.tags || input.name;
     let plans = (await PlanModel.find({}).exec()).map((obj, _) => castIPlantoPlan(obj));
 
     if (!shouldApplyFilters) {
@@ -351,6 +359,8 @@ export class PlanProvider extends DataSource {
     const ratingFilter = input.rating? input.rating: [];
     const budgetFilter = input.budget? input.budget: [];
     const monthsFilter = input.months? input.months: [];
+    const tagsFilter = input.tags? input.tags: [];
+    const nameFilter = input.name? input.name: "";
     
     if (countriesFilter && countriesFilter.length) {
       plans = plans.filter(plan => {
@@ -369,6 +379,18 @@ export class PlanProvider extends DataSource {
     if (monthsFilter && monthsFilter.length) {
       plans = plans.filter(plan => {
         return plan.months.some(month => monthsFilter.includes(month));
+      })
+    }
+
+    if (tagsFilter && tagsFilter.length) {
+      plans = plans.filter(plan => {
+        return plan.tags.some(tag => tagsFilter.includes(tag));
+      })
+    }
+
+    if (nameFilter && nameFilter.length) {
+      plans = plans.filter(plan => {
+        return plan.name.toLowerCase().includes(nameFilter.toLowerCase());
       })
     }
     
@@ -529,6 +551,25 @@ export class PlanBlockProvider extends DataSource {
   }
 }
 
+export class TagProvider extends DataSource {
+  public async getFilteredTags(input: TagInput) {
+    console.log("input - ", input.keywords);
+
+    let tags = (await TagModel.find({}).exec()).map((obj, _) => castITagtoTag(obj));
+
+    if (!input.keywords) {
+      return tags;
+    }
+
+    const tagsFilter = input.keywords? input.keywords: "";
+    
+      tags = tags.filter(tag => {
+        return tag.name.startsWith(tagsFilter);
+      })
+    
+    return tags;
+  }
+}
 function randString() {
   const codeLen = 6;
   let code = '';

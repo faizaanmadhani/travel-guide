@@ -45,3 +45,7 @@ export interface IPlanBlock {
   long: number;
   imageUrl: string;
 }
+
+export interface ITag {
+  name: string;
+}

@@ -1,8 +1,9 @@
 import React from "react";
-import { Box, ScrollView, HStack, Heading, Text, Spinner } from "native-base";
+import { Box, ScrollView, HStack, Heading, Text, Spinner, Stack, Pressable } from "native-base";
 import { gql, useQuery, NetworkStatus, useMutation } from "@apollo/client";
 import { GET_WISHLIST } from "./WishlistView";
 import PlanCardSmall from "../components/PlanCardSmall";
+import PlansByCategory from "../components/explore/PlansByCategory";
 
 const CURRENT_LOCATION = "Canada";
 
@@ -48,6 +49,14 @@ if (error1) console.log(`Error! ${error1.message}`);
     }
   );
 
+  const [isRendering, setIsRendering] = React.useState(true);
+  const [isPlansByCategory, setIsPlansByCategory] = React.useState(false);
+  const [categorySelected, setCategorySelected] = React.useState(null);
+
+  React.useEffect(() => {
+    setIsRendering(false);
+  }, []);
+
   React.useEffect(() => {
     if (props.filtersApplied) {
       refetch({
@@ -86,11 +95,31 @@ if (error1) console.log(`Error! ${error1.message}`);
   const luxuryPlans = filteredPlans.filter((plan) => plan.budget >= 4);
 
   allCategories.push(
-    { title: "Most Popular", plans: popularPlans },
-    { title: "National Destinations", plans: nationalPlans },
-    { title: "International Destinations", plans: internationalPlans },
-    { title: "Budget Travel", plans: budgetPlans },
-    { title: "Luxury Travel", plans: luxuryPlans }
+    {
+      title: "Most Popular",
+      plans: popularPlans.slice(0, 5),
+      allPlans: popularPlans,
+    },
+    {
+      title: "National Destinations",
+      plans: nationalPlans.slice(0, 5),
+      allPlans: nationalPlans,
+    },
+    {
+      title: "International Destinations",
+      plans: internationalPlans.slice(0, 5),
+      allPlans: internationalPlans,
+    },
+    {
+      title: "Budget Travel",
+      plans: budgetPlans.slice(0, 5),
+      allPlans: budgetPlans,
+    },
+    {
+      title: "Luxury Travel",
+      plans: luxuryPlans.slice(0, 5),
+      allPlans: luxuryPlans,
+    }
   );
 
   const displayPlans = (plansList) => {
@@ -99,22 +128,54 @@ if (error1) console.log(`Error! ${error1.message}`);
     });
   };
 
+  const fetchMorePlans = (categoryTitle) => {
+    setCategorySelected(categoryTitle);
+    setIsPlansByCategory(true);
+  };
+
   return (
     <Box>
-      <ScrollView>
-        {allCategories.map((category, index) =>
-          category.plans.length ? (
-            <Box key={index}>
-              <Heading size="sm" pt="6" pl="1">
-                {category.title}
-              </Heading>
-              <ScrollView horizontal={true} my="2">
-                <HStack>{displayPlans(category.plans)}</HStack>
-              </ScrollView>
-            </Box>
-          ) : null
-        )}
-      </ScrollView>
+      {isRendering ? (
+        <Box pt="6">
+          <Spinner color="indigo.500" />
+        </Box>
+      ) : (
+        <ScrollView>
+          {isPlansByCategory ? (
+            <PlansByCategory
+              categorySelected={categorySelected}
+              popularPlans={popularPlans}
+              nationalPlans={nationalPlans}
+              internationalPlans={internationalPlans}
+              budgetPlans={budgetPlans}
+              luxuryPlans={luxuryPlans}
+              setIsPlansByCategory={setIsPlansByCategory}
+            />
+          ) : (
+            allCategories.map((category, index) =>
+              category.plans.length ? (
+                <Box key={index}>
+                  <Stack direction="row">
+                    <Heading size="sm" pt="4" pl="1">
+                      {category.title}
+                    </Heading>
+                    {category.allPlans.length > 5 ? (
+                      <Pressable onPress={() => fetchMorePlans(category.title)}>
+                        <Text pt="4" pl="1" color="blue.500">
+                          See more
+                        </Text>
+                      </Pressable>
+                    ) : null}
+                  </Stack>
+                  <ScrollView horizontal={true} my="2">
+                    <HStack>{displayPlans(category.plans)}</HStack>
+                  </ScrollView>
+                </Box>
+              ) : null
+            )
+          )}
+        </ScrollView>
+      )}
     </Box>
   );
 }
