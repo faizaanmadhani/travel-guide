@@ -19,6 +19,7 @@ export type PlanView_Data = {
   description: String;
   // countries: String[];
   months: String[];
+  imageUrl: string;
 };
 
 export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
@@ -108,7 +109,7 @@ export default function PlanCardSmall(plan: PlanView_Data, navigation?: any) {
           <AspectRatio w="100%" ratio={16 / 9}>
             <Image
               source={{
-                uri: "https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg",
+                uri: plan.imageUrl,
               }}
               alt="image"
             />

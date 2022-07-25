@@ -27,7 +27,7 @@ export const typeDefs = gql`
     countries: [String!]!
     months: [String!]!
     imageUrl: String!
-    numDays: Int!
+    dayLabels: [String!]!
   }
 
   type PlanBlock {
@@ -103,6 +103,8 @@ export const typeDefs = gql`
     tags: [String]
     description: String
     imageUrl: String
+    countries: String!
+    months: String!
   }
 
   input UpdatePlanBlockInput {
@@ -116,5 +118,8 @@ export const typeDefs = gql`
     imageUrl: String
     lat: Float
     long: Float
+    dayLabels: String
+    countries: [String]
+    months: [String]
   }
 `;

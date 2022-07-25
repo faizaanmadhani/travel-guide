@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "travel-plan-354822",
+  "private_key_id": "c7d01db323d581b0a7b29e6a8da4d0bdbd8aedf2",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCL2ekRKolKc8/S\nqS42Mx6IFXAavBn/kkZd2K41Q6UL4+ju5VkpxqisxGabCim2Rt4HVOJKHVxX5FgC\nkDTJC/ptZm3s0B8B3+8GN+HAWCTMgDk1MsGkmfDrx37iY9ECyyb51F8mZKnOMYgG\n6Hvv/RD61uZrzUePy9HUK1nj+WOFsKXTXFzYucYC47mL0E+Njw0FYJIgsgRaaWPe\nQs6nYCbUD/fzdCa0nsUAWJHo6lZPFGUSc31ZO2MJQeHnBvE0/D10Gw2w4QYoDOOT\noEnDMYR0KsaNErhSNqAKtYirJnWpKF/56azOGk+d7Nik943+CuE+A664aT4RAWqe\ndhetmclpAgMBAAECggEACBzot0MYUpJAG8SOfpyt0F9tANIJcJDx5dMSfRrK3fMX\nYdd6ehDRG2+r06Ht7En1aqe3Fm1YXG1t2R04QLMCELtk1Fx49gUBguL2RNAgN2BX\nYUGL6AJ5rlXlA5leiErUfKEAMZQcoS5wqZTuTqxnwiN6G8YdeQcuCaDHrtDagAh6\nyZudmnV62rtV6qKb9on1IXdSV3Yx3o7drjp4ePXzH5ZvvPpAd3KLrICXpNKo9xIx\nH0aErScw/7SHzVNlFwDmwilCH+ZNvo39ZqmWVk981zkraGn8HrXdI86Ww07CRVu6\n7j2wyYWxhzQeq9i6zB1Zxi55FX9gwBzR6ujz0q4+UQKBgQDC/XBefC34bJGpUiac\nwKQw/CiVGl65DVbkxeenzPGhRIsdv3A15VdhHJDlaSO4M6RpTmc9/NTI0RmebKyY\nzZt5rZjmVfE2GF2Ynuw0dN+lnXrbpNfuXJm18FrNrHkKcosA1ao3iyVYwwXLDWtw\nFei2sSjktXUP3zz/8gpkMf0REQKBgQC3m+TTM/q98VhOoU6NuxqsRE785W3+2aTV\nXKydI/vcbc4kQJ/kio/+n3EsAy9uQiUEmOsp9kmWadlDF48VN/MIZxFsfUp8mbTE\nSsRcja+D3xQAppoVL1h2I+aOQe91/vQlsrzigcpUTEshSi+UhRCkLBga7NhfA1fj\nHL6b1LEy2QKBgQC++S/kKmVvyQ3EsyQEJJzrKRyqJACf55OyTq57ZztEwngqM4Q4\nFR3GjA7R0W7dix680MBHMuhIopsf0bodkkpzGvYEqimr3KNWxlf7bHhaoWlh1Ap0\ndxdI3VZh2ElYVSUVNS8YZVy3mZKD8+nFBoA85jhx/9LeL7tzxeAtj9QWsQKBgDuY\nhjVnccOlSpx7DxxB1u6DXYAImCNYUYBPjFeVDnMF0RtDPqLXttVWu00l24dWQN21\nJN+B6XDA+pwkUXT5rBDWI3mrUToQSfRMsF+6PXX4Om3bpbeqnnP6QyN5k1ghYO27\njkOXDS0/dkNf6QG0Dyq6hTh4F+L/Gs/EzLmX18xBAoGAVJJnPSmB9tKD0m5kYc4E\nLeMmeol8iwyt+2ZycOpYY9bEVb7wLadwQSshMaLnvnlZTRFIiXJAv50zYHuQe9VK\nthHNDzd5VTGKIHvz+Cx0gOx+1ljeSAQ5UgB5e8AcB6DmTsIt13E0BZTWrX37J3L0\ne+vimB5QCvf/yRVHwymgt5o=\n-----END PRIVATE KEY-----\n",
+  "client_email": "travel-plan-bucket@travel-plan-354822.iam.gserviceaccount.com",
+  "client_id": "102135613511131581812",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/travel-plan-bucket%40travel-plan-354822.iam.gserviceaccount.com"
+}

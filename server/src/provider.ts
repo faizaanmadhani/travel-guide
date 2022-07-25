@@ -26,7 +26,7 @@ const castIPlantoPlan = (plan: any) => {
     countries: !plan?.countries ? "" : plan?.countries,
     months: !plan?.months ? "" : plan?.months,
     imageUrl: !plan?.imageUrl ? "" : plan?.imageUrl,
-    numDays: !plan?.numDays ? "" : plan?.numDays,
+    dayLabels: !plan?.dayLabels ? ["Intro"] : plan?.dayLabels,
   }
   return gqlPlan;
 }
@@ -38,7 +38,7 @@ const castIPlanBlocktoPlanBlock = (planBlock: any) => {
     description: !planBlock?.description ? "" : planBlock?.description,
     price: !planBlock?.price ? 0 : planBlock?.price,
     day: !planBlock?.day ? 1 : planBlock.day,
-    imageUrl: !planBlock?.imageUrl ? "" : planBlock.day,
+    imageUrl: !planBlock?.imageUrl ? "" : planBlock.imageUrl,
   }
   return gqlPlanBlock;
 }
@@ -193,7 +193,9 @@ export class PlanProvider extends DataSource {
       tags: [],
       description: "",
       blocks: [],
-      assetLinks: []
+      imageUrl: "",
+      countries: [],
+      months: [],
     });
 
     await newPlan.save();
@@ -209,6 +211,8 @@ export class PlanProvider extends DataSource {
 
   public async updatePlan(input: UpdatePlanInput) {
 
+    console.log("the input for imageUrl", input);
+
     const doc = await PlanModel.findById(input.id);
     const creatorId = input.creatorId;
     if (doc) {
@@ -220,7 +224,10 @@ export class PlanProvider extends DataSource {
         tags: [],
         description: "",
         blocks: doc.blocks,
-        imageUrl: ""
+        imageUrl: "",
+        dayLabels: doc.dayLabels,
+        countries: [],
+        months: []
       });
 
       doc.name = !input.name ? "" : input.name;
@@ -230,7 +237,7 @@ export class PlanProvider extends DataSource {
         doc.tags.push(tag);
       })
       doc.description = !input.description ? "" : input.description;
-      input.imageUrl = !input.imageUrl ? "" : input.imageUrl;
+      doc.imageUrl = !input.imageUrl ? "" : input.imageUrl;
 
       await doc.save();
       return this.getPlan(input?.id || "");

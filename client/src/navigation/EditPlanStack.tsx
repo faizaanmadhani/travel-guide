@@ -13,19 +13,14 @@ const ViewPlanStack = createNativeStackNavigator();
 
 export default function EditTravelPlanStackScreen() {
   return (
-    <NavigationContainer>
-      <TravelStack.Navigator>
-        <TravelStack.Screen name="Travel" component={TravelPage} />
-        <TravelStack.Screen
-          name="Create Travel Plan"
-          component={EditTravelPlan}
-        />
-        <TravelStack.Screen
-          name="Select Images"
-          component={ImageBrowserScreen}
-        />
-        <TravelStack.Screen name="Edit Block" component={EditBlockForm} />
-      </TravelStack.Navigator>
-    </NavigationContainer>
+    <TravelStack.Navigator>
+      <TravelStack.Screen name="Travel" component={TravelPage} />
+      <TravelStack.Screen
+        name="Create Travel Plan"
+        component={EditTravelPlan}
+      />
+      <TravelStack.Screen name="Select Images" component={ImageBrowserScreen} />
+      <TravelStack.Screen name="Edit Block" component={EditBlockForm} />
+    </TravelStack.Navigator>
   );
 }

@@ -36,7 +36,7 @@ export const UserContext = React.createContext({
 });
 
 export const client = new ApolloClient({
-  uri: "https://2be0-2620-101-f000-740-8000-00-79f.ngrok.io",
+  uri: "https://2be0-2620-101-f000-740-8000-00-79f.ngrok.io/graphql",
   cache: new InMemoryCache(),
 });
 

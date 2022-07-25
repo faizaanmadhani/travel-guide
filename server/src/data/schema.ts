@@ -28,7 +28,7 @@ export const planSchema = new Schema<IPlan>({
   countries: { type: [String], required: false },
   months: { type: [String], required: false },
   imageUrl: { type: String, required: false },
-  numDays: { type: Number, required: false },
+  dayLabels: { type: [String], required: false },
 });
 
 export const planBlockSchema = new Schema<IPlanBlock>({

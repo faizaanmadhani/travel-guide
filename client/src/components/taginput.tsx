@@ -17,6 +17,7 @@ export default function StyledTagInput({
     }>
   >;
 }) {
+  console.log("here are the tags", tags);
   const updateTagState = (state) => {
     setTags(state);
   };

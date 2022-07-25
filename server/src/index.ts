@@ -20,8 +20,32 @@ export interface Context {
   };
 }
 
-async function startApolloServer() {
-  const app = express();
+const app = express();
+
+const router = express.Router();
+
+const multer = Multer({
+  storage: Multer.MemoryStorage,
+  fileSize: 5 * 1024 * 1024,
+});
+
+router.post(
+  "/image-upload",
+  multer.single("image"),
+  ImgUpload.uploadToGcs,
+  function(request: any, response: any, _) {
+    console.log("right endpoint triggered", request);
+    const data = request.body;
+    if (request.file && request.file.cloudStoragePublicUrl) {
+      data.imageUrl = request.file.cloudStoragePublicUrl;
+    }
+    response.send(data);
+  }
+);
+
+app.use("/", router);
+
+async function startApolloServer(app: any) {
   const httpServer = http.createServer(app);
 
   // This is where we define the context type which is used
@@ -111,7 +135,7 @@ async function startApolloServer() {
   initDb().catch((err) => console.error(err));
   server.applyMiddleware({
     app,
-    path: "/",
+    path: "/graphql",
   });
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: 4000 }, resolve)
@@ -119,25 +143,4 @@ async function startApolloServer() {
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
 }
 
-startApolloServer().catch((e) => console.log("Big ERROR", e));
-
-const multer = Multer({
-  storage: Multer.MemoryStorage,
-  fileSize: 5 * 1024 * 1024,
-});
-
-const router = express.Router();
-
-router.post(
-  "/image-upload",
-  multer.single("image"),
-  ImgUpload.uploadToGcs,
-  function(request: any, response: any, _) {
-    console.log("right endpoint triggered", request);
-    const data = request.body;
-    if (request.file && request.file.cloudStoragePublicUrl) {
-      data.imageUrl = request.file.cloudStoragePublicUrl;
-    }
-    response.send(data);
-  }
-);
+startApolloServer(app).catch((e) => console.log("Big ERROR", e));

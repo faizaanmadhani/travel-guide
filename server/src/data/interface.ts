@@ -26,7 +26,7 @@ export interface IPlan {
   countries: Types.Array<string>;
   months: Types.Array<string>;
   imageUrl: string;
-  numDays: number;
+  dayLabels: Types.Array<string>;
 }
 
 export interface IPlanBlock {

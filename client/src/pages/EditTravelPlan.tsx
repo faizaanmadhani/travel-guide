@@ -20,9 +20,9 @@ import {
   IconButton,
   Center,
 } from "native-base";
-import { Dimensions, Pressable, Image } from "react-native";
+import { Dimensions, Pressable, Image, Platform } from "react-native";
 import StyledTagInput from "../components/taginput";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { AntDesign } from "@expo/vector-icons";
 import BlockPage from "./BlockPage";
 import * as ImagePicker from "expo-image-picker";
@@ -39,6 +39,7 @@ const UPDATE_PLAN = gql`
       tags
       description
       imageUrl
+      dayLabels
     }
   }
 `;
@@ -51,6 +52,18 @@ const DELETE_PLAN = gql`
   }
 `;
 
+const GET_PLAN = gql`
+  query ($id: String!) {
+    plan(id: $id) {
+      name
+      budget
+      rating
+      tags
+      description
+    }
+  }
+`;
+
 export default function EditTravelPlan({
   route,
   navigation,
@@ -58,20 +71,50 @@ export default function EditTravelPlan({
   route: any;
   navigation: any;
 }) {
-  const { planID } = route.params;
+  const { planID, isEdit } = route.params;
+
+  const {
+    data: QueryData,
+    loading: QueryLoading,
+    error: QueryError,
+  } = useQuery(GET_PLAN, {
+    variables: {
+      id: planID,
+    },
+    skip: !isEdit,
+  });
+
   const { userID } = useContext(UserContext);
   const [numDays, setNumDays] = useState(1);
   const [daysLabels, setDaysLabels] = useState(["Intro", "Day 1"]);
   const [activeTab, setActiveTab] = useState<number>(0);
   const [title, setTitle] = useState("");
+  const [externImgUrl, setExternImgUrl] = useState("");
   const [tags, setTags] = useState({
     tag: "",
     tagsArray: [],
   });
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const imageRef = useRef(null);
   const budgets = ["$", "$$", "$$$", "$$$$"];
   const [activeBudgetIndicator, setActiveBudgetIndicator] = useState(0);
+
+  const createFormData = (photo, body = {}) => {
+    const data = new FormData();
+
+    console.log("the uri", photo);
+
+    const imageData: any = {
+      uri: Platform.OS === "ios" ? photo.replace("file://", "") : photo,
+      type: "image/jpeg",
+      name: "image.jpg",
+    };
+
+    data.append("image", imageData);
+
+    return data;
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -86,50 +129,32 @@ export default function EditTravelPlan({
   };
 
   const uploadImage = async () => {
-    // format the image data
-
-    const form = new FormData();
-
-    const imageData: any = {
-      uri: image,
-      type: "image/jpeg",
-      name: "userImage" + planID + "-" + Date.now() + ".jpg",
-    };
-    form.append("image", imageData);
-    // append the image to the object with the title 'image'
-    const url = `${process.env.SERVER_URL}/image-upload`;
-    // Perform the request. Note the content type - very important
-    axios
-      .post(url, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "multipart/form-data",
-        },
-        body: form,
-      })
-      .then((res) => {
-        console.log("The result", res);
-        return res.data;
-      })
-      .then((results) => {
-        setImage(results.imgUrl); // Replace image with cloud image
-      })
-      .catch((error) => {
-        console.error("IMAGE UPLOADING ERROR", JSON.stringify(error, null, 2));
-      });
+    try {
+      const response = await fetch(
+        "https://2be0-2620-101-f000-740-8000-00-79f.ngrok.io/image-upload",
+        {
+          method: "POST",
+          body: createFormData(image),
+        }
+      );
+      const responseJson = await response.json();
+      const imageUrl: string = responseJson["imageUrl"];
+      console.log("IMAGE UPLOAD RESULT", imageUrl);
+      setExternImgUrl(imageUrl);
+    } catch (error) {
+      console.log("BIG IMAGE UPLOAD ERROR", error);
+    }
   };
 
   const [updatePlan, { data, loading, error }] = useMutation(UPDATE_PLAN, {
     onCompleted: (resultData) => {
       console.log("The mad result@!!", resultData);
       const planData = resultData.modifyPlan;
-      setImage(resultData.assetLinks[0]); // Hardcoded to first image for now
-      setActiveBudgetIndicator(resultData.budget - 1);
-      setDescription(resultData.description);
+      setActiveBudgetIndicator(planData.budget - 1);
+      setDescription(planData.description);
       setTags({
         tag: "",
-        tagsArray: resultData.tags,
+        tagsArray: planData.tags,
       });
     },
   });
@@ -143,18 +168,22 @@ export default function EditTravelPlan({
     },
   });
 
-  const triggerUpdate = () => {
+  const triggerUpdate = async () => {
+    console.log("image upload triggered");
+    await uploadImage();
+
     const inputData: any = {
       id: planID,
       name: title,
       creatorId: userID,
       rating: 4,
       budget: activeBudgetIndicator + 1,
-      tags: tags.tagsArray,
+      tags: tags.tagsArray === undefined ? [] : tags.tagsArray,
       description: description,
-      imageUrl:
-        "https://i0.wp.com/theluxurytravelexpert.com/wp-content/uploads/2014/01/scenery.jpg", // HARDCODED asset right now,
+      imageUrl: externImgUrl,
     };
+
+    console.log("the input data", inputData);
     updatePlan({ variables: { input: inputData } }).catch((error) => {
       console.log(JSON.stringify(error, null, 2));
     });
@@ -170,6 +199,18 @@ export default function EditTravelPlan({
       setDaysLabels([...daysLabels, newDayStr]);
     }
   }, [numDays]);
+
+  useEffect(() => {
+    if (data && data.plan) {
+      setTitle(data.plan.name);
+      setActiveBudgetIndicator(data.plan.budget);
+      setExternImgUrl(data.plan.image);
+      setImage(data.plan.image);
+      setTags(data.plan.tags);
+      setDescription(data.plan.description);
+      setDaysLabels(data.plan.dayLabels);
+    }
+  }, [data]);
 
   return (
     <ScrollView w="100%">
@@ -200,8 +241,8 @@ export default function EditTravelPlan({
               activeTab === index ? (
                 <Button
                   marginRight="1"
-                  onPress={(_) => {
-                    triggerUpdate();
+                  onPress={async (_) => {
+                    await triggerUpdate();
 
                     setActiveTab(index);
                   }}
@@ -214,8 +255,8 @@ export default function EditTravelPlan({
                 <Button
                   marginRight="1"
                   variant="outline"
-                  onPress={(_) => {
-                    triggerUpdate();
+                  onPress={async (_) => {
+                    await triggerUpdate();
                     setActiveTab(index);
                   }}
                   key={label}

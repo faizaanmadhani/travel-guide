@@ -22,9 +22,11 @@ export type IBlockProps = {
   budget: number;
   links: string[];
   navigation: any;
+  imageUrl: string;
 };
 
 export default function BlockView(props: IBlockProps) {
+  console.log("the props here", props);
   const EditBlock = () => {
     props.navigation.navigate("Edit Block", {
       fields: props,
@@ -77,7 +79,7 @@ export default function BlockView(props: IBlockProps) {
         <AspectRatio w="100%" ratio={16 / 9}>
           <Image
             source={{
-              uri: "https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg",
+              uri: props.imageUrl,
             }}
             alt="image"
           />

@@ -97,7 +97,7 @@ export type Plan = {
   countries: Array<Scalars['String']>;
   months: Array<Scalars['String']>;
   imageUrl: Scalars['String'];
-  numDays: Scalars['Int'];
+  dayLabels: Array<Scalars['String']>;
 };
 
 
@@ -177,6 +177,9 @@ export type UpdatePlanBlockInput = {
   imageUrl?: Maybe<Scalars['String']>;
   lat?: Maybe<Scalars['Float']>;
   long?: Maybe<Scalars['Float']>;
+  dayLabels?: Maybe<Scalars['String']>;
+  countries?: Maybe<Array<Maybe<Scalars['String']>>>;
+  months?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type UpdatePlanInput = {
@@ -188,6 +191,8 @@ export type UpdatePlanInput = {
   tags?: Maybe<Array<Maybe<Scalars['String']>>>;
   description?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['String']>;
+  countries: Scalars['String'];
+  months: Scalars['String'];
 };
 
 export type User = {
@@ -345,7 +350,7 @@ export type PlanResolvers<ContextType = Context, ParentType extends ResolversPar
   countries?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   months?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   imageUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  numDays?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  dayLabels?: Resolver<Array<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
