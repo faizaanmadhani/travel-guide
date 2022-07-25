@@ -24,6 +24,7 @@ import {
   IconButton,
   Center,
   VStack,
+  useToast
 } from "native-base";
 import { Dimensions, Pressable } from "react-native";
 import StyledTagInput from "../components/taginput";
@@ -32,32 +33,39 @@ import { AntDesign } from "@expo/vector-icons";
 import { MutationAddUserArgs } from "../../../server/src/generated/graphql";
 import { UserContext } from "../../App";
 import Spinner from "react-native-loading-spinner-overlay";
+import { RegisterContext } from "../../App";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const AUTH_USER = gql`
+export const AUTH_USER = gql`
   query authenticateUser($username: String!, $password: String!) {
     authenticateUser(username: $username, password: $password) {
       id
+      token
+    }
+  }
+`;
+
+export const AUTH_EMAIL = gql`
+  query authUserEmail($email: String!, $password: String!) {
+    authUserEmail(email: $email, password: $password) {
+      id
+      emailValid
+      token
     }
   }
 `;
 
 export let userLoggedIn = "" as String;
-export function setUserLoggedIn(name: String) {
-  userLoggedIn = name;
+export function setUserLoggedIn(input: String) {
+  userLoggedIn = input;
 }
 
 export default function LoginPage({ navigation }: { navigation: any }) {
-  // fetch pre-existing data
-  // const { data, error, loading } = useQuery(GET_USERS, {fetchPolicy : 'cache-and-network'});
-
-  // set up for adding user
-  // const [addUser, { data, loading, error }] = useMutation(CREATE_USER);
-
-  // if (loading) console.log("Loading...");;
-  // if (error) console.log(`Error! ${error.message}`);
-
-  const [name, setName] = useState("");
+  const [input, setInput] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
+  const toast = useToast();
+  const { regEmail, setRegEmail } = useContext(RegisterContext);
 
   const { userID, setUserID } = useContext(UserContext);
 
@@ -65,106 +73,146 @@ export default function LoginPage({ navigation }: { navigation: any }) {
     navigation.navigate("Explore");
   }
 
-  async function LoginUser(resultData: { authenticateUser: { id: string } }) {
+  async function validate1(resultData: { authenticateUser: { id: string, token: string } }) {
     // check: has user name & password fields
-    let passwordEntered = true,
-      usernameEntered = true;
-    if (password == "") {
-      passwordEntered = false;
-    }
-    if (name == "") {
-      usernameEntered = false;
-    }
-    // check: user name exists
-    let userExists = false;
-    let userIdx = -1;
+    let passwordValid = validatePassword() as boolean;
+        let inputValid = validateInput() as boolean;
+        let id = resultData.authenticateUser.id;
 
-    if (!usernameEntered) {
-      Alert.alert(
-        "No User Name",
-        "User Name is a required field, please enter an user name.",
-        [
-          {
-            text: "OK",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-        ]
-      );
-    } else if (!passwordEntered) {
-      Alert.alert(
-        "No Password",
-        "Password is a required field, please enter a password.",
-        [
-          {
-            text: "OK",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-        ]
-      );
+        console.log(errors.input, errors.password);
+
+        if (!inputValid || !passwordValid)
+        {
+        }
+        else
+        {
+            console.log("validation", id);
+            if (id == "")
+            {
+                console.log("Invalid Credentials");
+                setErrors({ ...errors,
+                    input: 'Invalid Credentials',
+                    password: 'Invalid Credentials'
+                });
+            }
+            else
+            {
+              userLoggedIn = input;
+              setUserID(resultData.authenticateUser.id);
+              await AsyncStorage.setItem("curUser", resultData.authenticateUser.token);
+              toast.show({
+                description: "Login Success",
+                duration: 3000,
+                backgroundColor: "success.400"
+              });
+              goToHome();
+            }
+        }
+      };
+
+      async function validate2(resultData: { authUserEmail: { id: string, emailValid: Number, token:string } }) {
+        // check: has user name & password fields
+        let passwordValid = validatePassword() as boolean;
+            let inputValid = validateInput() as boolean;
+            let id = resultData.authUserEmail.id;
+    
+            console.log(errors.input, errors.password);
+    
+            if (!inputValid || !passwordValid)
+            {
+            }
+            else
+            {
+                console.log("validation", id);
+                if (id == "")
+                {
+                    console.log("Invalid Credentials");
+                    setErrors({ ...errors,
+                        input: 'Invalid Credentials',
+                        password: 'Invalid Credentials'
+                    });
+                }
+                else if (resultData.authUserEmail.emailValid == 0)
+                {
+                  setErrors({ ...errors,
+                    input: 'Email Not Verified',
+                  });
+                  setRegEmail(input);
+                  toast.show({
+                    description: "Email not verified",
+                    duration: 3000,
+                    backgroundColor: "error.400"
+                  });
+                  navigation.navigate("Verify");
+                }
+                else
+                {
+                  userLoggedIn = input;
+                  setUserID(resultData.authUserEmail.id);
+                  await AsyncStorage.setItem("curUser", resultData.authUserEmail.token);
+                  toast.show({
+                    description: "Login Success",
+                    duration: 3000,
+                    backgroundColor: "success.400"
+                  });
+                  goToHome();
+                }
+            }
+          };
+
+  function validateInput() {
+    if (input == "") {
+      setErrors({ ...errors,
+        input: 'Username or email is required'
+      });
+      return false;
     }
+    return true;
+  };
 
-    if (usernameEntered) {
-      let passwordCorrect = false;
-      if (resultData.authenticateUser.id !== "") {
-        passwordCorrect = true;
-        userExists = true;
-      } else {
-        passwordCorrect = false;
-      }
-
-      if (!userExists) {
-        Alert.alert(
-          `User ${name} Not Found`,
-          "Please register or re-enter user name.",
-          [
-            {
-              text: "Register",
-              onPress: () => navigation.navigate("Register"),
-            },
-            {
-              text: "Re-enter",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-          ]
-        );
-      } else if (!passwordCorrect) {
-        Alert.alert(
-          `Incorrect Password`,
-          `Please re-enter password for User ${name}.`,
-          [
-            {
-              text: "Re-enter",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-          ]
-        );
-      } else {
-        userLoggedIn = name;
-        console.log(userLoggedIn);
-        setUserID(resultData.authenticateUser.id);
-        Alert.alert("Login Success", `User ${name} successfully logged in!`, [
-          {
-            text: "Go to App",
-            onPress: () => goToHome(),
-          },
-        ]);
-      }
+  function isEmail(str : String)
+  {
+    if (str.indexOf("@") == -1)
+    {
+      return false;
+    }
+    else
+    {
+      return true;
     }
   }
+
+  function validatePassword() {
+      if (password == "") {
+        setErrors({ ...errors,
+          password: 'Password is required'
+        });
+        return false;
+      }
+      return true;
+  };
 
   const [authenticateUser, { data, error, loading }] = useLazyQuery(AUTH_USER, {
     onCompleted: (resultData) => {
       console.log("The result data", resultData);
-      LoginUser(resultData);
+      validate1(resultData);
     },
+    fetchPolicy : 'cache-and-network'
   });
 
   if (loading) console.log(`Loading`);
   if (error) console.log(`Error! ${error.message}`);
+
+  const [authUserEmail, { data : data1, error : error1, loading : loading1 }] = useLazyQuery(AUTH_EMAIL, {
+    onCompleted: (resultData) => {
+      console.log("The result data", resultData);
+      validate2(resultData);
+    },
+    fetchPolicy : 'cache-and-network'
+  });
+
+  if (loading1) console.log(`Loading`);
+  if (error1) console.log(`Error! ${error1.message}`);
 
   return (
     <ImageBackground
@@ -173,34 +221,33 @@ export default function LoginPage({ navigation }: { navigation: any }) {
       }}
       imageStyle={{ opacity: 0.1 }}
     >
-      <VStack h={useWindowDimensions().height} w={useWindowDimensions().width}>
+      <VStack h={1.1 * useWindowDimensions().height} w={useWindowDimensions().width}>
         <Box h={0.25 * useWindowDimensions().height}></Box>
-        <FormControl isRequired>
-          <Stack mx="4">
-            <FormControl.Label>User Name</FormControl.Label>
-            <Input
-              placeholder="User Name"
-              onChangeText={(name) => setName(name)}
-            />
-          </Stack>
-        </FormControl>
+        <FormControl isRequired isInvalid={(('input' in errors) && (errors.input != ""))}>
+            <Stack mx="4">
+                <FormControl.Label>Username/Email</FormControl.Label>
+                <Input placeholder="User Name"
+                    onChangeText={(input) => {setInput(input)}}
+                    onKeyPress={() => {setErrors({ ...errors,
+                        input: ''
+                      })}}
+                    onBlur={() => validateInput()}/>
+            {('input' in errors) && <FormControl.ErrorMessage> {errors.input} </FormControl.ErrorMessage>}
+            </Stack>
+            </FormControl>
 
-        <FormControl isRequired>
-          <Stack mx="4">
-            <FormControl.Label> Password </FormControl.Label>
-            <Input
-              type="password"
-              placeholder="password"
-              onChangeText={(password) => setPassword(password)}
-            />
-            {/* <FormControl.HelperText>
-                Must be at least 6 characters.
-                </FormControl.HelperText>
-                <FormControl.ErrorMessage leftIcon={<WarningOutlineIcon size="xs" />}>
-                At least 6 characters are required.
-                </FormControl.ErrorMessage> */}
-          </Stack>
-        </FormControl>
+            <FormControl isRequired isInvalid={('password' in errors) && (errors.password != "")}>
+            <Stack mx="4">
+                <FormControl.Label> Password </FormControl.Label>
+                <Input type="password" placeholder="Password"
+                        onChangeText={(password) => {setPassword(password)}}
+                        onKeyPress={() => {setErrors({ ...errors,
+                            password: ''
+                          })}}
+                        onBlur={() => validatePassword()}/>
+                {('password' in errors) && <FormControl.ErrorMessage> {errors.password} </FormControl.ErrorMessage>}
+            </Stack>
+            </FormControl>
 
         <Center>
           <Box mt={"2"} w="92%">
@@ -208,9 +255,21 @@ export default function LoginPage({ navigation }: { navigation: any }) {
               variant="solid"
               colorScheme="primary"
               onPress={() =>
-                authenticateUser({
-                  variables: { username: name, password: password },
-                })
+                { if (!isEmail(input)) {
+                    console.log("login - username");
+                    authenticateUser({
+                      variables: { username: input, password: password },
+                    });
+                  }
+                  else {
+                    console.log("login - email");
+                    authUserEmail(
+                      {
+                        variables: { email: input, password: password },
+                      }
+                    );
+                  }
+                }
               }
             >
               Done

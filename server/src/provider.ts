@@ -1,6 +1,10 @@
 import { DataSource } from "apollo-datasource";
 import { PlanBlockModel, PlanModel, UserModel } from "./data/model";
-import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput } from "./generated/graphql";
+import { User, Preference, Plan, PlanBlock, CreateUserInput, UpdatePlanInput, FilterInput, UpdatePlanBlockInput, UpdateUserInput, AddWishlistPlanInput } from "./generated/graphql";
+import { transporter } from ".";
+import { getToken } from "./util";
+const ObjectId = require('mongodb').ObjectID
+
 
 const castIUserToUser = (user: any) => {
   const gqlUser: User = {
@@ -9,6 +13,11 @@ const castIUserToUser = (user: any) => {
     email: !user?.email ? "" : user?.email,
     profile_pic: !user?.profile_pic ? "" : user?.profile_pic,
     password: !user?.password ? "" : user?.password,
+    token: !user?.token ? "" : user?.token,
+    emailValid: !user?.emailValid ? 0 : user?.emailValid,
+    randStr: !user?.randStr ? "" : user?.randStr,
+    savedPlans: !user?.saved_plans ? [] : user?.saved_plans,
+    wishlistPlans: !user?.wishlist_plans ? [] : user?.wishlist_plans,
   }
   return gqlUser
 }
@@ -46,9 +55,8 @@ const castIPlanBlocktoPlanBlock = (planBlock: any) => {
 export class UserProvider extends DataSource {
 
   public async getUser(id: String) {
-
     const user = await UserModel.findById(id).exec();
-
+    console.log("getUser reached", id);
     return castIUserToUser(user);
   }
 
@@ -56,10 +64,64 @@ export class UserProvider extends DataSource {
     console.log("reached", username, password);
     const user = await UserModel.findOne({name: username});
     if (user && user.password === password) {
+      console.log(castIUserToUser(user));
       return castIUserToUser(user);
     } else {
       return castIUserToUser(null);
     }
+  }
+
+  public async authUserEmail(email: String, password: String) {
+    console.log("reached", email, password);
+    const user = await UserModel.findOne({email: email});
+    if (user && user.password === password) {
+      return castIUserToUser(user);
+    } else {
+      return castIUserToUser(null);
+    }
+  }
+
+  public async verifyEmail(email: String) {
+    console.log("reached", email);
+    const user = await UserModel.findOne({email: email});
+    if (user) {
+      
+      var mailOptions = {
+        from: 'wandr497@gmail.com',
+        to: email,
+        subject: 'Wandr: Confirm Email',
+        text: `Your code is ${user.randStr}.`
+      };
+
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+
+      return castIUserToUser(user);
+    } else {
+      return castIUserToUser(null);
+    }
+  }
+
+  public async getUserID(username: String, email: String) {
+    console.log("reached", username, email);
+    const user1 = await UserModel.findOne({name: username});
+    const user2 = await UserModel.findOne({email: email});
+    if (user1) {
+      console.log("username found");
+      return castIUserToUser(user1);
+    }
+    if (user2)
+    {
+      console.log("email found");
+      return castIUserToUser(user2);
+    }
+    // else
+    return castIUserToUser(null);
   }
 
   public async getUsers() {
@@ -87,19 +149,22 @@ export class UserProvider extends DataSource {
     const prefs: Preference[] = [];
     return prefs;
   }
-
   }
 
-  public async getPlansFromUser(user_id: string) {
+  public async getUserPlans(user_id: String) {
+    console.log("getPlanUser reached", user_id);
+
     const plansArray = (await UserModel.findById(user_id).select("saved_plans").populate({
       path: "saved_plans",
       model: "Plan"
     }).exec())?.saved_plans;
+
     if (plansArray) {
       const savedPlans: Plan[] = plansArray?.map((plan, _) => {
         console.log("Each plan", plan);
         return castIPlantoPlan(plan[0]); // populate for some reason stores each obj in nested array
       })
+      
       return savedPlans;
     } else {
       const plans: Plan[] = [];
@@ -107,21 +172,37 @@ export class UserProvider extends DataSource {
     }
   }
 
-  public async createUser(input: CreateUserInput) {
+  public async getWishlistPlans(user_id: String) {
+    console.log("getWishListPlans reached", user_id);
 
+    const plansArray = (await UserModel.findById(user_id).select("wishlist_plans").populate({
+      path: "wishlist_plans",
+      model: "Plan"
+    }).exec())?.wishlist_plans;
+
+    if (plansArray) {
+      const wishlistPlans: Plan[] = plansArray?.map((plan, _) => {
+        return castIPlantoPlan(plan); // populate for some reason stores each obj in nested array
+      })
+      
+      return wishlistPlans;
+    } else {
+      const plans: Plan[] = [];
+      return plans;
+    }
+  }
+
+  public async createUser(input: CreateUserInput) {
     const newUser = new UserModel({
       name: input.name,
       email: input.email,
       profile_pic: input.profile_pic,
       password: input.password,
-      // prefs: input.prefs.map((obj, _) => {
-      //   const modelPref = {
-      //     pref_tag: obj?.prefTag,
-      //     user_rating: obj?.userRating
-      //   }
-      //   return modelPref
-      // }),
-      saved_plans: []
+      token: "",
+      randStr: randString(),
+      emailValid: 0,
+      saved_plans: [],
+      wishlist_plans: []
     });
 
     await newUser.save();
@@ -129,7 +210,118 @@ export class UserProvider extends DataSource {
 
     const gqlUser: User = await this.getUser(id);
 
+    // Creating a Token from User Payload obtained.
+    const token = getToken(gqlUser);
+    gqlUser.token = token; // Adding token to user object
+    console.log("token is", token);
+    console.log(gqlUser);
+
+    newUser.overwrite(({
+      name: input.name,
+      email: input.email,
+      profile_pic: input.profile_pic,
+      password: input.password,
+      token: token,
+      randStr: randString(),
+      emailValid: 0,
+      saved_plans: [],
+      wishlist_plans: []
+    }))
+    await newUser.save();
+
     return gqlUser;
+  }
+
+  public async updateUser(input: UpdateUserInput) {
+    const user = await UserModel.findById(input.id);
+    if (user) {
+      // user.overwrite({
+      //   name: "",
+      //   email: "",
+      //   password: "",
+      //   profile_pic: "",
+      //   randStr: "",
+      //   emailValid: 0
+      // });
+
+      const name = user?.name;
+      const email = user?.email;
+      const password = user?.password;
+      const profile_pic = user?.profile_pic;
+      const randStr = user?.randStr;
+      const emailValid = user?.emailValid;
+
+      user.name = input.name ? input.name : name;
+      user.email = input.email ? input.email : email;
+      user.password = input.password ? input.password : password;
+      user.profile_pic = input.profile_pic ? input.profile_pic : profile_pic;
+      user.randStr = input.randStr ? input.randStr : randStr;
+      if (input.emailValid != undefined)
+      {
+        user.emailValid = (input.emailValid == 0 || input.emailValid == 1) ? input.emailValid : emailValid;
+      }
+      
+      await user.save();
+      return this.getUser(input?.id || "");
+    }
+
+    return null;
+  }
+
+  public async addWishlistPlan(input: AddWishlistPlanInput) {
+    console.log("add", input.planID, "to", input.userID);
+    const user = await UserModel.findById(input.userID);
+    if (user) {
+      if (!user.wishlist_plans.includes(ObjectId(input.planID)))
+      {
+        user.wishlist_plans.push(input.planID);
+        await user.save();
+      }
+      else
+      {
+        console.log("plan already wishlisted", Object(input.planID));
+      }
+    }
+
+    return castIUserToUser(user);
+  }
+
+  public async removeWishlistPlan(input: AddWishlistPlanInput) {
+    console.log("remove", input.planID, "from", input.userID);
+    const user = await UserModel.findById(input.userID);
+    if (user) {
+      if (user.wishlist_plans.includes(ObjectId(input.planID)))
+      {
+        const loc = user.wishlist_plans.indexOf(ObjectId(input.planID));
+        user.wishlist_plans.splice(loc, 1);
+        await user.save();
+      }
+      else
+      {
+        console.log("plan not in wishlist", Object(input.planID));
+      }
+    }
+
+    return castIUserToUser(user);
+  }
+
+  public async updateWishlistPlan(input: AddWishlistPlanInput) {
+    console.log("update", input.planID, "for", input.userID);
+    const user = await UserModel.findById(input.userID);
+    if (user) {
+      if (!user.wishlist_plans.includes(ObjectId(input.planID)))
+      {
+        user.wishlist_plans.push(input.planID);
+      }
+      else
+      {
+        const loc = user.wishlist_plans.indexOf(ObjectId(input.planID));
+        user.wishlist_plans.splice(loc, 1);
+      }
+      await user.save();
+    }
+
+    return castIUserToUser(user);
   }
 }
 
@@ -335,4 +527,15 @@ export class PlanBlockProvider extends DataSource {
     await PlanBlockModel.deleteOne({_id: id});
     return castIPlanBlocktoPlanBlock(planBlock);
   }
+}
+
+function randString() {
+  const codeLen = 6;
+  let code = '';
+  let alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let alphabetLen = alphabet.length;
+  for ( var i = 0; i < codeLen; i++ ) {
+    code += alphabet.charAt(Math.floor(Math.random() * alphabetLen));
+  }
+  return code;
 }
