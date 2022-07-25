@@ -6,7 +6,11 @@ export const typeDefs = gql`
     email: String!
     profile_pic: String!
     password: String!
-    savedPlans: [Plan]
+    token: String!
+    randStr: String!
+    emailValid: Int!
+    savedPlans: [ID]
+    wishlistPlans: [ID]
   }
 
   type Preference {
@@ -66,17 +70,31 @@ export const typeDefs = gql`
     filteredPlans(input: FilterInput!): [Plan!]!
     filteredTags(input: TagInput!): [Tag!]!
     authenticateUser(username: String!, password: String!): User!
+    authUserEmail(email: String!, password: String!): User!
+    verifyEmail(email: String!): User!
+    getUserID(username: String!, email: String!): User!
+    getUserPlans(id: String!): [Plan]
+    getWishlistPlans(id: String!): [Plan]
   }
 
   type Mutation {
     addUser(input: CreateUserInput!): User!
     addPlan(creatorId: String!): Plan!
     modifyPlan(input: UpdatePlanInput!): Plan
+    modifyUser(input: UpdateUserInput!): User
     addPlanBlock(input: UpdatePlanBlockInput!): PlanBlock!
+    addWishlistPlan(input: AddWishlistPlanInput!): User
+    removeWishlistPlan(input: AddWishlistPlanInput!): User
+    updateWishlistPlan(input: AddWishlistPlanInput!): User
     #addPlanBlock(input: PlanBlockInput!)
     #modifyUser(input: UserInput!)
     #modifyPlan(input: modifyPlan!)
     #modifyPlanBlock(input: PlanBlockInput!)
+  }
+
+  input AddWishlistPlanInput {
+    userID: String!
+    planID: String!
   }
 
   input FilterInput {
@@ -103,6 +121,16 @@ export const typeDefs = gql`
     email: String!
     profile_pic: String!
     password: String!
+  }
+
+  input UpdateUserInput {
+    id: String
+    name: String
+    email: String
+    profile_pic: String
+    password: String
+    randStr: String
+    emailValid: Int
   }
 
   input UpdatePlanInput {

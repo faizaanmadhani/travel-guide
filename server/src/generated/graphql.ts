@@ -44,7 +44,11 @@ export type Mutation = {
   addUser: User;
   addPlan: Plan;
   modifyPlan?: Maybe<Plan>;
+  modifyUser?: Maybe<User>;
   addPlanBlock: PlanBlock;
+  addWishlistPlan: Maybe<User>;
+  removeWishlistPlan: Maybe<User>;
+  updateWishlistPlan: Maybe<User>;
 };
 
 
@@ -52,16 +56,26 @@ export type MutationAddUserArgs = {
   input: CreateUserInput;
 };
 
+export type MutationModifyUserArgs = {
+  input: UpdateUserInput;
+};
 
 export type MutationAddPlanArgs = {
   creatorId: Scalars['String'];
 };
 
+export type AddWishlistPlanInput = {
+  userID: Scalars['String'];
+  planID: Scalars['String'];
+};
+
+export type MutationAddWishlistPlanArgs = {
+  input: AddWishlistPlanInput
+}
 
 export type MutationModifyPlanArgs = {
   input: UpdatePlanInput;
 };
-
 
 export type MutationAddPlanBlockArgs = {
   input: UpdatePlanBlockInput;
@@ -121,6 +135,11 @@ export type Query = {
   filteredPlans: Array<Plan>;
   filteredTags: Array<Tag>;
   authenticateUser: User;
+  authUserEmail: User;
+  verifyEmail: User;
+  getUserID: User;
+  getUserPlans: Array<Plan>;
+  getWishlistPlans: Array<Plan>;
 };
 
 
@@ -161,6 +180,20 @@ export type Tag = {
 
 export type TagInput = {
   keywords?: Maybe<Scalars['String']>;
+}
+export type QueryAuthUserEmailArgs = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type QueryVerifyEmailArgs = {
+  email: Scalars['String'];
+};
+
+
+export type QueryGetUserIDArgs = {
+  username: Scalars['String'];
+  email: Scalars['String'];
 };
 
 export type UpdatePlanBlockInput = {
@@ -191,10 +224,23 @@ export type User = {
   email: Scalars['String'];
   profile_pic: Scalars['String'];
   password: Scalars['String'];
-  savedPlans?: Maybe<Array<Maybe<Plan>>>;
+  token: Scalars['String'];
+  randStr: Scalars['String'];
+  emailValid: Scalars['Int'];
+  savedPlans?: Maybe<Array<Maybe<Scalars['String']>>>;
+  wishlistPlans?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
-
+export type UpdateUserInput = {
+  id?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  profile_pic?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+  token?: Maybe<Scalars['String']>;
+  randStr?: Maybe<Scalars['String']>;
+  emailValid?: Maybe<Scalars['Int']>;
+};
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
 
@@ -290,6 +336,7 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   CreateUserInput: CreateUserInput;
   UpdatePlanInput: UpdatePlanInput;
+  UpdateUserInput: UpdateUserInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BlockType: BlockType;
@@ -313,6 +360,7 @@ export type ResolversParentTypes = {
   Mutation: {};
   CreateUserInput: CreateUserInput;
   UpdatePlanInput: UpdatePlanInput;
+  UpdateUserInput: UpdateUserInput;
   UpdatePlanBlockInput: UpdatePlanBlockInput;
   Boolean: Scalars['Boolean'];
   PrefInput: PrefInput;
@@ -324,7 +372,11 @@ export type MutationResolvers<ContextType = Context, ParentType extends Resolver
   addUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddUserArgs, 'input'>>;
   addPlan?: Resolver<ResolversTypes['Plan'], ParentType, ContextType, RequireFields<MutationAddPlanArgs, 'creatorId'>>;
   modifyPlan?: Resolver<Maybe<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<MutationModifyPlanArgs, 'input'>>;
+  modifyUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationModifyUserArgs, 'input'>>;
   addPlanBlock?: Resolver<ResolversTypes['PlanBlock'], ParentType, ContextType, RequireFields<MutationAddPlanBlockArgs, 'input'>>;
+  addWishlistPlan?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddWishlistPlanArgs, 'input'>>;
+  removeWishlistPlan?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddWishlistPlanArgs, 'input'>>;
+  updateWishlistPlan?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationAddWishlistPlanArgs, 'input'>>;
 };
 
 export type PlanResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Plan'] = ResolversParentTypes['Plan']> = {
@@ -370,6 +422,11 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   filteredPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryFilteredPlansArgs, 'input'>>;
   filteredTags?: Resolver<Array<ResolversTypes['Tag']>, ParentType, ContextType, RequireFields<QueryFilteredTagsArgs, 'input'>>;
   authenticateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthenticateUserArgs, 'username' | 'password'>>;
+  authUserEmail?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryAuthUserEmailArgs, 'email' | 'password'>>;
+  verifyEmail?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryVerifyEmailArgs, 'email'>>;
+  getUserID?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<QueryGetUserIDArgs, 'username' | "email">>;
+  getUserPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
+  getWishlistPlans?: Resolver<Array<ResolversTypes['Plan']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'id'>>;
 };
 
 export type TagResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Tag'] = ResolversParentTypes['Tag']> = {
@@ -383,7 +440,11 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   profile_pic?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  savedPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  randStr?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  emailValid?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  savedPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
+  wishlistPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

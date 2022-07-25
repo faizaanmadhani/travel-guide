@@ -1,16 +1,8 @@
 import React from "react";
-import {
-  Box,
-  ScrollView,
-  HStack,
-  Heading,
-  Text,
-  Spinner,
-  Stack,
-  Pressable,
-} from "native-base";
-import { gql, useQuery, NetworkStatus } from "@apollo/client";
-import PlanView from "./PlanView";
+import { Box, ScrollView, HStack, Heading, Text, Spinner, Stack, Pressable } from "native-base";
+import { gql, useQuery, NetworkStatus, useMutation } from "@apollo/client";
+import { GET_WISHLIST } from "./WishlistView";
+import PlanCardSmall from "../components/PlanCardSmall";
 import PlansByCategory from "../components/explore/PlansByCategory";
 
 const CURRENT_LOCATION = "Canada";
@@ -31,7 +23,24 @@ export const GET_FILTERED_PLANS = gql`
   }
 `;
 
+export const UPDATE_WISHLIST = gql`
+mutation updateWishlist($input : AddWishlistPlanInput!) {
+    updateWishlistPlan (input : $input)
+    {
+      id
+      name
+      wishlistPlans
+    }
+  }  
+`;
+
 export default function ExploreView(props) {
+  const [updateWishlist, { data : data1, loading : loading1, error : error1 }] = useMutation(UPDATE_WISHLIST,
+    {refetchQueries: []});
+
+if (loading1) console.log("Loading...");;
+if (error1) console.log(`Error! ${error1.message}`);
+
   const { loading, error, data, refetch, networkStatus } = useQuery(
     GET_FILTERED_PLANS,
     {
@@ -115,7 +124,7 @@ export default function ExploreView(props) {
 
   const displayPlans = (plansList) => {
     return plansList.map((plan) => {
-      return <Box key={plan.id}>{PlanView(plan)}</Box>;
+      return <Box key={plan.id}>{PlanCardSmall(plan, updateWishlist, props.userID)}</Box>;
     });
   };
 

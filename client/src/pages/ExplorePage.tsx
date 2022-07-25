@@ -1,4 +1,5 @@
 import React from "react";
+import { useContext } from "react";
 import {
   useDisclose,
   Actionsheet,
@@ -20,9 +21,11 @@ import Filters from "../components/Filters";
 import PageView from "../components/PageView";
 import SearchWithTags from "../components/explore/SearchWithTags";
 import TagsAutocomplete from "../components/explore/TagsAutocomplete";
+import { UserContext } from "../../App";
 
 export default function ExplorePage() {
   const { isOpen, onOpen, onClose } = useDisclose();
+  const { userID, setUserID } = useContext(UserContext);
   const [filtersApplied, setFiltersApplied] = React.useState({
     countries: [],
     rating: [],
@@ -127,6 +130,7 @@ export default function ExplorePage() {
               setIsLoading={setIsLoading}
               isTagsSearch={isTagsSearch}
               setIsTagsSearch={setIsTagsSearch}
+              userID={userID}
             />
           )}
         </ScrollView>
