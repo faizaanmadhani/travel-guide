@@ -56,6 +56,10 @@ export const typeDefs = gql`
     SIGHT # things to see
   }
 
+  type Tag {
+    name: String!
+  }
+
   type Query {
     user(id: String!): User!
     users: [User!]!
@@ -64,6 +68,7 @@ export const typeDefs = gql`
     plans: [Plan!]!
     planblocks: [PlanBlock!]!
     filteredPlans(input: FilterInput!): [Plan!]!
+    filteredTags(input: TagInput!): [Tag!]!
     authenticateUser(username: String!, password: String!): User!
     authUserEmail(email: String!, password: String!): User!
     verifyEmail(email: String!): User!
@@ -97,6 +102,13 @@ export const typeDefs = gql`
     rating: [Int]
     budget: [Int]
     months: [String]
+    tags: [String]
+    name: String
+    limit: Int
+  }
+
+  input TagInput {
+    keywords: String
   }
 
   input PrefInput {

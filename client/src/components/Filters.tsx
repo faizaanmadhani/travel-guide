@@ -24,6 +24,8 @@ export default function Filters(props) {
           rating: [],
           budget: [],
           months: [],
+          tags: [],
+          name: "",
         }
   );
 
@@ -441,6 +443,8 @@ export default function Filters(props) {
                       rating: [],
                       budget: [],
                       months: [],
+                      tags: props.currentFilters.tags,
+                      name: props.currentFilters.name,
                     });
                   }}
                 >
