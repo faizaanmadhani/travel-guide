@@ -270,6 +270,7 @@ export type UpdatePlanInput = {
   imageUrl?: Maybe<Scalars['String']>;
   countries?: Maybe<Array<Maybe<Scalars['String']>>>;
   months?: Maybe<Array<Maybe<Scalars['String']>>>;
+  dayLabels?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type UpdateUserInput = {

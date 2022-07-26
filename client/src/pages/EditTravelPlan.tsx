@@ -250,6 +250,7 @@ export default function EditTravelPlan({
       imageUrl: newImageUrl,
       countries: countriesSelected,
       months: selectedMonths,
+      dayLabels: daysLabels,
     };
 
     console.log("the input data", inputData);
@@ -269,18 +270,18 @@ export default function EditTravelPlan({
     }
   }, [numDays]);
 
-  useEffect(() => {
-    if (data && data.plan) {
-      setTitle(data.plan.name);
-      setActiveBudgetIndicator(data.plan.budget);
-      setExternImgUrl(data.plan.image);
-      setImage(data.plan.image);
-      setTags({ tag: "", tagsArray: data.plan.tags });
-      setDescription(data.plan.description);
-      setDaysLabels(data.plan.dayLabels);
-      setNumDays(data.plan.dayLabels.length - 1);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data && data.plan) {
+  //     setTitle(data.plan.name);
+  //     setActiveBudgetIndicator(data.plan.budget);
+  //     setExternImgUrl(data.plan.image);
+  //     setImage(data.plan.image);
+  //     setTags({ tag: "", tagsArray: data.plan.tags });
+  //     setDescription(data.plan.description);
+  //     setDaysLabels(data.plan.dayLabels);
+  //     setNumDays(data.plan.dayLabels.length - 1);
+  //   }
+  // }, [data]);
 
   const displayCountries = () => {
     return countriesSelected.map((countrySelected, index) => {

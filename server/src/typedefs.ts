@@ -145,6 +145,7 @@ export const typeDefs = gql`
     imageUrl: String
     countries: [String]
     months: [String]
+    dayLabels: [String]
   }
 
   input UpdatePlanBlockInput {
