@@ -20,7 +20,7 @@ import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import TravelPage from "./src/pages/TravelPage";
 import WishlistPage from "./src/pages/WishlistPage";
 import ProfilePage from "./src/pages/ProfilePage";
-import ExplorePage from "./src/pages/ExplorePage";
+import ExplorePageStack from "./src/navigation/ExplorePageStack";
 
 import LandingPage from "./src/pages/LandingPage";
 import RegisterPage from "./src/pages/RegisterPage";
@@ -178,7 +178,7 @@ export default function App() {
                 />
                 <Tab.Screen
                   name="Explore"
-                  component={ExplorePage}
+                  component={ExplorePageStack}
                   options={{
                     headerShown: false,
                   }}

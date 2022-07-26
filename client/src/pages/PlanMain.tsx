@@ -29,8 +29,9 @@ const GET_PLAN = gql`
   }
 `;
 
-const TravelPlanPage = (route: any, navigation: any) => {
-  //   const { planID } = route.params;
+const TravelPlanPage = ({ route, navigation }) => {
+  // const { planID } = route.params;
+  console.log("plan detail - ", route);
 
   const [activeTab, setActiveTab] = useState<number>(0);
 
