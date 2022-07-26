@@ -38,6 +38,12 @@ export default function BlockPage({
     skip: !planID,
   });
 
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+    }, [])
+  );
+
   if (loading) return <Spinner />;
 
   console.log("The data and error", data, error, loading);
