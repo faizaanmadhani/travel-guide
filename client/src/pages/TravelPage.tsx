@@ -16,7 +16,7 @@ import {
 } from "native-base";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from "@expo/vector-icons";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import TravelPlanPage from "./PlanMain";
 import { UserContext } from "../../App";
@@ -74,6 +74,12 @@ export default function TravelPage({ navigation }: { navigation: any }) {
       userID: userID,
     },
   });
+
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   const [createBlankPlan, { data, loading, error }] = useMutation(
     CREATE_BLANK_PLAN,

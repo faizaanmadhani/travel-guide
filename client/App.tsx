@@ -146,7 +146,7 @@ export default function App() {
                     tabBarButton: () => null,
                     // tabBarVisible: false,
                     tabBarStyle: { display: "none" },
-                    headerShown: false,
+                    headerShown: true,
                   }}
                 />
                 <Tab.Screen
@@ -156,7 +156,7 @@ export default function App() {
                     tabBarButton: () => null,
                     // tabBarVisible: false,
                     tabBarStyle: { display: "none" },
-                    headerShown: false,
+                    headerShown: true,
                   }}
                 />
                 <Tab.Screen

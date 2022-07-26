@@ -13,6 +13,7 @@ import { gql, useQuery, NetworkStatus, useMutation } from "@apollo/client";
 import { GET_WISHLIST } from "./WishlistView";
 import PlanCardSmall from "../components/PlanCardSmall";
 import PlansByCategory from "../components/explore/PlansByCategory";
+import { useFocusEffect } from "@react-navigation/native";
 
 const CURRENT_LOCATION = "Canada";
 
@@ -48,6 +49,12 @@ export default function ExploreView(props) {
   React.useEffect(() => {
     setIsRendering(false);
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   React.useEffect(() => {
     if (props.filtersApplied) {
