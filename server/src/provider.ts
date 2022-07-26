@@ -25,7 +25,7 @@ const castIUserToUser = (user: any) => {
 const castIPlantoPlan = (plan: any) => {
   console.log("this is the plan brought in", plan);
   const gqlPlan: Plan = {
-    id: !plan?._id ? "" : plan?._id,
+    id: !plan?.id ? "" : plan?.id,
     name: !plan?.name ? "" : plan?.name,
     creator: null,
     creatorId: !plan?.creator ? "" : plan?.creator,
@@ -397,6 +397,8 @@ export class PlanProvider extends DataSource {
         return plan.name.toLowerCase().includes(nameFilter.toLowerCase());
       })
     }
+
+    console.log("filtered plans", plans);
     
     return plans.map((obj, _) => castIPlantoPlan(obj));
   }

@@ -116,9 +116,15 @@ export default function ExploreView(props) {
 
   const displayPlans = (plansList) => {
     return plansList.map((plan) => {
+      console.log("the plan stuff", plan);
       return (
         <Box key={plan.id}>
-          <PlanCardSmall plan={plan} userID={props.userID} size={"sm"} navigation={props.navigation} />
+          <PlanCardSmall
+            plan={plan}
+            userID={props.userID}
+            size={"sm"}
+            navigation={props.navigation}
+          />
         </Box>
       );
     });

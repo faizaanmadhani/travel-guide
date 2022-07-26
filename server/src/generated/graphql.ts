@@ -293,7 +293,7 @@ export type User = {
   randStr: Scalars['String'];
   emailValid: Scalars['Int'];
   savedPlans?: Maybe<Array<Maybe<Plan>>>;
-  wishlistPlans?: Maybe<Array<Maybe<Plan>>>;
+  wishlistPlans?: Maybe<Array<Maybe<Scalars['ID']>>>;
 };
 
 
@@ -507,7 +507,7 @@ export type UserResolvers<ContextType = Context, ParentType extends ResolversPar
   randStr?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   emailValid?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   savedPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
-  wishlistPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['Plan']>>>, ParentType, ContextType>;
+  wishlistPlans?: Resolver<Maybe<Array<Maybe<ResolversTypes['ID']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

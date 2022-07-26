@@ -190,13 +190,7 @@ export default function App() {
                   options={tabNavigationOptions}
                   component={EditTravelPlanStackScreen}
                 />
-                <Tab.Screen
-                  name="Wishlist"
-                  component={WishlistPage}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
+                <Tab.Screen name="Wishlist" component={WishlistPage} />
                 <Tab.Screen
                   name="Profile"
                   component={ProfilePage}
