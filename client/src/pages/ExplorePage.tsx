@@ -119,7 +119,7 @@ export default function ExplorePage({ navigation }) {
           </Stack>
         </Box>
         {/* plans list */}
-        <ScrollView w="100%">
+        <ScrollView w="100%" mb="20">
           {isTagsSearch ? (
             <TagsAutocomplete
               tagSearchInput={tagSearchInput}

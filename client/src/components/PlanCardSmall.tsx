@@ -170,45 +170,51 @@ export default function PlanCardSmall(props) {
           </Box>
           <Text fontWeight="400">{props.plan.description}</Text>
           <HStack>
-            <Box
-              backgroundColor={"violet.600"}
-              p="1"
-              m="1"
-              rounded="xs"
-              _text={{
-                fontSize: "xs",
-                fontWeight: "bold",
-                color: "white",
-              }}
-            >
-              {props.plan.tags[0] ? props.plan.tags[0] : null}
-            </Box>
-            <Box
-              backgroundColor={"violet.600"}
-              p="1"
-              m="1"
-              rounded="xs"
-              _text={{
-                fontSize: "xs",
-                fontWeight: "bold",
-                color: "white",
-              }}
-            >
-              {props.plan.tags[1] ? props.plan.tags[1] : null}
-            </Box>
-            <Box
-              backgroundColor={"violet.600"}
-              p="1"
-              m="1"
-              rounded="xs"
-              _text={{
-                fontSize: "xs",
-                fontWeight: "bold",
-                color: "white",
-              }}
-            >
-              {props.plan.tags[2] ? props.plan.tags[2] : null}
-            </Box>
+            {props.plan.tags[0] ? (
+              <Box
+                backgroundColor={"violet.600"}
+                p="1"
+                m="1"
+                rounded="xs"
+                _text={{
+                  fontSize: "xs",
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                {props.plan.tags[0]}
+              </Box>
+            ) : null}
+            {props.plan.tags[1] ? (
+              <Box
+                backgroundColor={"violet.600"}
+                p="1"
+                m="1"
+                rounded="xs"
+                _text={{
+                  fontSize: "xs",
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                {props.plan.tags[1]}
+              </Box>
+            ) : null}
+            {props.plan.tags[2] ? (
+              <Box
+                backgroundColor={"violet.600"}
+                p="1"
+                m="1"
+                rounded="xs"
+                _text={{
+                  fontSize: "xs",
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                {props.plan.tags[2]}
+              </Box>
+            ) : null}
           </HStack>
         </Stack>
       </Box>
