@@ -23,7 +23,7 @@ import SearchWithTags from "../components/explore/SearchWithTags";
 import TagsAutocomplete from "../components/explore/TagsAutocomplete";
 import { UserContext } from "../../App";
 
-export default function ExplorePage() {
+export default function ExplorePage({ navigation }) {
   const { isOpen, onOpen, onClose } = useDisclose();
   const { userID, setUserID } = useContext(UserContext);
   const [filtersApplied, setFiltersApplied] = React.useState({
@@ -102,16 +102,20 @@ export default function ExplorePage() {
             }}
             flexWrap="wrap"
           >
-            {filtersApplied.tags ? filtersApplied.tags.map((selectedTag, index) => (
-              <Button
-                key={index}
-                onPress={() => removeSelectedTag(selectedTag)}
-                colorScheme="info"
-                mb="1"
-              >
-                {selectedTag}
-              </Button>
-            )): null}
+            {filtersApplied.tags
+              ? filtersApplied.tags.map((selectedTag, index) => (
+                  <Button
+                    key={index}
+                    onPress={() => removeSelectedTag(selectedTag)}
+                    colorScheme="info"
+                    mb="1"
+                    size="sm"
+                    backgroundColor={"violet.600"}
+                  >
+                    {selectedTag}
+                  </Button>
+                ))
+              : null}
           </Stack>
         </Box>
         {/* plans list */}
@@ -131,6 +135,7 @@ export default function ExplorePage() {
               isTagsSearch={isTagsSearch}
               setIsTagsSearch={setIsTagsSearch}
               userID={userID}
+              navigation={navigation}
             />
           )}
         </ScrollView>
