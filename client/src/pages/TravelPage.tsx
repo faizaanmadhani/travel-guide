@@ -23,6 +23,7 @@ import { UserContext } from "../../App";
 import Spinner from "react-native-loading-spinner-overlay";
 import PlanCardSmall from "../components/PlanCardSmall";
 import { Pressable } from "react-native";
+import PageView from "../components/PageView";
 
 const styles = {
   screenLayout: {
@@ -98,7 +99,7 @@ export default function TravelPage({ navigation }: { navigation: any }) {
   if (planLoading) return <Spinner />;
 
   return (
-    <SafeAreaView>
+    <PageView>
       <Button
         marginBottom={2}
         marginLeft={2}
@@ -132,7 +133,7 @@ export default function TravelPage({ navigation }: { navigation: any }) {
         </Box>
       </VStack>
       <VStack margin={"1"}></VStack>
-      <ScrollView>
+      <ScrollView mb="20">
         <Stack space={2} alignItems="center">
           {planData &&
             planData.user.savedPlans.map((plan) => {
@@ -149,6 +150,6 @@ export default function TravelPage({ navigation }: { navigation: any }) {
             })}
         </Stack>
       </ScrollView>
-    </SafeAreaView>
+    </PageView>
   );
 }
