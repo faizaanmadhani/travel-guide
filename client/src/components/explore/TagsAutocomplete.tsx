@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Text, Spinner, Button } from "native-base";
+import { Box, Text, Spinner, VStack, Menu } from "native-base";
 import { gql, useQuery, NetworkStatus } from "@apollo/client";
 
 export const GET_FILTERED_TAGS = gql`
@@ -53,12 +53,12 @@ export default function TagsAutocomplete(props) {
   };
 
   return (
-    <Box>
+    <VStack>
       {data.filteredTags.map((tag, index) => (
-        <Button key={index} onPress={() => selectTag(tag.name)}>
+        <Menu.Item key={index} onPress={() => selectTag(tag.name)}>
           <Text>#{tag.name}</Text>
-        </Button>
+        </Menu.Item>
       ))}
-    </Box>
+    </VStack>
   );
 }

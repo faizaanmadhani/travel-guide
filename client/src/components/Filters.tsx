@@ -292,7 +292,7 @@ export default function Filters(props) {
                 }}
                 flexWrap="wrap"
               >
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"
@@ -303,7 +303,7 @@ export default function Filters(props) {
                     Jan
                   </Button>
                 </Box>
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"
@@ -314,7 +314,7 @@ export default function Filters(props) {
                     Feb
                   </Button>
                 </Box>
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"
@@ -325,7 +325,7 @@ export default function Filters(props) {
                     Mar
                   </Button>
                 </Box>
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"
@@ -336,7 +336,7 @@ export default function Filters(props) {
                     Apr
                   </Button>
                 </Box>
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"
@@ -347,7 +347,7 @@ export default function Filters(props) {
                     May
                   </Button>
                 </Box>
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"
@@ -358,7 +358,7 @@ export default function Filters(props) {
                     Jun
                   </Button>
                 </Box>
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"
@@ -369,7 +369,7 @@ export default function Filters(props) {
                     Jul
                   </Button>
                 </Box>
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"
@@ -380,7 +380,7 @@ export default function Filters(props) {
                     Aug
                   </Button>
                 </Box>
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"
@@ -391,7 +391,7 @@ export default function Filters(props) {
                     Sep
                   </Button>
                 </Box>
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"
@@ -402,7 +402,7 @@ export default function Filters(props) {
                     Oct
                   </Button>
                 </Box>
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"
@@ -413,7 +413,7 @@ export default function Filters(props) {
                     Nov
                   </Button>
                 </Box>
-                <Box mb="2">
+                <Box mb="2" flexGrow={1}>
                   <Button
                     key="sm"
                     size="sm"

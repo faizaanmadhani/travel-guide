@@ -108,6 +108,8 @@ export default function ExplorePage() {
                 onPress={() => removeSelectedTag(selectedTag)}
                 colorScheme="info"
                 mb="1"
+                size="sm"
+                backgroundColor={"violet.600"}
               >
                 {selectedTag}
               </Button>

@@ -1,5 +1,14 @@
 import React from "react";
-import { Box, ScrollView, HStack, Heading, Text, Spinner, Stack, Pressable } from "native-base";
+import {
+  Box,
+  ScrollView,
+  HStack,
+  Heading,
+  Text,
+  Spinner,
+  Stack,
+  Pressable,
+} from "native-base";
 import { gql, useQuery, NetworkStatus, useMutation } from "@apollo/client";
 import { GET_WISHLIST } from "./WishlistView";
 import PlanCardSmall from "../components/PlanCardSmall";
@@ -24,22 +33,21 @@ export const GET_FILTERED_PLANS = gql`
 `;
 
 export const UPDATE_WISHLIST = gql`
-mutation updateWishlist($input : AddWishlistPlanInput!) {
-    updateWishlistPlan (input : $input)
-    {
+  mutation updateWishlist($input: AddWishlistPlanInput!) {
+    updateWishlistPlan(input: $input) {
       id
       name
       wishlistPlans
     }
-  }  
+  }
 `;
 
 export default function ExploreView(props) {
-  const [updateWishlist, { data : data1, loading : loading1, error : error1 }] = useMutation(UPDATE_WISHLIST,
-    {refetchQueries: []});
+  const [updateWishlist, { data: data1, loading: loading1, error: error1 }] =
+    useMutation(UPDATE_WISHLIST, { refetchQueries: [] });
 
-if (loading1) console.log("Loading...");;
-if (error1) console.log(`Error! ${error1.message}`);
+  if (loading1) console.log("Loading...");
+  if (error1) console.log(`Error! ${error1.message}`);
 
   const { loading, error, data, refetch, networkStatus } = useQuery(
     GET_FILTERED_PLANS,
@@ -124,7 +132,11 @@ if (error1) console.log(`Error! ${error1.message}`);
 
   const displayPlans = (plansList) => {
     return plansList.map((plan) => {
-      return <Box key={plan.id}>{PlanCardSmall(plan, updateWishlist, props.userID)}</Box>;
+      return (
+        <Box key={plan.id}>
+          {PlanCardSmall(plan, updateWishlist, props.userID)}
+        </Box>
+      );
     });
   };
 
@@ -161,7 +173,7 @@ if (error1) console.log(`Error! ${error1.message}`);
                     </Heading>
                     {category.allPlans.length > 5 ? (
                       <Pressable onPress={() => fetchMorePlans(category.title)}>
-                        <Text pt="4" pl="1" color="blue.500">
+                        <Text pt="4" pl="2" color="blue.500">
                           See more
                         </Text>
                       </Pressable>
