@@ -10,7 +10,7 @@ const GET_BLOCKS = gql`
     plan(id: $id) {
       blocks(day: $day) {
         title
-        images
+        imageUrl
         description
         price
         externalUrl
