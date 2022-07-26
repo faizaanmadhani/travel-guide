@@ -75,21 +75,18 @@ export default function PlanCardSmall(props) {
   };
 
   function UpdateWishlist() {
-    if (true) {
-      console.log(
-        updateWishlist({
-          variables: { input: { userID: props.userID, planID: props.plan.id } },
-        })
-      );
-    } else {
-      // removeWishlist({variables : {input : {userID : userID, planID : plan.id}}})
-    }
+    console.log("the props for the wishlist", props);
+    updateWishlist({
+      variables: { input: { userID: props.userID, planID: props.plan.id } },
+    });
   }
+
+  console.log("the plancard's id", props.plan.id);
 
   return (
     <Pressable
       onPress={() => {
-        props.navigation.navigate("View Plan", { planId: "1" });
+        props.navigation.navigate("View Plan", { planId: props.plan.id });
       }}
     >
       <Box

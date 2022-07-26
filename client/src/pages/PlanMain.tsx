@@ -16,46 +16,60 @@ import { StyleSheet } from "react-native";
 import PagerView from "react-native-pager-view";
 import { PlanView_Data } from "../components/PlanView";
 import BlockPage from "../pages/BlockPage";
-
-const GET_PLAN_DETAILS = gql`
-  query GetPlan($planID: String!, $day: Int!) {
-    plan(id: $planID) {
+// refer to BlockPage.tsx
+const GET_PLAN = gql`
+  query GetPlan($id: String!, $day: Int!) {
+    plan(id: $id) {
       name
       id
+      rating
+      description
+      imageUrl
+      dayLabels
       blocks(day: $day) {
-        title
         id
+        title
+        imageUrl
       }
     }
   }
 `;
-
 const TravelPlanPage = ({ route, navigation }) => {
-  // const { planID } = route.params;
-  console.log("plan detail - ", route);
-
+  const { planId } = route.params;
+  console.log("plan detail - ", route.params.planId);
   const [activeTab, setActiveTab] = useState<number>(0);
-
   const [daysLabels, setDaysLabels] = useState(["Intro"]);
-
-  const { planID } = route;
-
-  const { data, loading, error, refetch } = useQuery(GET_PLAN_DETAILS, {
+  // const { planID } = route;
+  console.log("planId - ", planId);
+  const { data, loading, error } = useQuery(GET_PLAN, {
     variables: {
-      planID: planID,
-      day: activeTab >= 1 ? activeTab : 1,
+      id: planId,
+      day: 0,
     },
   });
-
-  if (loading) return <Spinner />;
-
+  if (loading) {
+    return (
+      <Box pt="6">
+        <Spinner color="indigo.500" />
+      </Box>
+    );
+  }
+  if (error) {
+    return (
+      <Box pt="6">
+        <Text color="red.800">Error! {error}</Text>
+      </Box>
+    );
+  }
+  console.log("The data object", data);
+  const { name, description, rating, imageUrl } = data.plan;
   return (
     <ScrollView>
       {/* {data && ( */}
       <Stack space={3}>
         <Stack marginLeft={"4"} marginRight={"4"} space={3}>
           <Text fontSize="2xl" bold>
-            {data.plan.name}
+            {name}
           </Text>
           <ScrollView horizontal={true}>
             <HStack>
@@ -89,7 +103,7 @@ const TravelPlanPage = ({ route, navigation }) => {
               <Center>
                 <Image
                   source={{
-                    uri: "https://wallpaperaccess.com/full/317501.jpg",
+                    uri: imageUrl,
                   }}
                   alt="Alternate Text"
                   size="2xl"
@@ -97,9 +111,10 @@ const TravelPlanPage = ({ route, navigation }) => {
                 />
               </Center>
               <HStack justifyContent="space-between">
-                <Text bold>Rating: {data.plan.rating}</Text>
+                <Text bold>Rating: {rating}/5</Text>
+                <Text bold>Last Updated: May 13th, 2021</Text>
               </HStack>
-              <Text>{data.plan.description}</Text>
+              <Text>{description}</Text>
             </Stack>
           ) : (
             <BlockPage
@@ -114,15 +129,5 @@ const TravelPlanPage = ({ route, navigation }) => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  viewPager: {
-    flex: 1,
-  },
-  page: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
 
 export default TravelPlanPage;
