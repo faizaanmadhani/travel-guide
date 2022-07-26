@@ -29,6 +29,7 @@ import * as ImagePicker from "expo-image-picker";
 import { UserContext } from "../../App";
 import { LearnMoreLinks } from "react-native/Libraries/NewAppScreen";
 import axios from "axios";
+import CountrySearch from "../components/CountrySearch";
 
 const UPDATE_PLAN = gql`
   mutation CreatePlan($input: UpdatePlanInput!) {
@@ -40,6 +41,7 @@ const UPDATE_PLAN = gql`
       description
       imageUrl
       dayLabels
+      countries
     }
   }
 `;
@@ -100,6 +102,44 @@ export default function EditTravelPlan({
   const budgets = ["$", "$$", "$$$", "$$$$"];
   const [activeBudgetIndicator, setActiveBudgetIndicator] = useState(0);
 
+  const [isCountrySearchOpen, setIsCountrySearchOpen] = useState(false);
+  const [countriesList, setCountriesList] = useState([]);
+  const [countriesSelected, setCountriesSelected] = useState([]);
+
+  React.useEffect(() => {
+    console.log("fetching countries hook");
+    axios
+      .get("https://countriesnow.space/api/v0.1/countries")
+      .then(function (response) {
+        // handle success
+        setCountriesList(response.data.data);
+        // setFilteredCountriesList(response.data.data);
+      })
+      .catch(function (error) {
+        // handle error
+      })
+      .then(function () {
+        // always executed
+      });
+  }, []);
+
+  const closeCountrySearch = () => {
+    setIsCountrySearchOpen(false);
+  };
+
+  const updateCountries = (_: any, newSelection: string) => {
+    const index = countriesSelected.indexOf(newSelection);
+    let countries = [...countriesSelected];
+
+    if (index > -1) {
+      countries.splice(index, 1);
+    } else {
+      countries.push(newSelection);
+    }
+
+    setCountriesSelected(countries);
+  };
+
   const createFormData = (photo, body = {}) => {
     const data = new FormData();
 
@@ -131,7 +171,7 @@ export default function EditTravelPlan({
   const uploadImage = async () => {
     try {
       const response = await fetch(
-        "https://2be0-2620-101-f000-740-8000-00-79f.ngrok.io/image-upload",
+        "https://5070-2620-101-f000-700-3-d157-d176-a79f.ngrok.io/image-upload",
         {
           method: "POST",
           body: createFormData(image),
@@ -206,74 +246,23 @@ export default function EditTravelPlan({
       setActiveBudgetIndicator(data.plan.budget);
       setExternImgUrl(data.plan.image);
       setImage(data.plan.image);
-      setTags(data.plan.tags);
+      setTags({ tag: "", tagsArray: data.plan.tags });
       setDescription(data.plan.description);
       setDaysLabels(data.plan.dayLabels);
+      setNumDays(data.plan.dayLabels.length - 1);
     }
   }, [data]);
 
   return (
-    <ScrollView w="100%">
-      <Stack
-        space={2.5}
-        alignSelf="center"
-        px="4"
-        safeArea
-        w={{
-          base: "100%",
-          md: "25%",
-        }}
-      >
-        <Box>
-          <FormControl mb="1" isRequired>
-            <FormControl.Label>Title</FormControl.Label>
-            <Input value={title} onChangeText={(text) => setTitle(text)} />
-            <FormControl.ErrorMessage
-              leftIcon={<WarningOutlineIcon size="xs" />}
-            >
-              This field is required
-            </FormControl.ErrorMessage>
-          </FormControl>
-        </Box>
-        <ScrollView horizontal={true}>
-          <HStack>
-            {daysLabels.map((label, index) =>
-              activeTab === index ? (
-                <Button
-                  marginRight="1"
-                  onPress={async (_) => {
-                    await triggerUpdate();
-
-                    setActiveTab(index);
-                  }}
-                  key={label}
-                  backgroundColor="#06B6D4"
-                >
-                  {label}
-                </Button>
-              ) : (
-                <Button
-                  marginRight="1"
-                  variant="outline"
-                  onPress={async (_) => {
-                    await triggerUpdate();
-                    setActiveTab(index);
-                  }}
-                  key={label}
-                >
-                  {label}
-                </Button>
-              )
-            )}
-            <IconButton
-              icon={<AntDesign name="plus" size={25} color="#06B6D4" />}
-              onPress={incrementDays}
-            />
-          </HStack>
-        </ScrollView>
-      </Stack>
-      {
-        activeTab == 0 ? (
+    <Box>
+      {isCountrySearchOpen ? (
+        <CountrySearch
+          handleClose={closeCountrySearch}
+          handleSelect={updateCountries}
+          countriesList={countriesList}
+        />
+      ) : (
+        <ScrollView w="100%">
           <Stack
             space={2.5}
             alignSelf="center"
@@ -285,123 +274,196 @@ export default function EditTravelPlan({
             }}
           >
             <Box>
-              <Pressable onPress={() => pickImage()}>
-                <Center>
-                  {!image ? (
-                    <Center
-                      _text={{
-                        color: "#B0B0B0",
-                        fontWeight: "bold",
+              <FormControl mb="1" isRequired>
+                <FormControl.Label>Title</FormControl.Label>
+                <Input value={title} onChangeText={(text) => setTitle(text)} />
+                <FormControl.ErrorMessage
+                  leftIcon={<WarningOutlineIcon size="xs" />}
+                >
+                  This field is required
+                </FormControl.ErrorMessage>
+              </FormControl>
+            </Box>
+            <ScrollView horizontal={true}>
+              <HStack>
+                {daysLabels.map((label, index) =>
+                  activeTab === index ? (
+                    <Button
+                      marginRight="1"
+                      onPress={async (_) => {
+                        await triggerUpdate();
+
+                        setActiveTab(index);
                       }}
-                      height={200}
-                      width={{
-                        base: 200,
-                        lg: 250,
+                      key={label}
+                      backgroundColor="#06B6D4"
+                    >
+                      {label}
+                    </Button>
+                  ) : (
+                    <Button
+                      marginRight="1"
+                      variant="outline"
+                      onPress={async (_) => {
+                        await triggerUpdate();
+                        setActiveTab(index);
+                      }}
+                      key={label}
+                    >
+                      {label}
+                    </Button>
+                  )
+                )}
+                <IconButton
+                  icon={<AntDesign name="plus" size={25} color="#06B6D4" />}
+                  onPress={incrementDays}
+                />
+              </HStack>
+            </ScrollView>
+          </Stack>
+          {
+            activeTab == 0 ? (
+              <Stack
+                space={2.5}
+                alignSelf="center"
+                px="4"
+                safeArea
+                w={{
+                  base: "100%",
+                  md: "25%",
+                }}
+              >
+                <Box>
+                  <Pressable onPress={() => pickImage()}>
+                    <Center>
+                      {!image ? (
+                        <Center
+                          _text={{
+                            color: "#B0B0B0",
+                            fontWeight: "bold",
+                          }}
+                          height={200}
+                          width={{
+                            base: 200,
+                            lg: 250,
+                          }}
+                        >
+                          <AntDesign name="plus" size={25} color="#B0B0B0" />
+                          Add Picture or Video
+                        </Center>
+                      ) : (
+                        <Image
+                          source={{ uri: image }}
+                          style={{ width: 400, height: 400 }}
+                        />
+                      )}
+                    </Center>
+                  </Pressable>
+                </Box>
+                <FormControl mb="1" isRequired>
+                  <FormControl.Label>Description</FormControl.Label>
+                  <TextArea
+                    h={20}
+                    placeholder="Add Plan Description"
+                    value={description}
+                    onChangeText={(text) => setDescription(text)}
+                    autoCompleteType={undefined}
+                  />
+                  <FormControl.ErrorMessage
+                    leftIcon={<WarningOutlineIcon size="xs" />}
+                  >
+                    This field is required
+                  </FormControl.ErrorMessage>
+                </FormControl>
+                <Box>
+                  <FormControl mb="1">
+                    <FormControl.Label>Tags</FormControl.Label>
+                    <StyledTagInput tags={tags} setTags={setTags} />
+                  </FormControl>
+                </Box>
+                <HStack
+                  alignItems="center"
+                  justifyContent="space-between"
+                  //   marginLeft="5"
+                  //   marginRight="5"
+                >
+                  {budgets.map((item, index) =>
+                    activeBudgetIndicator === index ? (
+                      <Button
+                        onPress={(_) => setActiveBudgetIndicator(index)}
+                        key={item}
+                        backgroundColor="#06B6D4"
+                        width={70}
+                      >
+                        {item}
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        onPress={(_) => setActiveBudgetIndicator(index)}
+                        width={70}
+                        key={item}
+                      >
+                        {item}
+                      </Button>
+                    )
+                  )}
+                </HStack>
+                <FormControl mb="1">
+                  <FormControl.Label>Countries</FormControl.Label>
+                </FormControl>
+                <FormControl mb="1">
+                  <FormControl.Label>Months</FormControl.Label>
+                </FormControl>
+                <Box>
+                  <FormControl mb="1">
+                    <Button
+                      backgroundColor="#3CB371"
+                      onPress={() => {
+                        if (title !== "") {
+                          triggerUpdate();
+                        } else {
+                          deletePlan({
+                            variables: {
+                              planID: planID,
+                            },
+                          });
+                        }
+                        navigation.goBack();
                       }}
                     >
-                      <AntDesign name="plus" size={25} color="#B0B0B0" />
-                      Add Picture or Video
-                    </Center>
-                  ) : (
-                    <Image
-                      source={{ uri: image }}
-                      style={{ width: 400, height: 400 }}
-                    />
-                  )}
-                </Center>
-              </Pressable>
-            </Box>
-            <FormControl mb="1" isRequired>
-              <FormControl.Label>Description</FormControl.Label>
-              <TextArea
-                h={20}
-                placeholder="Add Plan Description"
-                value={description}
-                onChangeText={(text) => setDescription(text)}
-                autoCompleteType={undefined}
+                      Finish Plan
+                    </Button>
+                  </FormControl>
+                </Box>
+                <Box>
+                  <FormControl mb="1">
+                    <Button
+                      backgroundColor="#AF2C43"
+                      onPress={() => {
+                        deletePlan({
+                          variables: {
+                            planID: planID,
+                          },
+                        });
+                      }}
+                    >
+                      Delete Plan
+                    </Button>
+                  </FormControl>
+                </Box>
+              </Stack>
+            ) : (
+              <BlockPage
+                navigation={navigation}
+                planID={planID}
+                day={activeTab}
               />
-              <FormControl.ErrorMessage
-                leftIcon={<WarningOutlineIcon size="xs" />}
-              >
-                This field is required
-              </FormControl.ErrorMessage>
-            </FormControl>
-            <Box>
-              <FormControl mb="1">
-                <FormControl.Label>Tags</FormControl.Label>
-                <StyledTagInput tags={tags} setTags={setTags} />
-              </FormControl>
-            </Box>
-            <HStack
-              alignItems="center"
-              justifyContent="space-between"
-              //   marginLeft="5"
-              //   marginRight="5"
-            >
-              {budgets.map((item, index) =>
-                activeBudgetIndicator === index ? (
-                  <Button
-                    onPress={(_) => setActiveBudgetIndicator(index)}
-                    key={item}
-                    backgroundColor="#06B6D4"
-                    width={70}
-                  >
-                    {item}
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outline"
-                    onPress={(_) => setActiveBudgetIndicator(index)}
-                    width={70}
-                    key={item}
-                  >
-                    {item}
-                  </Button>
-                )
-              )}
-            </HStack>
-            <Box>
-              <FormControl mb="1">
-                <Button
-                  backgroundColor="#3CB371"
-                  onPress={() => {
-                    if (title !== "") {
-                      triggerUpdate();
-                    } else {
-                      deletePlan({
-                        variables: {
-                          planID: planID,
-                        },
-                      });
-                    }
-                    navigation.goBack();
-                  }}
-                >
-                  Finish Plan
-                </Button>
-              </FormControl>
-            </Box>
-            <Box>
-              <FormControl mb="1">
-                <Button
-                  backgroundColor="#AF2C43"
-                  onPress={() => {
-                    deletePlan({
-                      variables: {
-                        planID: planID,
-                      },
-                    });
-                  }}
-                >
-                  Delete Plan
-                </Button>
-              </FormControl>
-            </Box>
-          </Stack>
-        ) : (
-          <BlockPage navigation={navigation} planID={planID} day={activeTab} />
-        ) /* Create a Block Component to Render here */
-      }
-    </ScrollView>
+            ) /* Create a Block Component to Render here */
+          }
+        </ScrollView>
+      )}
+      ;
+    </Box>
   );
 }

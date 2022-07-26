@@ -98,7 +98,7 @@ export const EditBlockForm = ({
   const uploadImage = async () => {
     try {
       const response = await fetch(
-        "https://2be0-2620-101-f000-740-8000-00-79f.ngrok.io/image-upload",
+        "https://5070-2620-101-f000-700-3-d157-d176-a79f.ngrok.io/image-upload",
         {
           method: "POST",
           body: createFormData(image),
