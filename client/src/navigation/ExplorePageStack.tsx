@@ -1,18 +1,17 @@
-import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import TravelPage from "../pages/TravelPage";
+
+import React from "react";
+import ExplorePage from "../pages/ExplorePage";
 import EditTravelPlanStackScreen from "./EditPlanStack";
-import TravelStackScreen from "./TravelPageStack";
+import TravelPlanPage from "../pages/PlanMain";
 
 const ExploreStack = createNativeStackNavigator();
 
-export default function ExplorePageStackScreen() {
+export default function TravelStackScreen() {
   return (
     <ExploreStack.Navigator>
-      <ExploreStack.Screen
-        name="Edit Plan"
-        component={EditTravelPlanStackScreen}
-      />
+      <ExploreStack.Screen name="Explore" component={ExplorePage} />
+      <ExploreStack.Screen name="View Plan" component={TravelPlanPage} />
     </ExploreStack.Navigator>
   );
 }

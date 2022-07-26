@@ -129,7 +129,15 @@ export default function TravelPage({ navigation }: { navigation: any }) {
           {planData &&
             planData.user.savedPlans.map((plan) => {
               console.log("obj plan", plan);
-              return <Box mr="1">{PlanCardSmall(plan, navigation)}</Box>;
+              return (
+                <Box mr="1">
+                  <PlanCardSmall
+                    plan={plan}
+                    navigation={navigation}
+                    userID={userID}
+                  />
+                </Box>
+              );
             })}
         </Stack>
       </ScrollView>

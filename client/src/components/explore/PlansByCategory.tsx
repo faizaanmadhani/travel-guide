@@ -1,6 +1,14 @@
 import React from "react";
-import { Box, Spinner, Button, Heading, VStack } from "native-base";
-import PlanView from "../../views/PlanView";
+import {
+  Box,
+  Spinner,
+  ChevronLeftIcon,
+  Heading,
+  VStack,
+  Button,
+  Flex,
+} from "native-base";
+import PlanCardSmall from "../PlanCardSmall";
 
 export default function PlansByCategory(props) {
   const [isLoading, setIsLoading] = React.useState(true);
@@ -39,22 +47,36 @@ export default function PlansByCategory(props) {
 
     if (categoryPlans) {
       return categoryPlans.map((plan, index) => {
-        return <Box key={index}>{PlanView(plan)}</Box>;
+        return (
+          <Box key={index}>
+            <PlanCardSmall plan={plan} userID={props.userID} size={"lg"} />
+          </Box>
+        );
       });
     }
   };
   return (
     <Box>
-      <Button onPress={() => props.setIsPlansByCategory(false)}>Go Back</Button>
-      <Heading size="sm" pt="4" pl="1">
-        {props.categorySelected}
-      </Heading>
+      <Flex direction="row" alignItems="center">
+        <Button
+          size="sm"
+          mr="2"
+          color="blue.500"
+          variant="ghost"
+          onPress={() => props.setIsPlansByCategory(false)}
+        >
+          <ChevronLeftIcon />
+        </Button>
+        <Heading size="sm" pl="1">
+          {props.categorySelected}
+        </Heading>
+      </Flex>
       {isLoading ? (
         <Box pt="6">
           <Spinner color="indigo.500" />
         </Box>
       ) : (
-        <VStack>{displayCategoryPlans()}</VStack>
+        <VStack my="2">{displayCategoryPlans()}</VStack>
       )}
     </Box>
   );
