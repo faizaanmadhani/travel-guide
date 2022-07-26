@@ -11,17 +11,20 @@ import {
   View,
   Box,
   Spinner,
+  IconButton,
 } from "native-base";
 import { StyleSheet } from "react-native";
 import PagerView from "react-native-pager-view";
 import { PlanView_Data } from "../components/PlanView";
 import DayView from "../pages/DayView";
+import AntDesign from "@expo/vector-icons/build/AntDesign";
 // refer to BlockPage.tsx
 const GET_PLAN = gql`
   query GetPlan($id: String!, $day: Int!) {
     plan(id: $id) {
       name
       id
+      creatorId
       rating
       description
       imageUrl
@@ -71,6 +74,16 @@ const TravelPlanPage = ({ route, navigation }) => {
           <Text fontSize="2xl" bold>
             {name}
           </Text>
+          <IconButton
+            mr="0"
+            variant="ghost"
+            size={6}
+            backgroundColor="blue"
+            icon={<AntDesign name="edit" />}
+            onPress={navigation.navigate("Edit Plan", {
+              planID: planId,
+            })}
+          />
           <ScrollView horizontal={true}>
             <HStack>
               {dayLabels.map((label, index) =>

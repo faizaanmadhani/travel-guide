@@ -85,14 +85,14 @@ export default function BlockView(props: IBlockProps) {
             <Heading size="lg" ml="-1">
               {props.title}
             </Heading>
-            <IconButton
+            {/* <IconButton
               mr="0"
               variant="ghost"
               size={6}
               backgroundColor="blue"
               icon={<AntDesign name="edit" />}
               onPress={EditBlock}
-            />
+            /> */}
           </HStack>
           <Heading size="sm" ml="-1">
             {props.location}

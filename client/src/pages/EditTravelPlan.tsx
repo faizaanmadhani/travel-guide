@@ -62,6 +62,10 @@ const GET_PLAN = gql`
       rating
       tags
       description
+      imageUrl
+      dayLabels
+      countries
+      months
     }
   }
 `;
@@ -192,7 +196,7 @@ export default function EditTravelPlan({
   const uploadImage = async () => {
     try {
       const response = await fetch(
-        "https://e0ee-2620-101-f000-700-abe6-da88-8c62-a758.ngrok.io/image-upload",
+        "https://5070-2620-101-f000-700-3-d157-d176-a79f.ngrok.io/image-upload",
         {
           method: "POST",
           body: createFormData(image),
@@ -270,18 +274,20 @@ export default function EditTravelPlan({
     }
   }, [numDays]);
 
-  // useEffect(() => {
-  //   if (data && data.plan) {
-  //     setTitle(data.plan.name);
-  //     setActiveBudgetIndicator(data.plan.budget);
-  //     setExternImgUrl(data.plan.image);
-  //     setImage(data.plan.image);
-  //     setTags({ tag: "", tagsArray: data.plan.tags });
-  //     setDescription(data.plan.description);
-  //     setDaysLabels(data.plan.dayLabels);
-  //     setNumDays(data.plan.dayLabels.length - 1);
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    if (QueryData && QueryData.plan) {
+      setTitle(data.plan.name);
+      setActiveBudgetIndicator(data.plan.budget);
+      setExternImgUrl(data.plan.image);
+      setImage(data.plan.image);
+      setTags({ tag: "", tagsArray: data.plan.tags });
+      setDescription(data.plan.description);
+      setDaysLabels(data.plan.dayLabels);
+      setNumDays(data.plan.dayLabels.length - 1);
+      setCountriesSelected(QueryData.plan.countries);
+      QueryData.plans.months.forEach((month) => updateMonths(month, true));
+    }
+  }, [data]);
 
   const displayCountries = () => {
     return countriesSelected.map((countrySelected, index) => {

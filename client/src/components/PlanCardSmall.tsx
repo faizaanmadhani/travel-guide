@@ -86,7 +86,10 @@ export default function PlanCardSmall(props) {
   return (
     <Pressable
       onPress={() => {
-        props.navigation.navigate("View Plan", { planId: props.plan.id });
+        props.navigation.navigate("View Plan", {
+          screen: "View Plan",
+          params: { planId: props.plan.id },
+        });
       }}
     >
       <Box

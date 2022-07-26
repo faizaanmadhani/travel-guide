@@ -30,9 +30,12 @@ import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
 import EmailVerificationPage from "./src/pages/EmailVerificationPage";
 import { setContext } from "@apollo/client/link/context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const httpLink = createHttpLink({
-  uri: "https://e0ee-2620-101-f000-700-abe6-da88-8c62-a758.ngrok.io/graphql",
+  uri: "https://5070-2620-101-f000-700-3-d157-d176-a79f.ngrok.io/graphql",
   credentials: "include",
 });
 
