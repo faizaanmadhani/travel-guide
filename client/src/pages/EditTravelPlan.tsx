@@ -192,7 +192,7 @@ export default function EditTravelPlan({
   const uploadImage = async () => {
     try {
       const response = await fetch(
-        "https://5070-2620-101-f000-700-3-d157-d176-a79f.ngrok.io/image-upload",
+        "https://e0ee-2620-101-f000-700-abe6-da88-8c62-a758.ngrok.io/image-upload",
         {
           method: "POST",
           body: createFormData(image),

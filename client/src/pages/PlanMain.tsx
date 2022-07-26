@@ -15,7 +15,7 @@ import {
 import { StyleSheet } from "react-native";
 import PagerView from "react-native-pager-view";
 import { PlanView_Data } from "../components/PlanView";
-import BlockPage from "../pages/BlockPage";
+import DayView from "../pages/DayView";
 // refer to BlockPage.tsx
 const GET_PLAN = gql`
   query GetPlan($id: String!, $day: Int!) {
@@ -62,7 +62,7 @@ const TravelPlanPage = ({ route, navigation }) => {
     );
   }
   console.log("The data object", data);
-  const { name, description, rating, imageUrl } = data.plan;
+  const { name, description, rating, imageUrl, dayLabels } = data.plan;
   return (
     <ScrollView>
       {/* {data && ( */}
@@ -73,7 +73,7 @@ const TravelPlanPage = ({ route, navigation }) => {
           </Text>
           <ScrollView horizontal={true}>
             <HStack>
-              {daysLabels.map((label, index) =>
+              {dayLabels.map((label, index) =>
                 activeTab === index ? (
                   <Button
                     marginRight="1"
@@ -117,7 +117,7 @@ const TravelPlanPage = ({ route, navigation }) => {
               <Text>{description}</Text>
             </Stack>
           ) : (
-            <BlockPage
+            <DayView
               navigation={navigation}
               planID={data.plan.id}
               day={activeTab}
