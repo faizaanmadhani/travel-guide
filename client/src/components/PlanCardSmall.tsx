@@ -1,5 +1,4 @@
 import React from "react";
-import { useContext } from "react";
 import {
   Stack,
   Heading,
@@ -8,26 +7,33 @@ import {
   Image,
   HStack,
   AspectRatio,
-  Icon,
   IconButton,
-  FavouriteIcon
+  FavouriteIcon,
+  Pressable,
 } from "native-base";
-import { Pressable, useWindowDimensions } from "react-native";
-import { UserContext } from "../../App"; 
 import { gql, useMutation } from "@apollo/client";
 
-export type PlanView_Data = {
-  id: String;
-  name: String;
-  budget: number;
-  rating: number;
-  tags: String[];
-  description: String;
-  countries: String[];
-  months: String[];
-};
+export const UPDATE_WISHLIST = gql`
+  mutation updateWishlist($input: AddWishlistPlanInput!) {
+    updateWishlistPlan(input: $input) {
+      id
+      name
+      wishlistPlans
+    }
+  }
+`;
 
-export default function PlanCardSmall(plan: PlanView_Data, updateWishlist : Function, userID : String) {
+// props: plan, userID, size: "sm" or "lg"
+//   plan: PlanView_Data,
+//   updateWishlist: Function,
+//   userID: String,
+//   size: String,
+export default function PlanCardSmall(props) {
+  const [updateWishlist, { data: data, loading: loading, error: error }] =
+    useMutation(UPDATE_WISHLIST, { refetchQueries: [] });
+
+  if (loading) console.log("Loading...");
+  if (error) console.log(`Error! ${error.message}`);
 
   const displayBudget = (budget: Number) => {
     let dollarSigns = "";
@@ -57,136 +63,147 @@ export default function PlanCardSmall(plan: PlanView_Data, updateWishlist : Func
     }
   };
 
-  function UpdateWishlist()
-  {
-    if (true)
-    {
-        console.log(updateWishlist({variables : {input : {userID : userID, planID : plan.id}}}))
-    }
-    else
-    {
-        // removeWishlist({variables : {input : {userID : userID, planID : plan.id}}})
+  function UpdateWishlist() {
+    if (true) {
+      console.log(
+        updateWishlist({
+          variables: { input: { userID: props.userID, planID: props.plan.id } },
+        })
+      );
+    } else {
+      // removeWishlist({variables : {input : {userID : userID, planID : plan.id}}})
     }
   }
-  
+
   return (
-    <Box
-      maxW="260"
-      rounded="lg"
-      overflow="hidden"
-      borderColor="coolGray.200"
-      borderWidth="1"
-      _dark={{
-        borderColor: "coolGray.600",
-        backgroundColor: "gray.700",
-      }}
-      _web={{
-        shadow: 2,
-        borderWidth: 0,
-      }}
-      _light={{
-        backgroundColor: "gray.50",
+    <Pressable
+      onPress={() => {
+        props.navigation.navigate("Plan");
       }}
     >
-      <Stack p="5" space={3}>
-        {/* <Stack space={2}> */}
-        <HStack justifyContent={"space-between"} alignItems={"center"}>
+      <Box
+        maxW={props.size === "sm" ? "260" : null}
+        rounded="lg"
+        overflow="hidden"
+        borderColor="coolGray.200"
+        borderWidth="1"
+        _dark={{
+          borderColor: "coolGray.600",
+          backgroundColor: "gray.700",
+        }}
+        _web={{
+          shadow: 2,
+          borderWidth: 0,
+        }}
+        _light={{
+          backgroundColor: "gray.50",
+        }}
+      >
+        <Stack p="5" space={3}>
+          <HStack justifyContent={"space-between"} alignItems={"center"}>
             <Heading size="sm" ml="-1">
-                {plan.name}
+              {props.plan.name}
             </Heading>
-            
+
             <IconButton
-                icon={<FavouriteIcon/>}
-                borderRadius="full"
-                _icon={{color: "red.100"}}
-                _pressed={{
-                    _icon: {
-                      color: "red.400"
-                    }}}
-                onPress={() => {UpdateWishlist()}}/>
-        </HStack>
-        
-        <Text
-          fontSize="xs"
-          _light={{
-            color: "gray.800",
-          }}
-          _dark={{
-            color: "gray.800",
-          }}
-          fontWeight="500"
-          ml="-0.5"
-          mt="-1"
-        >
-          {displayCountries(plan.countries)}
-        </Text>
-        <Text
-          fontSize="xs"
-          _light={{
-            color: "gray.800",
-          }}
-          _dark={{
-            color: "gray.800",
-          }}
-          fontWeight="500"
-          ml="-0.5"
-          mt="-1"
-        >
-          {plan.rating} Stars {"\u2022"} {displayBudget(plan.budget)}
-        </Text>
-        <Box>
-          <AspectRatio w="100%" ratio={16 / 9}>
-            <Image
-              source={{
-                uri: "https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg",
+              icon={<FavouriteIcon />}
+              borderRadius="full"
+              _icon={{ color: "red.100" }}
+              _pressed={{
+                _icon: {
+                  color: "red.400",
+                },
               }}
-              alt="image"
+              onPress={() => {
+                UpdateWishlist();
+              }}
             />
-          </AspectRatio>
-        </Box>
-        <Text fontWeight="400">{plan.description}</Text>
-        <HStack>
-          <Box
-            backgroundColor={"violet.600"}
-            p="1"
-            m="1"
-            rounded="xs"
-            _text={{
-              fontSize: "xs",
-              fontWeight: "bold",
-              color: "white",
+          </HStack>
+
+          <Text
+            fontSize="xs"
+            _light={{
+              color: "gray.800",
             }}
-          >
-            {plan.tags[0] ? plan.tags[0] : null}
-          </Box>
-          <Box
-            backgroundColor={"violet.600"}
-            p="1"
-            m="1"
-            rounded="xs"
-            _text={{
-              fontSize: "xs",
-              fontWeight: "bold",
-              color: "white",
+            _dark={{
+              color: "gray.800",
             }}
+            fontWeight="500"
+            ml="-0.5"
+            mt="-1"
+            fontStyle="italic"
           >
-            {plan.tags[1] ? plan.tags[1] : null}
-          </Box>
-          <Box
-            backgroundColor={"violet.600"}
-            p="1"
-            m="1"
-            rounded="xs"
-            _text={{
-              fontSize: "xs",
-              fontWeight: "bold",
-              color: "white",
+            {displayCountries(props.plan.countries)}
+          </Text>
+          <Text
+            fontSize="xs"
+            _light={{
+              color: "gray.800",
             }}
+            _dark={{
+              color: "gray.800",
+            }}
+            fontWeight="600"
+            ml="-0.5"
+            mt="-1"
           >
-            {plan.tags[2] ? plan.tags[2] : null}
+            {props.plan.rating} STARS {"\u2022"}{" "}
+            {displayBudget(props.plan.budget)}
+          </Text>
+          <Box>
+            <AspectRatio w="100%" ratio={16 / 9}>
+              <Image
+                source={{
+                  uri: "https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg",
+                }}
+                alt="image"
+              />
+            </AspectRatio>
           </Box>
-        </HStack>
-      </Stack>
-    </Box>
+          <Text fontWeight="400">{props.plan.description}</Text>
+          <HStack>
+            <Box
+              backgroundColor={"violet.600"}
+              p="1"
+              m="1"
+              rounded="xs"
+              _text={{
+                fontSize: "xs",
+                fontWeight: "bold",
+                color: "white",
+              }}
+            >
+              {props.plan.tags[0] ? props.plan.tags[0] : null}
+            </Box>
+            <Box
+              backgroundColor={"violet.600"}
+              p="1"
+              m="1"
+              rounded="xs"
+              _text={{
+                fontSize: "xs",
+                fontWeight: "bold",
+                color: "white",
+              }}
+            >
+              {props.plan.tags[1] ? props.plan.tags[1] : null}
+            </Box>
+            <Box
+              backgroundColor={"violet.600"}
+              p="1"
+              m="1"
+              rounded="xs"
+              _text={{
+                fontSize: "xs",
+                fontWeight: "bold",
+                color: "white",
+              }}
+            >
+              {props.plan.tags[2] ? props.plan.tags[2] : null}
+            </Box>
+          </HStack>
+        </Stack>
+      </Box>
+    </Pressable>
   );
 }

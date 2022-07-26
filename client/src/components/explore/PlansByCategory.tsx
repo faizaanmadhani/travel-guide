@@ -5,12 +5,10 @@ import {
   ChevronLeftIcon,
   Heading,
   VStack,
-  Pressable,
   Button,
-  HStack,
   Flex,
 } from "native-base";
-import PlanView from "../../views/PlanView";
+import PlanCardSmall from "../PlanCardSmall";
 
 export default function PlansByCategory(props) {
   const [isLoading, setIsLoading] = React.useState(true);
@@ -49,7 +47,11 @@ export default function PlansByCategory(props) {
 
     if (categoryPlans) {
       return categoryPlans.map((plan, index) => {
-        return <Box key={index}>{PlanView(plan)}</Box>;
+        return (
+          <Box key={index}>
+            <PlanCardSmall plan={plan} userID={props.userID} size={"lg"} />
+          </Box>
+        );
       });
     }
   };

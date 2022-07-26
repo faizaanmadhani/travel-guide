@@ -32,23 +32,7 @@ export const GET_FILTERED_PLANS = gql`
   }
 `;
 
-export const UPDATE_WISHLIST = gql`
-  mutation updateWishlist($input: AddWishlistPlanInput!) {
-    updateWishlistPlan(input: $input) {
-      id
-      name
-      wishlistPlans
-    }
-  }
-`;
-
 export default function ExploreView(props) {
-  const [updateWishlist, { data: data1, loading: loading1, error: error1 }] =
-    useMutation(UPDATE_WISHLIST, { refetchQueries: [] });
-
-  if (loading1) console.log("Loading...");
-  if (error1) console.log(`Error! ${error1.message}`);
-
   const { loading, error, data, refetch, networkStatus } = useQuery(
     GET_FILTERED_PLANS,
     {
@@ -134,7 +118,7 @@ export default function ExploreView(props) {
     return plansList.map((plan) => {
       return (
         <Box key={plan.id}>
-          {PlanCardSmall(plan, updateWishlist, props.userID)}
+          <PlanCardSmall plan={plan} userID={props.userID} size={"sm"} navigation={props.navigation} />
         </Box>
       );
     });
@@ -162,6 +146,7 @@ export default function ExploreView(props) {
               budgetPlans={budgetPlans}
               luxuryPlans={luxuryPlans}
               setIsPlansByCategory={setIsPlansByCategory}
+              userID={props.userID}
             />
           ) : (
             allCategories.map((category, index) =>
