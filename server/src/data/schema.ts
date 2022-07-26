@@ -28,21 +28,19 @@ export const planSchema = new Schema<IPlan>({
   blocks: { type: [Types.ObjectId], required: false, ref: "PlanBlock" },
   countries: { type: [String], required: false },
   months: { type: [String], required: false },
-  assetLinks: { type: [String], required: false },
+  imageUrl: { type: String, required: false },
+  dayLabels: { type: [String], required: false },
 });
 
 export const planBlockSchema = new Schema<IPlanBlock>({
   title: { type: String, required: true },
   description: { type: String, required: true },
   location: { type: String, required: true },
-  // tags: { type: [String], required: true },
-  // type: { type: String, required: true },
   images: { type: String, required: false },
   day: { type: Number, required: true },
-  // map_id: { type: String, required: false },
-  // location_url: { type: String, required: false },
-  // audio: { type: String, required: false },
-  // video: { type: String, required: false },
+  imageUrl: { type: String, required: false },
+  lat: { type: Number, required: false },
+  long: { type: Number, required: false },
 });
 
 export const tagSchema = new Schema<ITag>({

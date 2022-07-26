@@ -10,20 +10,21 @@ import {
   Center,
   View,
   Box,
+  Spinner,
 } from "native-base";
 import { StyleSheet } from "react-native";
 import PagerView from "react-native-pager-view";
+import { PlanView_Data } from "../components/PlanView";
+import BlockPage from "../pages/BlockPage";
 
-const GET_PLAN = gql`
-  query GetPlan($id: String!) {
-    plan(id: $id) {
+const GET_PLAN_DETAILS = gql`
+  query GetPlan($planID: String!, $day: Int!) {
+    plan(id: $planID) {
       name
       id
-      rating
-      description
-      blocks {
-        id
+      blocks(day: $day) {
         title
+        id
       }
     }
   }
@@ -35,15 +36,18 @@ const TravelPlanPage = ({ route, navigation }) => {
 
   const [activeTab, setActiveTab] = useState<number>(0);
 
-  const [daysLabels, setDaysLabels] = useState(["Intro", "Day 1", "Day 2"]);
+  const [daysLabels, setDaysLabels] = useState(["Intro"]);
 
-  //   const { data, loading, error } = useQuery(GET_PLAN, {
-  //     variables: {
-  //       id: planID,
-  //     },
-  //   });
+  const { planID } = route;
 
-  //   console.log("The data object", data);
+  const { data, loading, error, refetch } = useQuery(GET_PLAN_DETAILS, {
+    variables: {
+      planID: planID,
+      day: activeTab >= 1 ? activeTab : 1,
+    },
+  });
+
+  if (loading) return <Spinner />;
 
   return (
     <ScrollView>
@@ -51,7 +55,7 @@ const TravelPlanPage = ({ route, navigation }) => {
       <Stack space={3}>
         <Stack marginLeft={"4"} marginRight={"4"} space={3}>
           <Text fontSize="2xl" bold>
-            Name of Travel Plan
+            {data.plan.name}
           </Text>
           <ScrollView horizontal={true}>
             <HStack>
@@ -93,12 +97,17 @@ const TravelPlanPage = ({ route, navigation }) => {
                 />
               </Center>
               <HStack justifyContent="space-between">
-                <Text bold>Rating: 4/5</Text>
-                <Text bold>Last Updated: May 13th, 2021</Text>
+                <Text bold>Rating: {data.plan.rating}</Text>
               </HStack>
-              <Text>Description</Text>
+              <Text>{data.plan.description}</Text>
             </Stack>
-          ) : null}
+          ) : (
+            <BlockPage
+              navigation={navigation}
+              planID={data.plan.id}
+              day={activeTab}
+            />
+          )}
         </ScrollView>
       </Stack>
       {/* )} */}

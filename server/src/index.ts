@@ -24,8 +24,32 @@ export interface Context {
   user: String;
 }
 
-async function startApolloServer() {
-  const app = express();
+const app = express();
+
+const router = express.Router();
+
+const multer = Multer({
+  storage: Multer.MemoryStorage,
+  fileSize: 5 * 1024 * 1024,
+});
+
+router.post(
+  "/image-upload",
+  multer.single("image"),
+  ImgUpload.uploadToGcs,
+  function(request: any, response: any, _) {
+    console.log("right endpoint triggered", request);
+    const data = request.body;
+    if (request.file && request.file.cloudStoragePublicUrl) {
+      data.imageUrl = request.file.cloudStoragePublicUrl;
+    }
+    response.send(data);
+  }
+);
+
+app.use("/", router);
+
+async function startApolloServer(app: any) {
   const httpServer = http.createServer(app);
 
   // This is where we define the context type which is used
@@ -57,19 +81,19 @@ async function startApolloServer() {
       //
       // To find out the correct arguments for a specific integration,
       // see https://www.apollographql.com/docs/apollo-server/api/apollo-server/#middleware-specific-context-fields
-   
+
       // Get the user token from the headers.
-      let token = req.headers.authorization || '';
-      if (token) token = token.split(' ')[1];
+      let token = req.headers.authorization || "";
+      if (token) token = token.split(" ")[1];
       // console.log("token HERE", req.headers.authorization);
       // Try to retrieve a user with the token
       const { payload: user, loggedIn } = getPayload(token);
       // console.log("user HERE", user);
-   
+
       // Add the user to the context
       console.log("[CONTEXT]", "logged in:", loggedIn, "user_id:", user.id);
 
-      return { loggedIn:loggedIn, user:user.id };
+      return { loggedIn: loggedIn, user: user.id };
     },
   });
 
@@ -84,8 +108,8 @@ async function startApolloServer() {
   initDb().catch((err) => console.error(err));
   server.applyMiddleware({
     app,
-    path: "/",
-    cors: corsConfig
+    path: "/graphql",
+    cors: corsConfig,
   });
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: 4000 }, resolve)
@@ -93,41 +117,20 @@ async function startApolloServer() {
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
 }
 
-startApolloServer().catch((e) => console.log("Big ERROR", e));
+startApolloServer(app).catch((e) => console.log("Big ERROR", e));
 
-const multer = Multer({
-  storage: Multer.MemoryStorage,
-  fileSize: 5 * 1024 * 1024,
-});
-
-const router = express.Router();
-
-router.post(
-  "/image-upload",
-  multer.single("image"),
-  ImgUpload.uploadToGcs,
-  function(request: any, response: any, _) {
-    console.log("right endpoint triggered", request);
-    const data = request.body;
-    if (request.file && request.file.cloudStoragePublicUrl) {
-      data.imageUrl = request.file.cloudStoragePublicUrl;
-    }
-    response.send(data);
-  }
-);
-
-var nodemailer = require('nodemailer');
+var nodemailer = require("nodemailer");
 
 export var transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
-    user: 'wandr497@gmail.com',
-    pass: 'hepvigybygnzmutg'
-  }
+    user: "wandr497@gmail.com",
+    pass: "hepvigybygnzmutg",
+  },
 });
 
 const corsConfig = {
   credentials: true,
-  allowedHeaders: ['Authorization'],
-  exposedHeaders: ['Authorization'],
+  allowedHeaders: ["Authorization"],
+  exposedHeaders: ["Authorization"],
 };

@@ -13,6 +13,17 @@ import {
 } from "native-base";
 import { gql, useMutation } from "@apollo/client";
 
+export type PlanView_Data = {
+  id: String;
+  name: String;
+  budget: number;
+  rating: number;
+  tags: String[];
+  description: String;
+  // countries: String[];
+  months: String[];
+  imageUrl: string;
+};
 export const UPDATE_WISHLIST = gql`
   mutation updateWishlist($input: AddWishlistPlanInput!) {
     updateWishlistPlan(input: $input) {
@@ -154,7 +165,7 @@ export default function PlanCardSmall(props) {
             <AspectRatio w="100%" ratio={16 / 9}>
               <Image
                 source={{
-                  uri: "https://www.holidify.com/images/cmsuploads/compressed/Bangalore_citycover_20190613234056.jpg",
+                  uri: props.plan.imageUrl,
                 }}
                 alt="image"
               />

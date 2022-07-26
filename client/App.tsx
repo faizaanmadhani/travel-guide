@@ -27,12 +27,13 @@ import RegisterPage from "./src/pages/RegisterPage";
 import LoginPage from "./src/pages/LoginPage";
 import TravelStackScreen from "./src/navigation/TravelPageStack";
 import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
+import ExplorePageStack from "./src/navigation/ExplorePageStack";
 import EmailVerificationPage from "./src/pages/EmailVerificationPage";
 import { setContext } from "@apollo/client/link/context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const httpLink = createHttpLink({
-  uri: "https://e0ee-2620-101-f000-700-abe6-da88-8c62-a758.ngrok.io",
+  uri: "https://5070-2620-101-f000-700-3-d157-d176-a79f.ngrok.io/graphql",
   credentials: "include",
 });
 
@@ -54,6 +55,8 @@ const authLink = setContext(async (_, { headers }) => {
 export const UserContext = React.createContext({
   userID: "",
   setUserID: (id) => {},
+  userSessionToken: "",
+  setUserSessionToken: (token) => {},
 });
 
 export const RegisterContext = React.createContext({

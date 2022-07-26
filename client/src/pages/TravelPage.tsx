@@ -51,9 +51,7 @@ const GET_SAVED_PLANS = gql`
         rating
         tags
         description
-        countries
-        months
-        assetLinks
+        imageUrl
       }
     }
   }
@@ -69,7 +67,11 @@ export default function TravelPage({ navigation }: { navigation: any }) {
     loading: planLoading,
     error: planError,
     refetch,
-  } = useQuery(GET_SAVED_PLANS);
+  } = useQuery(GET_SAVED_PLANS, {
+    variables: {
+      userID: userID,
+    },
+  });
 
   const [createBlankPlan, { data, loading, error }] = useMutation(
     CREATE_BLANK_PLAN,
@@ -83,12 +85,16 @@ export default function TravelPage({ navigation }: { navigation: any }) {
     }
   );
 
+  console.log("new data", planData);
+
   if (planLoading) return <Spinner />;
 
   return (
     <SafeAreaView>
       <Button
         marginBottom={2}
+        marginLeft={2}
+        marginRight={2}
         onPress={() => {
           console.log("refetching...");
           refetch({
@@ -96,16 +102,15 @@ export default function TravelPage({ navigation }: { navigation: any }) {
           });
         }}
       >
-        Refetch
+        Reload
       </Button>
       <Spinner
         //visibility of Overlay Loading Spinner
         visible={loading}
       />
       <VStack>
-        <Box alignItems="flex-start">
-          <HStack justifyContent="space-between">
-            <Input mx="3" placeholder="Search Travel Plans" w="70%" />
+        <Box alignItems="center">
+          <HStack justifyContent="center" alignItems="center">
             <IconButton
               icon={<AntDesign name="filter" size={25} color="#CCD2E3" />}
             />

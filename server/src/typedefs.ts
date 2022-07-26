@@ -30,23 +30,25 @@ export const typeDefs = gql`
     blocks(day: Int!): [PlanBlock!]
     countries: [String!]!
     months: [String!]!
-    assetLinks: [String]
+    imageUrl: String!
+    dayLabels: [String!]!
   }
 
   type PlanBlock {
     id: ID
     title: String
+    day: Int
     description: String
     # type: BlockType!
-    images: [String] # Link to image urls. string at images[0] is first one displayed
     # mapId: String! #Something to help render gmaps url. Maybe a google maps link
     # locationUrl: String # External link to the location
     # Store some links additional assets
     # audio: String!
     # video: String!
     price: Int
-    day: Int
-    externalUrl: [String]
+    imageUrl: String
+    lat: Float
+    long: Float
   }
 
   enum BlockType {
@@ -83,13 +85,12 @@ export const typeDefs = gql`
     modifyPlan(input: UpdatePlanInput!): Plan
     modifyUser(input: UpdateUserInput!): User
     addPlanBlock(input: UpdatePlanBlockInput!): PlanBlock!
+    modifyPlanBlock(id: String!, input: UpdatePlanBlockInput!): PlanBlock
+    deletePlan(id: String!): Plan
+    deleteBlock(id: String!): PlanBlock
     addWishlistPlan(input: AddWishlistPlanInput!): User
     removeWishlistPlan(input: AddWishlistPlanInput!): User
     updateWishlistPlan(input: AddWishlistPlanInput!): User
-    #addPlanBlock(input: PlanBlockInput!)
-    #modifyUser(input: UserInput!)
-    #modifyPlan(input: modifyPlan!)
-    #modifyPlanBlock(input: PlanBlockInput!)
   }
 
   input AddWishlistPlanInput {
@@ -141,18 +142,22 @@ export const typeDefs = gql`
     rating: Int # value between 1 and 5
     tags: [String]
     description: String
-    assetLinks: [String]
+    imageUrl: String
+    countries: [String]
+    months: [String]
   }
 
   input UpdatePlanBlockInput {
+    planID: String
     location: String
     description: String
     title: String
     price: Int
     links: [String]
     day: Int
-    #audio: Int
-    #video: Int
-    images: [String]
+    imageUrl: String
+    lat: Float
+    long: Float
+    dayLabels: String
   }
 `;

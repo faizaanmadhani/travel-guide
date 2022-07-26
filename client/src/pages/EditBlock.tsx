@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { StyleSheet, View } from "react-native";
-import { Pressable } from "react-native";
+import { Pressable, Platform } from "react-native";
 import {
   Box,
   Center,
@@ -24,17 +24,38 @@ import SearchBarWithAutocomplete, {
 import axios from "axios";
 import { useDebounce } from "../hooks/useDebounce";
 import * as ImagePicker from "expo-image-picker";
+import { gql, useMutation } from "@apollo/client";
+import MapView, { Marker } from "react-native-maps";
 
 const GOOGLE_PLACES_API_BASE_URL = "https://maps.googleapis.com/maps/api/place";
 
 // Search Bar Citation: https://medium.com/nerd-for-tech/react-native-custom-search-bar-with-google-places-autocomplete-api-69b1c98de6a0
 
-export const EditBlockForm = ({ navigation }: { navigation: any }) => {
+const CREATE_BLOCK = gql`
+  mutation addPlanBlock($input: UpdatePlanBlockInput!) {
+    addPlanBlock(input: $input) {
+      id
+    }
+  }
+`;
+
+export const EditBlockForm = ({
+  navigation,
+  route,
+}: {
+  navigation: any;
+  route: any;
+}) => {
+  const { planID, day } = route.params;
+  console.log("planID and day", planID, day);
+
   const [search, setSearch] = useState({ term: "", fetchPredictions: false });
+  const [coordinates, setCoordinates] = useState({ lat: null, long: null });
   const [showPredictions, setShowPredictions] = useState(false);
   const [predictions, setPredictions] = useState<PredictionType[]>([]);
-  const [, updateState] = useState({});
-  const forceUpdate = useCallback(() => updateState({}), []);
+  const [title, setTitle] = useState("");
+
+  const [createBlock, { data, loading, error }] = useMutation(CREATE_BLOCK);
 
   const [image, setImage] = useState(null);
 
@@ -47,6 +68,7 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
   const [links, setLinks] = useState([]);
   const [linkEditable, setLinkEditable] = useState(false);
   const [currLink, setCurrLink] = useState("");
+  const [externImgUrl, setExternImgUrl] = useState("");
 
   const deleteLink = (index: number) => {
     let tempLinksArr = links;
@@ -55,6 +77,41 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
     tempLinksArr.splice(index, 1);
     console.log("Array: ", tempLinksArr);
     setLinks(tempLinksArr);
+  };
+
+  const createFormData = (photo, body = {}) => {
+    const data = new FormData();
+
+    console.log("the uri", photo);
+
+    const imageData: any = {
+      uri: Platform.OS === "ios" ? photo.replace("file://", "") : photo,
+      type: "image/jpeg",
+      name: "image.jpg",
+    };
+
+    data.append("image", imageData);
+
+    return data;
+  };
+
+  const uploadImage = async () => {
+    try {
+      const response = await fetch(
+        "https://5070-2620-101-f000-700-3-d157-d176-a79f.ngrok.io/image-upload",
+        {
+          method: "POST",
+          body: createFormData(image),
+        }
+      );
+      const responseJson = await response.json();
+      const imageUrl: string = responseJson["imageUrl"];
+      console.log("IMAGE UPLOAD RESULT", imageUrl);
+      return imageUrl;
+    } catch (error) {
+      console.log("BIG IMAGE UPLOAD ERROR", error);
+      return "";
+    }
   };
 
   const renderLink = async (url: string) => {
@@ -123,6 +180,7 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
           },
         } = result;
         const { lat, lng } = location;
+        setCoordinates({ lat: lat, long: lng });
         setShowPredictions(false);
         setSearch({ term: description, fetchPredictions: false });
       }
@@ -141,6 +199,29 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
     if (!result.cancelled) {
       setImage(result["uri"]);
     }
+  };
+
+  const triggerCreate = async () => {
+    console.log("create triggered");
+
+    console.log("image upload triggered");
+    const imageUploaded = await uploadImage();
+
+    const inputData: any = {
+      planID: planID,
+      location: search.term,
+      description: description,
+      title: title,
+      price: activeBudgetIndicator + 1,
+      day: day,
+      imageUrl: imageUploaded,
+      lat: coordinates.lat,
+      long: coordinates.long,
+    };
+    console.log("the input data", inputData);
+    createBlock({ variables: { input: inputData } }).catch((error) => {
+      console.log(JSON.stringify(error, null, 2));
+    });
   };
 
   return (
@@ -167,6 +248,20 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
             onPredictionTapped={onPredictionTapped}
           />
         </FormControl>
+        {/* {search.term === "" ? null : (
+          <View>
+            <MapView>
+              <Marker
+                coordinate={{
+                  latitude: coordinates.lat,
+                  longitude: coordinates.long,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0922,
+                }}
+              />
+            </MapView>
+          </View>
+        )} */}
         <Pressable onPress={() => pickImage()}>
           <Center>
             {!image ? (
@@ -203,19 +298,8 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
           />
         </FormControl>
         <FormControl mb="1">
-          <FormControl.Label>Audio File</FormControl.Label>
-          <Button
-            marginRight="1"
-            backgroundColor="#06B6D4"
-            //   onPress={(_) => setActiveTab(index)}
-            //   key={label}
-          >
-            Record Audio
-          </Button>
-        </FormControl>
-        <FormControl mb="1">
           <FormControl.Label>Title</FormControl.Label>
-          <Input />
+          <Input value={title} onChangeText={(text) => setTitle(text)} />
         </FormControl>
         <FormControl mb="1">
           <FormControl.Label>Estimated Price</FormControl.Label>
@@ -232,7 +316,7 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
                   onPress={(_) => setActiveBudgetIndicator(index)}
                   key={item}
                   backgroundColor="#06B6D4"
-                  width={60}
+                  width={70}
                 >
                   {item}
                 </Button>
@@ -241,7 +325,7 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
                   marginRight="1"
                   variant="outline"
                   onPress={(_) => setActiveBudgetIndicator(index)}
-                  width={60}
+                  width={70}
                   key={item}
                 >
                   {item}
@@ -305,12 +389,20 @@ export const EditBlockForm = ({ navigation }: { navigation: any }) => {
         </FormControl>
         <Box>
           <FormControl mb="1">
-            <Button backgroundColor="#06B6D4">Done</Button>
+            <Button
+              backgroundColor="#3CB371"
+              onPress={() => {
+                triggerCreate();
+                navigation.goBack();
+              }}
+            >
+              Done
+            </Button>
           </FormControl>
         </Box>
         <Box>
           <FormControl mb="1">
-            <Button backgroundColor="#AF2C43">Delete Block</Button>
+            <Button backgroundColor="#AF2C43">Cancel</Button>
           </FormControl>
         </Box>
       </Stack>

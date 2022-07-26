@@ -10,12 +10,8 @@ const ExploreStack = createNativeStackNavigator();
 export default function TravelStackScreen() {
   return (
     <ExploreStack.Navigator>
-        <ExploreStack.Screen name="Explore" component={ExplorePage} />
-        <ExploreStack.Screen
-            name="View Plan"
-            component={TravelPlanPage}
-        />
-
+      <ExploreStack.Screen name="Explore" component={ExplorePage} />
+      <ExploreStack.Screen name="View Plan" component={TravelPlanPage} />
     </ExploreStack.Navigator>
   );
 }

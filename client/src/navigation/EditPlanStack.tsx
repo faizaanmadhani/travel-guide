@@ -6,8 +6,10 @@ import EditTravelPlan from "../pages/EditTravelPlan";
 import ImageBrowserScreen from "../components/assetselector";
 import { EditBlockForm } from "../pages/EditBlock";
 import TravelPlanPage from "../pages/PlanMain";
+import { NavigationContainer } from "@react-navigation/native";
 
 const TravelStack = createNativeStackNavigator();
+const ViewPlanStack = createNativeStackNavigator();
 
 export default function EditTravelPlanStackScreen() {
   return (

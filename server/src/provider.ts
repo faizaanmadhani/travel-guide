@@ -24,7 +24,7 @@ const castIUserToUser = (user: any) => {
 
 const castIPlantoPlan = (plan: any) => {
   const gqlPlan: Plan = {
-    id: !plan?.id ? "" : plan?.id,
+    id: !plan?._id ? "" : plan?._id,
     name: !plan?.name ? "" : plan?.name,
     creator: null,
     creatorId: !plan?.creator ? "" : plan?.creator,
@@ -32,9 +32,10 @@ const castIPlantoPlan = (plan: any) => {
     rating: !plan?.rating ? 1 : plan?.rating,
     tags: !plan?.tags ? [] : plan?.tags,
     description: !plan?.description? "" : plan?.description,
-    countries: !plan?.countries ? "" : plan?.countries,
-    months: !plan?.months ? "" : plan?.months,
-    assetLinks: !plan?.assetLinks ? [] : plan?.assetLinks,
+    countries: !plan?.countries ? [] : plan?.countries,
+    months: !plan?.months ? [] : plan?.months,
+    imageUrl: !plan?.imageUrl ? "" : plan?.imageUrl,
+    dayLabels: !plan?.dayLabels ? ["Intro"] : plan?.dayLabels,
   }
   return gqlPlan;
 }
@@ -44,13 +45,11 @@ const castIPlanBlocktoPlanBlock = (planBlock: any) => {
     id: !planBlock?.id ? "" : planBlock?.id,
     title: !planBlock?.title ? "" : planBlock?.title,
     description: !planBlock?.description ? "" : planBlock?.description,
-    images: !planBlock?.images ? [] : planBlock?.images,
-    // mapId: !planBlock?.mapId ? "" : planBlock?.mapId,
-    // audio: !planBlock?.audio ? "" : planBlock?.audio,
-    // video: !planBlock?.video ? "" : planBlock?.video,
     price: !planBlock?.price ? 0 : planBlock?.price,
     day: !planBlock?.day ? 1 : planBlock.day,
-    externalUrl: !planBlock?.links ? [] : planBlock.links
+    imageUrl: !planBlock?.imageUrl ? "" : planBlock.imageUrl,
+    lat: planBlock.lat,
+    long: planBlock.long
   }
   return gqlPlanBlock;
 }
@@ -171,7 +170,8 @@ export class UserProvider extends DataSource {
 
     if (plansArray) {
       const savedPlans: Plan[] = plansArray?.map((plan, _) => {
-        return castIPlantoPlan(plan); // populate for some reason stores each obj in nested array
+        console.log("Each plan", plan);
+        return castIPlantoPlan(plan[0]); // populate for some reason stores each obj in nested array
       })
       
       return savedPlans;
@@ -337,6 +337,7 @@ export class UserProvider extends DataSource {
 
 export class PlanProvider extends DataSource {
   public async getPlan(id: string) {
+    console.log("the plan just fetched", id);
     const plan = (await PlanModel.findById(id).exec());
     return castIPlantoPlan(plan);
   }
@@ -408,7 +409,9 @@ export class PlanProvider extends DataSource {
       tags: [],
       description: "",
       blocks: [],
-      assetLinks: []
+      imageUrl: "",
+      countries: [],
+      months: [],
     });
 
     await newPlan.save();
@@ -424,6 +427,8 @@ export class PlanProvider extends DataSource {
 
   public async updatePlan(input: UpdatePlanInput) {
 
+    console.log("the input for imageUrl", input);
+
     const doc = await PlanModel.findById(input.id);
     const creatorId = input.creatorId;
     if (doc) {
@@ -434,8 +439,11 @@ export class PlanProvider extends DataSource {
         budget: 0,
         tags: [],
         description: "",
-        blocks: [],
-        assetLinks: []
+        blocks: doc.blocks,
+        imageUrl: "",
+        dayLabels: doc.dayLabels,
+        countries: [],
+        months: []
       });
 
       doc.name = !input.name ? "" : input.name;
@@ -445,8 +453,10 @@ export class PlanProvider extends DataSource {
         doc.tags.push(tag);
       })
       doc.description = !input.description ? "" : input.description;
-      input.assetLinks?.forEach((link, _) => {
-        doc.assetLinks.push(link);
+      doc.imageUrl = !input.imageUrl ? "" : input.imageUrl;
+
+      input.countries?.forEach((country, _) => {
+        doc.countries.push(country)
       })
 
       await doc.save();
@@ -455,6 +465,13 @@ export class PlanProvider extends DataSource {
 
     return null;
   }
+
+  public async deletePlan(id: string) {
+    const plan = (await PlanModel.findById(id));
+    await PlanModel.deleteOne({_id: id});
+    return castIPlantoPlan(plan);
+  }
+
 }
 
 export class PlanBlockProvider extends DataSource {
@@ -464,17 +481,22 @@ export class PlanBlockProvider extends DataSource {
   }
 
   public async getPlanBlocksByPlanAndDay(planId: string, day: number) {
+    console.log("stack trace leads here?", planId, day);
     let planBlocksArray: any = (await PlanModel.findById(planId).select("blocks").populate({
       path: "blocks",
       model: "PlanBlock"
     }).exec())?.blocks;
 
+    console.log("The plan blocks array", planBlocksArray);
     planBlocksArray = planBlocksArray.filter((obj: any) => obj.day === day);
+    console.log("The filtered plan blocks array", planBlocksArray);
 
     if (planBlocksArray) {
       const blocks: PlanBlock[] = planBlocksArray?.map((block, _) => {
-        return castIPlanBlocktoPlanBlock(block[0]);
+        console.log("each block", block);
+        return castIPlanBlocktoPlanBlock(block);
       });
+      console.log("the blocks", blocks);
       return blocks;
     } else {
       const blocks: PlanBlock[] = [];
@@ -482,23 +504,56 @@ export class PlanBlockProvider extends DataSource {
     }
   }
 
-  public async createBlock(planID: string, input: UpdatePlanBlockInput) {
+  public async createBlock(input: UpdatePlanBlockInput) {
     const newPlanBlock = new PlanBlockModel({
       title: input.title,
       description: input.description,
-      images: input.images,
+      imageUrl: input.imageUrl,
+      lat: input.lat,
+      long: input.long,
       links: input.links,
       location: input.location,
       day: input.day,
     })
 
+    console.log("the input ", input);
+
     await newPlanBlock.save();
     const id = newPlanBlock._id.toString();
-    const plan = (await PlanModel.findById(planID).exec());
+    const plan = (await PlanModel.findById(input.planID).exec());
     plan?.blocks.push(id);
     await plan?.save();
 
     return castIPlanBlocktoPlanBlock(this.getPlanBlock(id));
+  }
+
+  public async modifyBlock(id: string, input: UpdatePlanBlockInput) {
+    const doc = await PlanBlockModel.findById(id);
+    if (doc) {
+      doc.overwrite({
+        title: input.title,
+        description: input.description,
+        links: input.links,
+        price: input.price,
+        location: input.location,
+        day: input.day,
+        lat: input.lat,
+        long: input.long,
+      })
+
+      await doc.save();
+
+      return this.getPlanBlock(id);
+    }
+
+    return null
+  }
+
+  public async deletePlanBlock(id: string) {
+    console.log("delete plan block was triggered", id);
+    const planBlock = (await PlanBlockModel.findById(id));
+    await PlanBlockModel.deleteOne({_id: id});
+    return castIPlanBlocktoPlanBlock(planBlock);
   }
 }
 
