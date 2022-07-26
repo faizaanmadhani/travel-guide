@@ -106,7 +106,28 @@ export default function EditTravelPlan({
   const [countriesList, setCountriesList] = useState([]);
   const [countriesSelected, setCountriesSelected] = useState([]);
 
-  React.useEffect(() => {
+  const monthsObj = {
+    Jan: false,
+    Feb: false,
+    Mar: false,
+    Apr: false,
+    May: false,
+    Jun: false,
+    Jul: false,
+    Aug: false,
+    Sep: false,
+    Oct: false,
+    Nov: false,
+    Dec: false,
+  };
+
+  const [months, setMonths] = useState(new Map(Object.entries(monthsObj)));
+
+  const updateMonths = (selectedMonth: string, state: boolean) => {
+    setMonths(new Map(months.set(selectedMonth, !state)));
+  };
+
+  useEffect(() => {
     console.log("fetching countries hook");
     axios
       .get("https://countriesnow.space/api/v0.1/countries")
@@ -180,9 +201,10 @@ export default function EditTravelPlan({
       const responseJson = await response.json();
       const imageUrl: string = responseJson["imageUrl"];
       console.log("IMAGE UPLOAD RESULT", imageUrl);
-      setExternImgUrl(imageUrl);
+      return imageUrl;
     } catch (error) {
       console.log("BIG IMAGE UPLOAD ERROR", error);
+      return "";
     }
   };
 
@@ -210,7 +232,9 @@ export default function EditTravelPlan({
 
   const triggerUpdate = async () => {
     console.log("image upload triggered");
-    await uploadImage();
+    const newImageUrl = await uploadImage();
+
+    const selectedMonths = [...months.keys()].filter((k) => months[k]);
 
     const inputData: any = {
       id: planID,
@@ -220,7 +244,9 @@ export default function EditTravelPlan({
       budget: activeBudgetIndicator + 1,
       tags: tags.tagsArray === undefined ? [] : tags.tagsArray,
       description: description,
-      imageUrl: externImgUrl,
+      imageUrl: newImageUrl,
+      countries: countriesSelected,
+      months: selectedMonths,
     };
 
     console.log("the input data", inputData);
@@ -252,6 +278,22 @@ export default function EditTravelPlan({
       setNumDays(data.plan.dayLabels.length - 1);
     }
   }, [data]);
+
+  const displayCountries = () => {
+    return countriesSelected.map((countrySelected, index) => {
+      return (
+        <Box key={index} mb="1">
+          <Button
+            key="sm"
+            size="sm"
+            onPress={() => updateCountries("countries", countrySelected)}
+          >
+            {countrySelected}
+          </Button>
+        </Box>
+      );
+    });
+  };
 
   return (
     <Box>
@@ -411,9 +453,40 @@ export default function EditTravelPlan({
                 </HStack>
                 <FormControl mb="1">
                   <FormControl.Label>Countries</FormControl.Label>
+                  {displayCountries()}
+                  <Button
+                    key="sm"
+                    size="sm"
+                    variant={"outline"}
+                    onPress={() => setIsCountrySearchOpen(true)}
+                  >
+                    + Select a country
+                  </Button>
                 </FormControl>
                 <FormControl mb="1">
                   <FormControl.Label>Months</FormControl.Label>
+                  <Stack
+                    mt="4"
+                    direction="row"
+                    space={1}
+                    alignItems={{
+                      base: "center",
+                      md: "flex-start",
+                    }}
+                    flexWrap="wrap"
+                  >
+                    {[...months.entries()].map(([k, v], _) => (
+                      <Button
+                        key="sm"
+                        size="sm"
+                        variant="outline"
+                        isPressed={v}
+                        onPress={() => updateMonths(k, v)}
+                      >
+                        {k}
+                      </Button>
+                    ))}
+                  </Stack>
                 </FormControl>
                 <Box>
                   <FormControl mb="1">

@@ -10,11 +10,14 @@ const GET_BLOCKS = gql`
   query ($id: String!, $day: Int!) {
     plan(id: $id) {
       blocks(day: $day) {
+        id
         title
         imageUrl
         description
         price
         imageUrl
+        lat
+        long
       }
     }
   }
