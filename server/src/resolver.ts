@@ -4,11 +4,10 @@ import { Resolvers } from "./generated/graphql";
 // schema.  We'll retrieve books from the "books" array above.
 export const resolvers: Resolvers = {
   Query: {
-    user: (_, args, context) =>
-      {
-        console.log("query: user", context.loggedIn, context.user);
-        return context.dataSources.userProvider.getUser(args.id);
-      },
+    user: (_, args, context) => {
+      console.log("query: user", context.loggedIn, context.user);
+      return context.dataSources.userProvider.getUser(args.id);
+    },
     users: (_, __, context) => context.dataSources.userProvider.getUsers(),
     plan: (_, args, context) =>
       context.dataSources.planProvider.getPlan(args.id),
@@ -23,40 +22,31 @@ export const resolvers: Resolvers = {
         args.password
       ),
     authUserEmail: (_, args, context) =>
-      context.dataSources.userProvider.authUserEmail(
-        args.email,
-        args.password
-      ),
+      context.dataSources.userProvider.authUserEmail(args.email, args.password),
     verifyEmail: (_, args, context) =>
-      context.dataSources.userProvider.verifyEmail(
-        args.email
-      ),
-    getUserID: (_, args, context) =>
-      {
-        console.log("!!!!!!!", context);
-        return context.dataSources.userProvider.getUserID(
+      context.dataSources.userProvider.verifyEmail(args.email),
+    getUserID: (_, args, context) => {
+      console.log("!!!!!!!", context);
+      return context.dataSources.userProvider.getUserID(
         args.username,
-        args.email);
-      },
-    getUserPlans: (_, args, context) =>
-      {
-        console.log("!!!!!!!", args);
-        return context.dataSources.userProvider.getUserPlans(args.id);
-      },
-    getWishlistPlans: (_, args, context) =>
-      {
-        console.log("!!!!!!!", args);
-        return context.dataSources.userProvider.getWishlistPlans(args.id);
-      },
-
+        args.email
+      );
+    },
+    getUserPlans: (_, args, context) => {
+      console.log("!!!!!!!", args);
+      return context.dataSources.userProvider.getUserPlans(args.id);
+    },
+    getWishlistPlans: (_, args, context) => {
+      console.log("!!!!!!!", args);
+      return context.dataSources.userProvider.getWishlistPlans(args.id);
+    },
   },
   Mutation: {
-    addUser: (_, args, context) =>
-      {
-        const newUser = context.dataSources.userProvider.createUser(args.input);
-        console.log(newUser);
-        return newUser;
-      },
+    addUser: (_, args, context) => {
+      const newUser = context.dataSources.userProvider.createUser(args.input);
+      console.log(newUser);
+      return newUser;
+    },
     addPlan: async (_, args, context) => {
       console.log("The args", args);
       const newPlan = await context.dataSources.planProvider.createPlan(
@@ -78,19 +68,19 @@ export const resolvers: Resolvers = {
     modifyUser: (_, args, context) =>
       context.dataSources.userProvider.updateUser(args.input),
     addWishlistPlan: (_, args, context) => {
-      return context.dataSources.userProvider.addWishlistPlan(args.input)
+      return context.dataSources.userProvider.addWishlistPlan(args.input);
     },
     removeWishlistPlan: (_, args, context) =>
       context.dataSources.userProvider.removeWishlistPlan(args.input),
     updateWishlistPlan: (_, args, context) => {
-        return context.dataSources.userProvider.updateWishlistPlan(args.input)
-      },
+      return context.dataSources.userProvider.updateWishlistPlan(args.input);
+    },
   },
   User: {
     // prefs: (parent, __, context) =>
     // //   context.dataSources.userProvider.getPrefs(parent.id),
-    // savedPlans: (parent, __, context) =>
-    //   context.dataSources.userProvider.getPlansFromUser(parent.id),
+    savedPlans: (parent, __, context) =>
+      context.dataSources.userProvider.getUserPlans(parent.id),
   },
   Plan: {
     creator: (parent, __, context) =>

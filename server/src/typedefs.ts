@@ -9,8 +9,8 @@ export const typeDefs = gql`
     token: String!
     randStr: String!
     emailValid: Int!
-    savedPlans: [ID]
-    wishlistPlans: [ID]
+    savedPlans: [Plan]
+    wishlistPlans: [Plan]
   }
 
   type Preference {

@@ -27,7 +27,6 @@ import RegisterPage from "./src/pages/RegisterPage";
 import LoginPage from "./src/pages/LoginPage";
 import TravelStackScreen from "./src/navigation/TravelPageStack";
 import EditTravelPlanStackScreen from "./src/navigation/EditPlanStack";
-import ExplorePageStack from "./src/navigation/ExplorePageStack";
 import EmailVerificationPage from "./src/pages/EmailVerificationPage";
 import { setContext } from "@apollo/client/link/context";
 import AsyncStorage from "@react-native-async-storage/async-storage";

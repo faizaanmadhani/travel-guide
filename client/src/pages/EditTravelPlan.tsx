@@ -234,7 +234,10 @@ export default function EditTravelPlan({
     console.log("image upload triggered");
     const newImageUrl = await uploadImage();
 
-    const selectedMonths = [...months.keys()].filter((k) => months[k]);
+    const selectedMonths = [...months.keys()].filter(
+      (k) => months.get(k) === true
+    );
+    console.log("these are the selectedmonths", selectedMonths, months);
 
     const inputData: any = {
       id: planID,

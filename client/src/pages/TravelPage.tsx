@@ -51,6 +51,8 @@ const GET_SAVED_PLANS = gql`
         rating
         tags
         description
+        countries
+        months
         imageUrl
       }
     }
