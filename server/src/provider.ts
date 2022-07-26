@@ -32,8 +32,8 @@ const castIPlantoPlan = (plan: any) => {
     rating: !plan?.rating ? 1 : plan?.rating,
     tags: !plan?.tags ? [] : plan?.tags,
     description: !plan?.description? "" : plan?.description,
-    countries: !plan?.countries ? "" : plan?.countries,
-    months: !plan?.months ? "" : plan?.months,
+    countries: !plan?.countries ? [] : plan?.countries,
+    months: !plan?.months ? [] : plan?.months,
     imageUrl: !plan?.imageUrl ? "" : plan?.imageUrl,
     dayLabels: !plan?.dayLabels ? ["Intro"] : plan?.dayLabels,
   }
@@ -48,6 +48,8 @@ const castIPlanBlocktoPlanBlock = (planBlock: any) => {
     price: !planBlock?.price ? 0 : planBlock?.price,
     day: !planBlock?.day ? 1 : planBlock.day,
     imageUrl: !planBlock?.imageUrl ? "" : planBlock.imageUrl,
+    lat: planBlock.lat,
+    long: planBlock.long
   }
   return gqlPlanBlock;
 }
@@ -452,6 +454,10 @@ export class PlanProvider extends DataSource {
       })
       doc.description = !input.description ? "" : input.description;
       doc.imageUrl = !input.imageUrl ? "" : input.imageUrl;
+
+      input.countries?.forEach((country, _) => {
+        doc.countries.push(country)
+      })
 
       await doc.save();
       return this.getPlan(input?.id || "");

@@ -257,8 +257,6 @@ export type UpdatePlanBlockInput = {
   lat?: Maybe<Scalars['Float']>;
   long?: Maybe<Scalars['Float']>;
   dayLabels?: Maybe<Scalars['String']>;
-  countries?: Maybe<Array<Maybe<Scalars['String']>>>;
-  months?: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type UpdatePlanInput = {
@@ -270,7 +268,7 @@ export type UpdatePlanInput = {
   tags?: Maybe<Array<Maybe<Scalars['String']>>>;
   description?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['String']>;
-  countries: Scalars['String'];
+  countries?: Maybe<Array<Maybe<Scalars['String']>>>;
   months: Scalars['String'];
 };
 
