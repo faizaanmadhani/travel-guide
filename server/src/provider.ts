@@ -36,7 +36,7 @@ const castIPlantoPlan = (plan: any) => {
     countries: !plan?.countries ? [] : plan?.countries,
     months: !plan?.months ? [] : plan?.months,
     imageUrl: !plan?.imageUrl ? "" : plan?.imageUrl,
-    dayLabels: !plan?.dayLabels ? ["Intro"] : plan?.dayLabels,
+    dayLabels: !plan?.dayLabels ? ["Intro", "Day 1"] : plan?.dayLabels,
   }
   console.log("this is the gqlplan created", gqlPlan);
   return gqlPlan;
@@ -445,7 +445,7 @@ export class PlanProvider extends DataSource {
         description: "",
         blocks: doc.blocks,
         imageUrl: "",
-        dayLabels: doc.dayLabels,
+        dayLabels: (input.dayLabels && doc.dayLabels.length < input?.dayLabels.length) ? [] :  doc.dayLabels,
         countries: [],
         months: []
       });
@@ -462,6 +462,12 @@ export class PlanProvider extends DataSource {
       input.countries?.forEach((country, _) => {
         doc.countries.push(country)
       })
+
+      if (doc.dayLabels.length === 0) {
+        input?.dayLabels?.forEach((label, _) => {
+          doc.dayLabels.push(label);
+        })
+      }
 
       await doc.save();
       return this.getPlan(input?.id || "");
