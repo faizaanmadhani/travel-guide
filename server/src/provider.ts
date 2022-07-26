@@ -23,6 +23,7 @@ const castIUserToUser = (user: any) => {
 }
 
 const castIPlantoPlan = (plan: any) => {
+  console.log("this is the plan brought in", plan);
   const gqlPlan: Plan = {
     id: !plan?._id ? "" : plan?._id,
     name: !plan?.name ? "" : plan?.name,
@@ -37,6 +38,7 @@ const castIPlantoPlan = (plan: any) => {
     imageUrl: !plan?.imageUrl ? "" : plan?.imageUrl,
     dayLabels: !plan?.dayLabels ? ["Intro"] : plan?.dayLabels,
   }
+  console.log("this is the gqlplan created", gqlPlan);
   return gqlPlan;
 }
 
@@ -171,7 +173,7 @@ export class UserProvider extends DataSource {
     if (plansArray) {
       const savedPlans: Plan[] = plansArray?.map((plan, _) => {
         console.log("Each plan", plan);
-        return castIPlantoPlan(plan[0]); // populate for some reason stores each obj in nested array
+        return castIPlantoPlan(plan); // populate for some reason stores each obj in nested array
       })
       
       return savedPlans;
